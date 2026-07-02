@@ -1,0 +1,10 @@
+-- CreateTable
+CREATE TABLE "SyncRun" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "source" TEXT NOT NULL,
+    "inserted" INTEGER NOT NULL DEFAULT 0,
+    "updated" INTEGER NOT NULL DEFAULT 0,
+    "status" TEXT NOT NULL,
+    "message" TEXT,
+    "ranAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

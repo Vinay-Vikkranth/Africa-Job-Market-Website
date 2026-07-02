@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Job {
+  id           Int        @id @default(autoincrement())
+  externalId   String     @unique
+  title        String
+  company      String
+  country      String
+  city         String
+  salaryMinUsd Float?
+  salaryMaxUsd Float?
+  currency     String?
+  source       String
+  url          String
+  technologies String?
+  postedAt     DateTime
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  skills       JobSkill[]
+}
+
+model Skill {
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  createdAt DateTime   @default(now())
+  jobs      JobSkill[]
+}
+
+model JobSkill {
+  jobId   Int
+  skillId Int
+  weight  Int      @default(1)
+  job     Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  skill   Skill    @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  addedAt DateTime @default(now())
+
+  @@id([jobId, skillId])
+}
+
+model SyncRun {
+  id        Int      @id @default(autoincrement())
+  source    String
+  inserted  Int      @default(0)
+  updated   Int      @default(0)
+  status    String
+  message   String?
+  ranAt     DateTime @default(now())
+}
