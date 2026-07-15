@@ -76,7 +76,32 @@ export type IngestJobInput = {
   skills: string[];
 };
 
+function dedupKey(title: string, company: string, country: string) {
+  const n = (s: string) => s.toLowerCase().replace(/[^a-z0-9 ]/g, "").replace(/\s+/g, " ").trim();
+  return `${n(title)}||${n(company)}||${n(country)}`;
+}
+
 export async function upsertIngestedJob(job: IngestJobInput) {
+  // Cross-source duplicate check: if a known-company job with the same
+  // title+company+country already exists under a different externalId, skip it.
+  if (job.company !== "Unknown") {
+    const key = dedupKey(job.title, job.company, job.country);
+    const existing = await prisma.job.findFirst({
+      where: {
+        title: job.title,
+        company: job.company,
+        country: job.country,
+        NOT: { externalId: job.externalId },
+      },
+      select: { id: true },
+    });
+    if (existing) {
+      // Already stored from another source — treat as seen, not new
+      void key;
+      return { isNew: false };
+    }
+  }
+
   const createdJob = await prisma.job.upsert({
     where: { externalId: job.externalId },
     create: {

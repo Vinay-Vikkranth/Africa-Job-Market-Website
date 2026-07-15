@@ -6,12 +6,14 @@ import {
   getDemandVsSupply,
   getEmergingTechnologies,
   getSkillGaps,
+  getSyllabusGap,
   getWeeklyCompanyTrend,
   getWeeklyJobTrend,
   getWeeklySalaryTrend,
   getWeeklySkillTrend,
   growthPct,
 } from "@/lib/analytics";
+import { hasSyllabus } from "@/lib/syllabus-data";
 
 export { COUNTRIES, COUNTRY_FLAGS };
 
@@ -27,7 +29,7 @@ function asPercent(numerator: number, denominator: number) {
   return Number(((numerator / denominator) * 100).toFixed(1));
 }
 
-export async function getTopSkills(where: Record<string, unknown>, totalJobs: number, limit = 10) {
+export async function getTopSkills(where: Record<string, unknown>, _totalJobs: number) {
   const jobs = await prisma.job.findMany({ where, select: { id: true } });
   if (jobs.length === 0) return [];
 
@@ -36,7 +38,6 @@ export async function getTopSkills(where: Record<string, unknown>, totalJobs: nu
     where: { jobId: { in: jobs.map((j) => j.id) } },
     _count: { skillId: true },
     orderBy: { _count: { skillId: "desc" } },
-    take: limit,
   });
 
   const skillRecords = await prisma.skill.findMany({
@@ -45,9 +46,12 @@ export async function getTopSkills(where: Record<string, unknown>, totalJobs: nu
   });
   const skillNameMap = new Map(skillRecords.map((item) => [item.id, item.name]));
 
+  // Use total mentions across displayed skills so all bars share 100%
+  const totalMentions = topSkills.reduce((sum, item) => sum + item._count.skillId, 0);
+
   return topSkills.map((item) => ({
     name: skillNameMap.get(item.skillId) ?? "Unknown",
-    demandPct: asPercent(item._count.skillId, totalJobs),
+    demandPct: asPercent(item._count.skillId, totalMentions),
     mentions: item._count.skillId,
   }));
 }
@@ -114,9 +118,9 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
   );
 
   const [jobsByCountry, jobsByCity, salaryByCountry, topSkillsWithName] = await Promise.all([
+    // Always fetch ALL countries for the map — it's the navigation tool, not a filtered view
     prisma.job.groupBy({
       by: ["country"],
-      where,
       _count: { country: true },
       orderBy: { _count: { country: "desc" } },
     }),
@@ -133,13 +137,14 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
       _avg: { salaryMinUsd: true },
       orderBy: { _avg: { salaryMinUsd: "desc" } },
     }),
-    getTopSkills(where, totalJobs, 10),
+    getTopSkills(where, totalJobs),
   ]);
 
-  const [emergingTechnologies, skillGap, demandVsSupply] = await Promise.all([
+  const [emergingTechnologies, skillGap, demandVsSupply, syllabusGap] = await Promise.all([
     getEmergingTechnologies(where),
     getSkillGaps(where, totalJobs),
     getDemandVsSupply(where, topSkillsWithName),
+    hasSyllabus(country) ? getSyllabusGap(country, where) : Promise.resolve(null),
   ]);
 
   const priorGapJobs = await prisma.job.count({
@@ -180,8 +185,8 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
       companyGrowthPct: Number(companyGrowth.toFixed(1)),
       skillsGrowthPct: skillsGrowth,
       salaryGrowthPct: salaryGrowth,
-      gapChangePct: gapChange,
-      overallGapPct: skillGap.overall,
+      gapChangePct: syllabusGap ? 0 : gapChange,
+      overallGapPct: syllabusGap?.gapRate ?? skillGap.overall,
     },
     trends: {
       jobs: jobsTrend,
@@ -206,6 +211,7 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
     })),
     topSkills: topSkillsWithName,
     skillGap,
+    syllabusGap,
     emergingTechnologies,
     demandVsSupply,
     insights,

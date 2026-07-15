@@ -1,4 +1,3 @@
-import { prisma } from "@/lib/prisma";
 import { detectCountryFromText } from "@/lib/city-country";
 import {
   extractSkillsFromText,
@@ -9,6 +8,7 @@ import {
 import { syncAfricanJobBoards } from "@/lib/sources/african-boards";
 import { syncAdzunaWithLog } from "@/lib/sources/adzuna";
 import { syncApifyWithLog } from "@/lib/sources/apify";
+import { syncFuzuWithLog } from "@/lib/sources/fuzu";
 import { syncRemoteOkWithLog } from "@/lib/sources/remoteok";
 
 type RemotiveJob = {
@@ -119,10 +119,11 @@ async function syncArbeitnowJobs() {
 }
 
 export async function syncAllJobSources(limit = 300) {
-  const [adzuna, africanBoards, apify, remoteok, remotive, arbeitnow] = await Promise.all([
+  const [adzuna, africanBoards, apify, fuzu, remoteok, remotive, arbeitnow] = await Promise.all([
     syncAdzunaWithLog(),
     syncAfricanJobBoards(),
     syncApifyWithLog(),
+    syncFuzuWithLog(),
     syncRemoteOkWithLog(),
     runSourceSync("Remotive", () => syncRemotiveJobs(limit)),
     runSourceSync("Arbeitnow", syncArbeitnowJobs),
@@ -133,6 +134,7 @@ export async function syncAllJobSources(limit = 300) {
     africanBoards.brighterMonday.inserted +
     africanBoards.jobberman.inserted +
     apify.inserted +
+    fuzu.inserted +
     remoteok.inserted +
     remotive.inserted +
     arbeitnow.inserted;
@@ -142,6 +144,7 @@ export async function syncAllJobSources(limit = 300) {
     africanBoards.brighterMonday.updated +
     africanBoards.jobberman.updated +
     apify.updated +
+    fuzu.updated +
     remoteok.updated +
     remotive.updated +
     arbeitnow.updated;
@@ -151,6 +154,7 @@ export async function syncAllJobSources(limit = 300) {
     brighterMonday: africanBoards.brighterMonday,
     jobberman: africanBoards.jobberman,
     apify,
+    fuzu,
     remoteok,
     remotive,
     arbeitnow,

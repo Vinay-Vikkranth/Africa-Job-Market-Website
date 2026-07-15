@@ -1,11 +1,18 @@
 import { prisma } from "@/lib/prisma";
 import { categorizeSkill, TECH_KEYWORDS } from "@/lib/skill-categories";
+import { COUNTRY_SYLLABUSES, findCurriculumMatch } from "@/lib/syllabus-data";
 
 const MS_DAY = 24 * 60 * 60 * 1000;
 
-export function growthPct(recent: number, prior: number) {
-  if (prior === 0) return recent > 0 ? 100 : 0;
-  return Number((((recent - prior) / prior) * 100).toFixed(1));
+// Returns 0 when prior period has fewer than MIN_SAMPLE jobs (not enough history).
+// Caps at ±500 so a freshly-seeded DB never shows 4000%+ figures.
+const MIN_SAMPLE = 5;
+const MAX_GROWTH = 500;
+
+export function growthPct(recent: number, prior: number): number {
+  if (prior < MIN_SAMPLE) return 0;
+  const pct = ((recent - prior) / prior) * 100;
+  return Number(Math.max(-MAX_GROWTH, Math.min(MAX_GROWTH, pct)).toFixed(1));
 }
 
 export async function getSkillMentionsInPeriod(
@@ -61,7 +68,7 @@ export async function getEmergingTechnologies(where: Record<string, unknown>) {
     .sort((a, b) => b.growthPct - a.growthPct || b.recentCount - a.recentCount)
     .slice(0, 8);
 
-  return ranked.length > 0 ? ranked : TECH_KEYWORDS.map((name, i) => ({
+  return ranked.length > 0 ? ranked : TECH_KEYWORDS.map((name, _i) => ({
     name,
     growthPct: 0,
     recentCount: 0,
@@ -110,6 +117,73 @@ export async function getSkillGaps(where: Record<string, unknown>, totalJobs: nu
   );
 
   return { ...gaps, overall, totalJobs };
+}
+
+export type SyllabusGapResult = {
+  country: string;
+  source: string;
+  programs: string[];
+  coverageRate: number;
+  gapRate: number;
+  coveredSkills: { skill: string; mentions: number; curriculumSkill: string }[];
+  gapSkills: { skill: string; mentions: number }[];
+  totalMentions: number;
+  coveredMentions: number;
+};
+
+export async function getSyllabusGap(
+  country: string,
+  where: Record<string, unknown>,
+): Promise<SyllabusGapResult | null> {
+  const syllabus = COUNTRY_SYLLABUSES[country];
+  if (!syllabus) return null;
+
+  const jobs = await prisma.job.findMany({ where, select: { id: true } });
+  if (!jobs.length) return null;
+
+  const topSkillRows = await prisma.jobSkill.groupBy({
+    by: ["skillId"],
+    where: { jobId: { in: jobs.map((j) => j.id) } },
+    _count: { skillId: true },
+    orderBy: { _count: { skillId: "desc" } },
+    take: 50,
+  });
+
+  const skillRecords = await prisma.skill.findMany({
+    where: { id: { in: topSkillRows.map((r) => r.skillId) } },
+    select: { id: true, name: true },
+  });
+  const nameMap = new Map(skillRecords.map((s) => [s.id, s.name]));
+
+  const covered: { skill: string; mentions: number; curriculumSkill: string }[] = [];
+  const notCovered: { skill: string; mentions: number }[] = [];
+
+  for (const row of topSkillRows) {
+    const name = nameMap.get(row.skillId);
+    if (!name) continue;
+    const match = findCurriculumMatch(name, syllabus);
+    if (match) {
+      covered.push({ skill: name, mentions: row._count.skillId, curriculumSkill: match.name });
+    } else {
+      notCovered.push({ skill: name, mentions: row._count.skillId });
+    }
+  }
+
+  const totalMentions = topSkillRows.reduce((s, r) => s + r._count.skillId, 0) || 1;
+  const coveredMentions = covered.reduce((s, r) => s + r.mentions, 0);
+  const coverageRate = Math.round((coveredMentions / totalMentions) * 100);
+
+  return {
+    country,
+    source: syllabus.source,
+    programs: syllabus.programs,
+    coverageRate,
+    gapRate: 100 - coverageRate,
+    coveredSkills: covered.slice(0, 12),
+    gapSkills: notCovered.slice(0, 15),
+    totalMentions,
+    coveredMentions,
+  };
 }
 
 export async function getDemandVsSupply(

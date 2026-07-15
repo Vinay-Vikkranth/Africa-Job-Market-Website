@@ -11,9 +11,20 @@ const ADZUNA_MARKETS: { code: string; country: string; query: string }[] = [
   { code: "za", country: "South Africa", query: "data analyst" },
   { code: "za", country: "South Africa", query: "software developer" },
   { code: "ng", country: "Nigeria", query: "data analyst" },
+  { code: "ng", country: "Nigeria", query: "technology" },
   { code: "ke", country: "Kenya", query: "technology" },
+  { code: "ke", country: "Kenya", query: "finance" },
   { code: "gh", country: "Ghana", query: "finance" },
+  { code: "gh", country: "Ghana", query: "data" },
 ];
+
+// Adzuna returns salaries in local currency — convert to USD (rates as of 2026-07)
+const MARKET_TO_USD: Record<string, number> = {
+  za: 1 / 18.5,   // ZAR
+  ng: 1 / 1600,   // NGN
+  ke: 1 / 129,    // KES
+  gh: 1 / 15.5,   // GHS
+};
 
 type AdzunaJob = {
   id: string;
@@ -48,6 +59,7 @@ export async function syncAdzunaJobs(): Promise<SyncResult> {
     if (!response.ok) continue;
 
     const data = (await response.json()) as { results: AdzunaJob[] };
+    const rate = MARKET_TO_USD[market.code] ?? 1;
     for (const job of data.results ?? []) {
       const country =
         detectCountryFromText(`${job.location?.display_name} ${job.description}`) ?? market.country;
@@ -61,8 +73,8 @@ export async function syncAdzunaJobs(): Promise<SyncResult> {
         source: "Adzuna",
         url: job.redirect_url,
         description: job.description,
-        salaryMinUsd: job.salary_min,
-        salaryMaxUsd: job.salary_max,
+        salaryMinUsd: job.salary_min != null ? Math.round(job.salary_min * rate) : undefined,
+        salaryMaxUsd: job.salary_max != null ? Math.round(job.salary_max * rate) : undefined,
         currency: "USD",
         postedAt: new Date(job.created),
         skills,

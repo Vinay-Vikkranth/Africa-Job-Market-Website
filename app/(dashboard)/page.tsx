@@ -7,8 +7,9 @@ export default async function OverviewPage({
   searchParams: Promise<{ country?: string }>;
 }) {
   const params = await searchParams;
-  const country = COUNTRIES.includes(params.country as (typeof COUNTRIES)[number])
-    ? (params.country as (typeof COUNTRIES)[number])
+  const requested = params.country ?? "All Countries";
+  const country = (COUNTRIES as readonly string[]).includes(requested)
+    ? (requested as (typeof COUNTRIES)[number])
     : "All Countries";
   const data = await getDashboardData(country);
   return <OverviewContent data={data} country={country} />;

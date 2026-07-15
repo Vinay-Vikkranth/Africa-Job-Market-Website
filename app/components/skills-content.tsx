@@ -7,13 +7,13 @@ export function SkillsContent({ data }: { data: DashboardData }) {
   return (
     <section className="grid gap-4 lg:grid-cols-2">
       <article className="dashboard-card p-5">
-        <h2 className="mb-4 text-sm font-semibold text-slate-900">Skill Demand (% of job postings)</h2>
-        <div className="h-96">
+        <h2 className="mb-4 text-sm font-semibold text-slate-900">Skill Demand (% share of total demand)</h2>
+        <div style={{ height: Math.max(320, data.topSkills.length * 30) }}>
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data.topSkills} layout="vertical" margin={{ top: 0, right: 20, left: 0, bottom: 0 }}>
               <XAxis type="number" hide />
               <YAxis type="category" dataKey="name" width={120} tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} />
-              <Tooltip formatter={(value) => [`${value ?? 0}%`, "Demand"]} contentStyle={{ borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 12 }} />
+              <Tooltip formatter={(value) => [`${value ?? 0}%`, "Share of demand"]} contentStyle={{ borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 12 }} />
               <Bar dataKey="demandPct" fill="#3b82f6" radius={[0, 4, 4, 0]} barSize={16} />
             </BarChart>
           </ResponsiveContainer>
@@ -33,7 +33,7 @@ export function SkillsContent({ data }: { data: DashboardData }) {
               </div>
               <div className="text-right">
                 <p className="text-sm font-semibold text-slate-900">{skill.mentions} mentions</p>
-                <p className="text-xs text-slate-500">{skill.demandPct}% of postings</p>
+                <p className="text-xs text-slate-500">{skill.demandPct}% of skill demand</p>
               </div>
             </div>
           ))}

@@ -82,14 +82,18 @@ export function KpiCard({
         <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${iconBg}`}>
           <Icon className="h-5 w-5 text-white" />
         </div>
-        <div
-          className={`flex items-center gap-1 text-xs font-semibold ${
-            isPositive ? "text-emerald-600" : "text-red-500"
-          }`}
-        >
-          {trend === "up" ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />}
-          {Math.abs(change)}%
-        </div>
+        {change === 0 ? (
+          <span className="text-xs font-medium text-slate-400">—</span>
+        ) : (
+          <div
+            className={`flex items-center gap-1 text-xs font-semibold ${
+              isPositive ? "text-emerald-600" : "text-red-500"
+            }`}
+          >
+            {trend === "up" ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />}
+            {Math.abs(change)}%
+          </div>
+        )}
       </div>
       <p className="mt-3 text-xs font-medium uppercase tracking-wide text-slate-500">{title}</p>
       <p className="mt-1 text-2xl font-bold text-slate-900">{value}</p>
