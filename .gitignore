@@ -48,3 +48,7 @@ yarn-error.log*
 next-env.d.ts
 
 /app/generated/prisma
+
+# ESCO source CSVs — large raw data, only needed to run build-esco-taxonomy.ts
+# The generated output lib/esco-taxonomy.json is committed instead.
+public/data/ESCO dataset - v1.2.1 - classification - en - csv/

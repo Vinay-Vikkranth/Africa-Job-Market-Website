@@ -29,7 +29,7 @@ function asPercent(numerator: number, denominator: number) {
   return Number(((numerator / denominator) * 100).toFixed(1));
 }
 
-export async function getTopSkills(where: Record<string, unknown>, _totalJobs: number) {
+export async function getTopSkills(where: Record<string, unknown>) {
   const jobs = await prisma.job.findMany({ where, select: { id: true } });
   if (jobs.length === 0) return [];
 
@@ -42,18 +42,22 @@ export async function getTopSkills(where: Record<string, unknown>, _totalJobs: n
 
   const skillRecords = await prisma.skill.findMany({
     where: { id: { in: topSkills.map((item) => item.skillId) } },
-    select: { id: true, name: true },
+    select: { id: true, name: true, tier1: true },
   });
-  const skillNameMap = new Map(skillRecords.map((item) => [item.id, item.name]));
+  const skillMap = new Map(skillRecords.map((item) => [item.id, item]));
 
   // Use total mentions across displayed skills so all bars share 100%
   const totalMentions = topSkills.reduce((sum, item) => sum + item._count.skillId, 0);
 
-  return topSkills.map((item) => ({
-    name: skillNameMap.get(item.skillId) ?? "Unknown",
-    demandPct: asPercent(item._count.skillId, totalMentions),
-    mentions: item._count.skillId,
-  }));
+  return topSkills.map((item) => {
+    const rec = skillMap.get(item.skillId);
+    return {
+      name: rec?.name ?? "Unknown",
+      tier1: rec?.tier1 ?? "other",
+      demandPct: asPercent(item._count.skillId, totalMentions),
+      mentions: item._count.skillId,
+    };
+  });
 }
 
 export async function getDashboardData(country: CountryFilter = "All Countries") {
@@ -137,7 +141,7 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
       _avg: { salaryMinUsd: true },
       orderBy: { _avg: { salaryMinUsd: "desc" } },
     }),
-    getTopSkills(where, totalJobs),
+    getTopSkills(where),
   ]);
 
   const [emergingTechnologies, skillGap, demandVsSupply, syllabusGap] = await Promise.all([

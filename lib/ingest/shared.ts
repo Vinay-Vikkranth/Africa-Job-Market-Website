@@ -1,20 +1,5 @@
 import { prisma } from "@/lib/prisma";
-
-const KEYWORD_SKILLS: Record<string, string[]> = {
-  Excel: ["excel", "spreadsheet"],
-  Communication: ["communication", "stakeholder", "presentation"],
-  "Project Management": ["project management", "scrum", "agile", "kanban"],
-  "Data Analysis": ["data analysis", "analytics", "insights"],
-  SQL: ["sql", "postgres", "mysql", "sqlite"],
-  Python: ["python", "pandas", "numpy"],
-  "Power BI": ["power bi", "powerbi"],
-  "Cloud Computing": ["aws", "azure", "gcp", "cloud"],
-  "Machine Learning": ["machine learning", "ml model"],
-  "Artificial Intelligence": ["artificial intelligence", "ai tools", "llm"],
-  Cybersecurity: ["cybersecurity", "security operations", "soc"],
-  Salesforce: ["salesforce"],
-  "Digital Marketing": ["digital marketing", "seo", "ads", "social media"],
-};
+import { extractSkillsFromText as escoExtract } from "@/lib/esco-extractor";
 
 export function parseSalaryFromText(salaryText: string | null | undefined): {
   min?: number;
@@ -37,26 +22,7 @@ export function extractSkillsFromText(
   tags: string[] = [],
   category = "",
 ): string[] {
-  const content = `${title} ${category} ${tags.join(" ")} ${description}`.toLowerCase();
-  const skills = new Set<string>();
-
-  for (const [skill, keywords] of Object.entries(KEYWORD_SKILLS)) {
-    if (keywords.some((keyword) => content.includes(keyword))) {
-      skills.add(skill);
-    }
-  }
-
-  for (const tag of tags) {
-    if (tag.length > 2 && tag.length < 40) {
-      const normalized = tag
-        .split("-")
-        .map((chunk) => chunk.charAt(0).toUpperCase() + chunk.slice(1).toLowerCase())
-        .join(" ");
-      skills.add(normalized);
-    }
-  }
-
-  return [...skills].slice(0, 12);
+  return escoExtract(title, description, tags, category).map((s) => s.tier2);
 }
 
 export type IngestJobInput = {

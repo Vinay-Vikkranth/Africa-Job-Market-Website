@@ -32,7 +32,9 @@ model Job {
 
 model Skill {
   id        Int        @id @default(autoincrement())
-  name      String     @unique
+  name      String     @unique  // canonical ESCO Tier-2 preferred label
+  tier1     String?             // ESCO Tier-1 group, e.g. "software and applications development"
+  escoUri   String?             // ESCO URI or "custom:..." identifier
   createdAt DateTime   @default(now())
   jobs      JobSkill[]
 }
