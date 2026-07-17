@@ -1,4 +1,4 @@
-import { detectCountryFromText } from "@/lib/city-country";
+import { detectCountry } from "@/lib/city-country";
 import {
   extractSkillsFromText,
   runSourceSync,
@@ -15,6 +15,8 @@ type RemoteOkJob = {
   tags: string[];
   location: string;
   date: string;
+  salary_min?: number;
+  salary_max?: number;
 };
 
 export async function syncRemoteOkJobs(): Promise<SyncResult> {
@@ -30,10 +32,20 @@ export async function syncRemoteOkJobs(): Promise<SyncResult> {
 
   for (const job of data.slice(1, 200)) {
     if (!job?.position) continue;
-    const country = detectCountryFromText(`${job.location} ${job.description} ${job.position}`);
+    const country = detectCountry(job.location);
     if (!country) continue;
 
     const skills = extractSkillsFromText(job.position, job.description, job.tags ?? []);
+    // RemoteOK reports annual USD estimates; keep only plausible values.
+    const salaryMin =
+      job.salary_min && job.salary_min >= 5000 && job.salary_min <= 1_000_000
+        ? job.salary_min
+        : undefined;
+    const salaryMax =
+      salaryMin && job.salary_max && job.salary_max >= salaryMin && job.salary_max <= 1_000_000
+        ? job.salary_max
+        : undefined;
+
     const { isNew } = await upsertIngestedJob({
       externalId: `remoteok-${job.id}`,
       title: job.position,
@@ -43,6 +55,9 @@ export async function syncRemoteOkJobs(): Promise<SyncResult> {
       source: "RemoteOK",
       url: job.url || `https://remoteok.com/remote-jobs/${job.id}`,
       technologies: (job.tags ?? []).join(", "),
+      salaryMinUsd: salaryMin,
+      salaryMaxUsd: salaryMax,
+      currency: salaryMin ? "USD" : undefined,
       postedAt: job.date ? new Date(job.date) : new Date(),
       skills,
     });

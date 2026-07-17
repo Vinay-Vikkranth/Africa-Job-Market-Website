@@ -1,10 +1,9 @@
+import "dotenv/config";
 import { syncAllJobSources } from "../lib/sync-jobs";
-import { ensureBaselineData } from "../lib/seed-baseline";
 
 async function main() {
-  const baseline = await ensureBaselineData();
   const result = await syncAllJobSources(300);
-  console.log("Seed complete", { baseline, liveSync: result });
+  console.log("Seed complete (live data only)", result);
 }
 
 main()

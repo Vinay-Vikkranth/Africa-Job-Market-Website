@@ -1,4 +1,4 @@
-import { detectCountryFromText } from "@/lib/city-country";
+import { detectCountry } from "@/lib/city-country";
 import {
   extractSkillsFromText,
   runSourceSync,
@@ -6,14 +6,11 @@ import {
   type SyncResult,
 } from "@/lib/ingest/shared";
 
-/** Adzuna public API — set ADZUNA_APP_ID and ADZUNA_APP_KEY in .env */
-const ADZUNA_MARKETS: { code: string; country: string; query: string }[] = [
-  { code: "za", country: "South Africa", query: "data analyst" },
-  { code: "za", country: "South Africa", query: "software developer" },
-  { code: "ng", country: "Nigeria", query: "data analyst" },
-  { code: "ke", country: "Kenya", query: "technology" },
-  { code: "gh", country: "Ghana", query: "finance" },
-];
+/**
+ * Adzuna public API — set ADZUNA_APP_ID and ADZUNA_APP_KEY in .env.
+ * South Africa ("za") is Adzuna's only supported African market.
+ */
+const ADZUNA_QUERIES = ["data", "software", "engineer", "finance", "marketing", "sales"];
 
 type AdzunaJob = {
   id: string;
@@ -36,24 +33,30 @@ export async function syncAdzunaJobs(): Promise<SyncResult> {
 
   let inserted = 0;
   let updated = 0;
+  const errors: string[] = [];
 
-  for (const market of ADZUNA_MARKETS) {
-    const url = new URL(`https://api.adzuna.com/v1/api/jobs/${market.code}/search/1`);
+  for (const query of ADZUNA_QUERIES) {
+    const url = new URL("https://api.adzuna.com/v1/api/jobs/za/search/1");
     url.searchParams.set("app_id", appId);
     url.searchParams.set("app_key", appKey);
-    url.searchParams.set("results_per_page", "25");
-    url.searchParams.set("what", market.query);
+    url.searchParams.set("results_per_page", "50");
+    url.searchParams.set("what", query);
 
     const response = await fetch(url.toString(), { next: { revalidate: 0 } });
-    if (!response.ok) continue;
+    if (!response.ok) {
+      errors.push(`Adzuna query "${query}" failed: ${response.status}`);
+      continue;
+    }
 
     const data = (await response.json()) as { results: AdzunaJob[] };
     for (const job of data.results ?? []) {
       const country =
-        detectCountryFromText(`${job.location?.display_name} ${job.description}`) ?? market.country;
+        detectCountry(job.location?.display_name) ?? "South Africa";
       const skills = extractSkillsFromText(job.title, job.description);
+      // Adzuna ZA salaries are annual ZAR; not converted, so they are not
+      // stored as USD figures.
       const { isNew } = await upsertIngestedJob({
-        externalId: `adzuna-${market.code}-${job.id}`,
+        externalId: `adzuna-za-${job.id}`,
         title: job.title,
         company: job.company?.display_name ?? "Unknown",
         country,
@@ -61,9 +64,6 @@ export async function syncAdzunaJobs(): Promise<SyncResult> {
         source: "Adzuna",
         url: job.redirect_url,
         description: job.description,
-        salaryMinUsd: job.salary_min,
-        salaryMaxUsd: job.salary_max,
-        currency: "USD",
         postedAt: new Date(job.created),
         skills,
       });
@@ -72,7 +72,7 @@ export async function syncAdzunaJobs(): Promise<SyncResult> {
     }
   }
 
-  return { inserted, updated };
+  return { inserted, updated, errors: errors.length ? errors : undefined };
 }
 
 export async function syncAdzunaWithLog() {

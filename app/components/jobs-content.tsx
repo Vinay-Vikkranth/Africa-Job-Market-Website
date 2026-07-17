@@ -1,42 +1,75 @@
 "use client";
 
 import Link from "next/link";
-import { ExternalLink } from "lucide-react";
-import type { DashboardData } from "@/lib/dashboard-data";
+import { ExternalLink, X } from "lucide-react";
 import { formatCurrency, formatInt } from "@/app/components/charts/shared";
 
 type JobsPayload = Awaited<ReturnType<typeof import("@/lib/dashboard-data").getJobsList>>;
 
 export function JobsContent({
-  data,
   jobs,
   country,
+  source,
 }: {
-  data: DashboardData;
   jobs: JobsPayload;
   country: string;
+  source?: string;
 }) {
+  function pageHref(page: number) {
+    const params = new URLSearchParams();
+    if (country !== "All Countries") params.set("country", country);
+    if (source) params.set("source", source);
+    params.set("page", String(page));
+    return `/jobs?${params.toString()}`;
+  }
+
+  const clearSourceHref =
+    country === "All Countries" ? "/jobs" : `/jobs?country=${encodeURIComponent(country)}`;
+
   return (
     <>
+      {source && (
+        <div className="flex items-center justify-between rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">
+          <p>
+            Showing detailed postings from <strong>{source}</strong>
+            {country !== "All Countries" ? (
+              <>
+                {" "}in <strong>{country}</strong>
+              </>
+            ) : null}
+          </p>
+          <Link
+            href={clearSourceHref}
+            className="flex items-center gap-1 font-medium hover:text-blue-950 hover:underline"
+          >
+            <X className="h-4 w-4" />
+            Clear source
+          </Link>
+        </div>
+      )}
+
       <section className="grid gap-4 sm:grid-cols-3">
         <article className="dashboard-card p-4">
-          <p className="text-xs text-slate-500">Total Postings</p>
-          <p className="text-2xl font-bold">{formatInt(data.kpis.totalJobs)}</p>
+          <p className="text-xs text-slate-500">{source ? `${source} Postings` : "Total Postings"}</p>
+          <p className="text-2xl font-bold">{formatInt(jobs.total)}</p>
         </article>
         <article className="dashboard-card p-4">
           <p className="text-xs text-slate-500">Unique Companies</p>
-          <p className="text-2xl font-bold">{formatInt(data.kpis.uniqueCompanies)}</p>
+          <p className="text-2xl font-bold">{formatInt(jobs.uniqueCompanies)}</p>
         </article>
         <article className="dashboard-card p-4">
           <p className="text-xs text-slate-500">30-Day Growth</p>
-          <p className="text-2xl font-bold">{data.kpis.growthPct}%</p>
+          <p className="text-2xl font-bold">{jobs.growthPct}%</p>
         </article>
       </section>
 
       <article className="dashboard-card overflow-hidden">
         <div className="border-b border-slate-100 px-5 py-4">
           <h2 className="text-sm font-semibold text-slate-900">Live Job Postings</h2>
-          <p className="text-xs text-slate-500">Pulled from Remotive and Arbeitnow APIs, stored in local database</p>
+          <p className="text-xs text-slate-500">
+            Pulled from live APIs, official UN feeds, and African job boards. Every row links to
+            its source posting.
+          </p>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
@@ -48,14 +81,15 @@ export function JobsContent({
                 <th className="px-5 py-3">Salary</th>
                 <th className="px-5 py-3">Skills</th>
                 <th className="px-5 py-3">Source</th>
+                <th className="px-5 py-3">Posted</th>
                 <th className="px-5 py-3" />
               </tr>
             </thead>
             <tbody>
               {jobs.jobs.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-5 py-8 text-center text-slate-500">
-                    No jobs found. Click &quot;Sync Data&quot; in the header to ingest live postings.
+                  <td colSpan={8} className="px-5 py-8 text-center text-slate-500">
+                    No matching jobs were found.
                   </td>
                 </tr>
               ) : (
@@ -79,8 +113,22 @@ export function JobsContent({
                       </div>
                     </td>
                     <td className="px-5 py-3 text-xs text-slate-500">{job.source}</td>
+                    <td className="whitespace-nowrap px-5 py-3 text-xs text-slate-500">
+                      {new Intl.DateTimeFormat("en", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      }).format(new Date(job.postedAt))}
+                    </td>
                     <td className="px-5 py-3">
-                      <a href={job.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700">
+                      <a
+                        href={job.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`Open ${job.title} source posting`}
+                        title="Open source posting"
+                        className="text-blue-600 hover:text-blue-700"
+                      >
                         <ExternalLink className="h-4 w-4" />
                       </a>
                     </td>
@@ -98,7 +146,7 @@ export function JobsContent({
             <div className="flex gap-2">
               {jobs.page > 1 && (
                 <Link
-                  href={`/jobs?country=${encodeURIComponent(country)}&page=${jobs.page - 1}`}
+                  href={pageHref(jobs.page - 1)}
                   className="rounded border border-slate-200 px-3 py-1 text-xs hover:bg-slate-50"
                 >
                   Previous
@@ -106,7 +154,7 @@ export function JobsContent({
               )}
               {jobs.page < jobs.totalPages && (
                 <Link
-                  href={`/jobs?country=${encodeURIComponent(country)}&page=${jobs.page + 1}`}
+                  href={pageHref(jobs.page + 1)}
                   className="rounded border border-slate-200 px-3 py-1 text-xs hover:bg-slate-50"
                 >
                   Next

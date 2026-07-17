@@ -5,34 +5,27 @@ import Link from "next/link";
 import {
   Bar,
   BarChart,
-  Cell,
-  Pie,
-  PieChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
 import {
-  AlertTriangle,
   BarChart3,
   Briefcase,
   Building2,
   ChevronRight,
-  Cloud,
   DollarSign,
   LineChart,
   MapPin,
   Sparkles,
   Target,
-  TrendingUp,
 } from "lucide-react";
 import type { DashboardData } from "@/lib/dashboard-data";
 import {
   DataSourceBadge,
   formatCurrency,
   formatInt,
-  GAP_COLORS,
   KpiCard,
 } from "@/app/components/charts/shared";
 import { AfricaChoroplethMap } from "@/app/components/africa-choropleth-map";
@@ -40,20 +33,13 @@ import { AfricaChoroplethMap } from "@/app/components/africa-choropleth-map";
 export function OverviewContent({ data, country }: { data: DashboardData; country: string }) {
   const [mapView, setMapView] = useState<"map" | "table">("map");
 
-  const gapChartData = [
-    { name: "Technical", value: data.skillGap.technical },
-    { name: "Digital", value: data.skillGap.digital },
-    { name: "Soft Skills", value: data.skillGap.soft },
-    { name: "Business", value: data.skillGap.business },
-  ];
-
   return (
     <>
       <div className="mb-2">
         <DataSourceBadge sources={data.meta.dataSources} />
       </div>
 
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <KpiCard
           title="Total Job Postings"
           value={formatInt(data.kpis.totalJobs)}
@@ -64,6 +50,7 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
           iconBg="bg-blue-500"
           sparkColor="#3b82f6"
           sparkData={data.trends.jobs}
+          sparkLabel="jobs posted this week"
         />
         <KpiCard
           title="Unique Companies"
@@ -75,6 +62,7 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
           iconBg="bg-emerald-500"
           sparkColor="#10b981"
           sparkData={data.trends.companies}
+          sparkLabel="companies hiring this week"
         />
         <KpiCard
           title="In-Demand Skills"
@@ -86,6 +74,7 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
           iconBg="bg-violet-500"
           sparkColor="#8b5cf6"
           sparkData={data.trends.skills}
+          sparkLabel="distinct skills requested this week"
         />
         <KpiCard
           title="Avg. Salary (USD)"
@@ -97,18 +86,8 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
           iconBg="bg-amber-500"
           sparkColor="#f59e0b"
           sparkData={data.trends.salary}
-        />
-        <KpiCard
-          title="Skill Gap (Overall)"
-          value={`${data.kpis.overallGapPct}%`}
-          change={Math.abs(data.kpis.gapChangePct)}
-          changeLabel="vs previous period"
-          trend={data.kpis.gapChangePct <= 0 ? "down" : "up"}
-          invertTrend
-          icon={AlertTriangle}
-          iconBg="bg-red-500"
-          sparkColor="#ef4444"
-          sparkData={data.trends.gap}
+          sparkLabel="avg. salary of jobs posted this week"
+          sparkFormat={formatCurrency}
         />
       </section>
 
@@ -171,8 +150,8 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
           </div>
         </article>
 
-        <div className="flex flex-col gap-4 lg:col-span-4">
-          <article className="dashboard-card flex-1 p-5">
+        <div className="lg:col-span-4">
+          <article className="dashboard-card h-full p-5">
             <h2 className="mb-4 text-sm font-semibold text-slate-900">Average Salary by Country</h2>
             <div className="space-y-3">
               {data.salariesByCountry.length === 0 ? (
@@ -199,73 +178,19 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
               )}
             </div>
           </article>
-
-          <article className="dashboard-card p-5">
-            <h2 className="mb-3 text-sm font-semibold text-slate-900">Top Emerging Technologies</h2>
-            <div className="space-y-2">
-              {data.emergingTechnologies.slice(0, 5).map((item) => (
-                <div key={item.name} className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2">
-                  <span className="flex items-center gap-2 text-sm text-slate-700">
-                    <Cloud className="h-3.5 w-3.5 text-blue-500" />
-                    {item.name}
-                  </span>
-                  <span className="flex items-center gap-1 text-sm font-semibold text-emerald-600">
-                    <TrendingUp className="h-3.5 w-3.5" />
-                    {item.growthPct}%
-                  </span>
-                </div>
-              ))}
-            </div>
-          </article>
         </div>
       </section>
 
       <section className="grid gap-4 lg:grid-cols-12">
-        <article className="dashboard-card p-5 lg:col-span-3">
+        <article className="dashboard-card p-5 lg:col-span-12">
           <h2 className="mb-4 text-sm font-semibold text-slate-900">Jobs by City (Top 10)</h2>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.jobsByCity} layout="vertical" margin={{ top: 0, right: 10, left: 0, bottom: 0 }}>
                 <XAxis type="number" hide />
-                <YAxis type="category" dataKey="city" width={90} tick={{ fontSize: 10, fill: "#64748b" }} axisLine={false} tickLine={false} />
+                <YAxis type="category" dataKey="city" width={110} tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} />
                 <Tooltip formatter={(value) => [formatInt(Number(value ?? 0)), "Jobs"]} contentStyle={{ borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 12 }} />
-                <Bar dataKey="jobs" fill="#6366f1" radius={[0, 4, 4, 0]} barSize={12} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </article>
-
-        <article className="dashboard-card p-5 lg:col-span-3">
-          <h2 className="mb-2 text-sm font-semibold text-slate-900">Skill Gap by Category</h2>
-          <div className="relative h-52">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie data={gapChartData} cx="50%" cy="50%" innerRadius={55} outerRadius={80} paddingAngle={3} dataKey="value">
-                  {gapChartData.map((_, index) => (
-                    <Cell key={index} fill={GAP_COLORS[index % GAP_COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip formatter={(value) => [`${value ?? 0}%`, "Share"]} contentStyle={{ borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 12 }} />
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-              <span className="text-2xl font-bold text-slate-900">{data.skillGap.overall}%</span>
-              <span className="text-[10px] text-slate-500">Overall Gap</span>
-            </div>
-          </div>
-        </article>
-
-        <article className="dashboard-card p-5 lg:col-span-6">
-          <h2 className="mb-4 text-sm font-semibold text-slate-900">Skills Demand vs Supply</h2>
-          <p className="mb-2 text-xs text-slate-500">Demand = last 30 days · Supply = prior postings in database</p>
-          <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={data.demandVsSupply} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
-                <XAxis dataKey="skill" tick={{ fontSize: 10, fill: "#64748b" }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
-                <Tooltip contentStyle={{ borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 12 }} />
-                <Bar dataKey="demand" name="Demand" fill="#3b82f6" radius={[4, 4, 0, 0]} barSize={20} />
-                <Bar dataKey="supply" name="Supply" fill="#10b981" radius={[4, 4, 0, 0]} barSize={20} />
+                <Bar dataKey="jobs" fill="#6366f1" radius={[0, 4, 4, 0]} barSize={16} />
               </BarChart>
             </ResponsiveContainer>
           </div>

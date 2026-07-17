@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { categorizeSkill, TECH_KEYWORDS } from "@/lib/skill-categories";
+import { categorizeSkill } from "@/lib/skill-categories";
 
 const MS_DAY = 24 * 60 * 60 * 1000;
 
@@ -8,70 +8,16 @@ export function growthPct(recent: number, prior: number) {
   return Number((((recent - prior) / prior) * 100).toFixed(1));
 }
 
-export async function getSkillMentionsInPeriod(
+export async function getSkillGaps(
   where: Record<string, unknown>,
-  from: Date,
-  to: Date,
+  totalJobs: number,
+  postedBefore?: Date,
 ) {
-  const jobs = await prisma.job.findMany({
-    where: { ...where, postedAt: { gte: from, lt: to } },
-    select: { id: true },
-  });
-  if (jobs.length === 0) return new Map<string, number>();
-
-  const mentions = await prisma.jobSkill.groupBy({
-    by: ["skillId"],
-    where: { jobId: { in: jobs.map((j) => j.id) } },
-    _count: { skillId: true },
-  });
-
-  const skills = await prisma.skill.findMany({
-    where: { id: { in: mentions.map((m) => m.skillId) } },
-    select: { id: true, name: true },
-  });
-  const nameMap = new Map(skills.map((s) => [s.id, s.name]));
-
-  const result = new Map<string, number>();
-  for (const row of mentions) {
-    const name = nameMap.get(row.skillId);
-    if (name) result.set(name, row._count.skillId);
-  }
-  return result;
-}
-
-export async function getEmergingTechnologies(where: Record<string, unknown>) {
-  const now = Date.now();
-  const recentFrom = new Date(now - 30 * MS_DAY);
-  const priorFrom = new Date(now - 60 * MS_DAY);
-
-  const [recent, prior] = await Promise.all([
-    getSkillMentionsInPeriod(where, recentFrom, new Date(now)),
-    getSkillMentionsInPeriod(where, priorFrom, recentFrom),
-  ]);
-
-  const candidates = new Set<string>([...recent.keys(), ...prior.keys(), ...TECH_KEYWORDS]);
-  const ranked = [...candidates]
-    .map((name) => {
-      const recentCount = recent.get(name) ?? 0;
-      const priorCount = prior.get(name) ?? 0;
-      const growth = growthPct(recentCount, priorCount);
-      return { name, growthPct: growth, recentCount, priorCount };
-    })
-    .filter((item) => item.recentCount > 0 || item.priorCount > 0)
-    .sort((a, b) => b.growthPct - a.growthPct || b.recentCount - a.recentCount)
-    .slice(0, 8);
-
-  return ranked.length > 0 ? ranked : TECH_KEYWORDS.map((name, i) => ({
-    name,
-    growthPct: 0,
-    recentCount: 0,
-    priorCount: 0,
-  })).slice(0, 5);
-}
-
-export async function getSkillGaps(where: Record<string, unknown>, totalJobs: number) {
   const topSkills = await prisma.jobSkill.groupBy({
     by: ["skillId"],
+    where: {
+      job: { ...where, ...(postedBefore ? { postedAt: { lt: postedBefore } } : {}) },
+    },
     _count: { skillId: true },
     orderBy: { _count: { skillId: "desc" } },
     take: 50,
@@ -105,11 +51,44 @@ export async function getSkillGaps(where: Record<string, unknown>, totalJobs: nu
     business: Math.round((categoryDemand.business / totalDemand) * 100),
   };
 
-  const overall = Math.round(
-  (gaps.technical + gaps.digital + gaps.soft + gaps.business) / 4,
-  );
+  // Overall index = dominant category's share of demand. High values mean
+  // demand is concentrated in one skill category (a lopsided market).
+  const overall = Math.max(gaps.technical, gaps.digital, gaps.soft, gaps.business);
 
   return { ...gaps, overall, totalJobs };
+}
+
+export async function getWeeklyGapTrend(where: Record<string, unknown>, weeks = 8) {
+  const points: number[] = [];
+  const now = Date.now();
+  for (let i = weeks - 1; i >= 0; i--) {
+    const end = new Date(now - i * 7 * MS_DAY);
+    const start = new Date(end.getTime() - 7 * MS_DAY);
+    const mentions = await prisma.jobSkill.groupBy({
+      by: ["skillId"],
+      where: { job: { ...where, postedAt: { gte: start, lt: end } } },
+      _count: { skillId: true },
+    });
+    if (mentions.length === 0) {
+      points.push(0);
+      continue;
+    }
+    const skills = await prisma.skill.findMany({
+      where: { id: { in: mentions.map((m) => m.skillId) } },
+      select: { id: true, name: true },
+    });
+    const nameMap = new Map(skills.map((s) => [s.id, s.name]));
+    const demand: Record<string, number> = { technical: 0, digital: 0, soft: 0, business: 0 };
+    for (const row of mentions) {
+      const name = nameMap.get(row.skillId);
+      if (!name) continue;
+      const cat = categorizeSkill(name);
+      if (cat !== "other") demand[cat] += row._count.skillId;
+    }
+    const total = Object.values(demand).reduce((a, b) => a + b, 0);
+    points.push(total === 0 ? 0 : Math.round((Math.max(...Object.values(demand)) / total) * 100));
+  }
+  return points;
 }
 
 export async function getDemandVsSupply(
@@ -146,7 +125,7 @@ export async function getDemandVsSupply(
 
     results.push({
       skill: skill.name,
-      demand: demandCount || skill.mentions,
+      demand: demandCount,
       supply: supplyCount,
     });
   }
@@ -204,7 +183,7 @@ export async function generateInsights(
     insights.push({
       icon: "ai",
       text: `${aiJobs} postings reference AI or machine learning capabilities.`,
-      href: "/tech",
+      href: "/skills",
     });
   }
 
@@ -231,7 +210,6 @@ export async function generateInsights(
 export async function generateAlerts(
   where: Record<string, unknown>,
   skillGaps: { overall: number; technical: number },
-  emerging: { name: string; growthPct: number }[],
 ) {
   const alerts: { type: "warning" | "info" | "trend"; text: string; time: string; href: string }[] = [];
 
@@ -241,16 +219,6 @@ export async function generateAlerts(
       text: `Overall skill gap index is elevated at ${skillGaps.overall}% based on category demand distribution.`,
       time: "Just now",
       href: "/gaps",
-    });
-  }
-
-  const topEmerging = emerging.find((e) => e.growthPct > 20);
-  if (topEmerging) {
-    alerts.push({
-      type: "info",
-      text: `Emerging demand detected: ${topEmerging.name} (+${topEmerging.growthPct}% vs prior 30 days).`,
-      time: "Recently",
-      href: "/tech",
     });
   }
 
@@ -319,17 +287,9 @@ export async function getWeeklySkillTrend(where: Record<string, unknown>, weeks 
   for (let i = weeks - 1; i >= 0; i--) {
     const end = new Date(now - i * 7 * MS_DAY);
     const start = new Date(end.getTime() - 7 * MS_DAY);
-    const jobs = await prisma.job.findMany({
-      where: { ...where, postedAt: { gte: start, lt: end } },
-      select: { id: true },
-    });
-    if (jobs.length === 0) {
-      points.push(0);
-      continue;
-    }
     const skills = await prisma.jobSkill.groupBy({
       by: ["skillId"],
-      where: { jobId: { in: jobs.map((j) => j.id) } },
+      where: { job: { ...where, postedAt: { gte: start, lt: end } } },
     });
     points.push(skills.length);
   }

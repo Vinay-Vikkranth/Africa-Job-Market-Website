@@ -16,16 +16,65 @@ const KEYWORD_SKILLS: Record<string, string[]> = {
   "Digital Marketing": ["digital marketing", "seo", "ads", "social media"],
 };
 
+const CANONICAL_SKILLS = new Map(
+  [
+    ...Object.keys(KEYWORD_SKILLS),
+    "API",
+    "AWS",
+    "CSS",
+    "Data Science",
+    "DevOps",
+    "GCP",
+    "HTML",
+    "JavaScript",
+    "Node.js",
+    "React.js",
+    "TypeScript",
+    "UI",
+    "UX",
+  ].map((skill) => [skill.toLocaleLowerCase(), skill]),
+);
+
+/**
+ * Gives equivalent skill labels one stable database name. This prevents tags
+ * such as "SQL", "sql", "data-science", and "Data science" from becoming
+ * separate skills.
+ */
+export function normalizeSkillName(value: string) {
+  const cleaned = value.trim().replace(/[_-]+/g, " ").replace(/\s+/g, " ");
+  if (!cleaned) return "";
+
+  const canonical = CANONICAL_SKILLS.get(cleaned.toLocaleLowerCase());
+  if (canonical) return canonical;
+
+  return cleaned
+    .split(" ")
+    .map((word) => word.charAt(0).toLocaleUpperCase() + word.slice(1).toLocaleLowerCase())
+    .join(" ");
+}
+
+/**
+ * Parses annual USD salaries from free-form text. Returns {} unless the text
+ * is clearly USD-denominated ("$" or "USD"), handles "k" suffixes ($90k), and
+ * discards implausible annual figures so hourly rates or stray numbers are
+ * never stored as salaries.
+ */
 export function parseSalaryFromText(salaryText: string | null | undefined): {
   min?: number;
   max?: number;
 } {
   if (!salaryText) return {};
-  const numeric = salaryText.match(/\d[\d,]*/g) ?? [];
-  if (numeric.length === 0) return {};
-  const parsed = numeric
-    .map((chunk) => Number(chunk.replace(/,/g, "")))
-    .filter((value) => Number.isFinite(value) && value > 0);
+  const text = salaryText.toLowerCase();
+  if (!text.includes("$") && !text.includes("usd")) return {};
+
+  const matches = [...text.matchAll(/(\d[\d,]*(?:\.\d+)?)\s*(k)?/g)];
+  const parsed = matches
+    .map((m) => {
+      const base = Number(m[1].replace(/,/g, ""));
+      return m[2] ? base * 1000 : base;
+    })
+    .filter((value) => Number.isFinite(value) && value >= 5000 && value <= 1_000_000);
+
   if (parsed.length === 0) return {};
   if (parsed.length === 1) return { min: parsed[0], max: parsed[0] };
   return { min: Math.min(...parsed), max: Math.max(...parsed) };
@@ -47,16 +96,13 @@ export function extractSkillsFromText(
   }
 
   for (const tag of tags) {
-    if (tag.length > 2 && tag.length < 40) {
-      const normalized = tag
-        .split("-")
-        .map((chunk) => chunk.charAt(0).toUpperCase() + chunk.slice(1).toLowerCase())
-        .join(" ");
+    const normalized = normalizeSkillName(tag);
+    if (normalized.length > 2 && normalized.length < 40) {
       skills.add(normalized);
     }
   }
 
-  return [...skills].slice(0, 12);
+  return [...new Set([...skills].map(normalizeSkillName).filter(Boolean))].slice(0, 12);
 }
 
 export type IngestJobInput = {
@@ -109,7 +155,8 @@ export async function upsertIngestedJob(job: IngestJobInput) {
 
   const isNew = createdJob.createdAt.getTime() === createdJob.updatedAt.getTime();
 
-  for (const skillName of job.skills) {
+  const uniqueSkills = new Set(job.skills.map(normalizeSkillName).filter(Boolean));
+  for (const skillName of uniqueSkills) {
     const skill = await prisma.skill.upsert({
       where: { name: skillName },
       create: { name: skillName },
@@ -145,7 +192,14 @@ export async function runSourceSync(
 ): Promise<SyncResult & { source: string }> {
   try {
     const result = await fn();
-    await recordSyncRun(source, result.inserted, result.updated, "success");
+    const hasErrors = (result.errors?.length ?? 0) > 0;
+    await recordSyncRun(
+      source,
+      result.inserted,
+      result.updated,
+      hasErrors && result.inserted === 0 && result.updated === 0 ? "error" : "success",
+      result.errors?.join("; "),
+    );
     return { ...result, source };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";

@@ -1,15 +1,21 @@
-import { prisma } from "@/lib/prisma";
-import { detectCountryFromText } from "@/lib/city-country";
+import { detectCountry } from "@/lib/city-country";
 import {
   extractSkillsFromText,
   parseSalaryFromText,
   runSourceSync,
   upsertIngestedJob,
+  type SyncResult,
 } from "@/lib/ingest/shared";
 import { syncAfricanJobBoards } from "@/lib/sources/african-boards";
 import { syncAdzunaWithLog } from "@/lib/sources/adzuna";
 import { syncApifyWithLog } from "@/lib/sources/apify";
+import { syncFreehireWithLog } from "@/lib/sources/freehire";
+import { syncJoobleWithLog } from "@/lib/sources/jooble";
+import { syncReliefWebWithLog } from "@/lib/sources/reliefweb";
 import { syncRemoteOkWithLog } from "@/lib/sources/remoteok";
+import { syncUndpWithLog } from "@/lib/sources/undp";
+import { syncUnCareersWithLog } from "@/lib/sources/un-careers";
+import { syncUnWomenWithLog } from "@/lib/sources/un-women";
 
 type RemotiveJob = {
   id: number;
@@ -40,13 +46,12 @@ async function syncRemotiveJobs(limit = 300) {
   let updated = 0;
 
   for (const job of data.jobs.slice(0, limit)) {
-    const country = detectCountryFromText(
-      `${job.candidate_required_location} ${job.description} ${job.title}`,
-    );
+    const country = detectCountry(job.candidate_required_location);
     if (!country) continue;
 
     const salary = parseSalaryFromText(job.salary);
     const skills = extractSkillsFromText(job.title, job.description, job.tags, job.category);
+    const hasSalary = salary.min !== undefined;
 
     const { isNew } = await upsertIngestedJob({
       externalId: `remotive-${job.id}`,
@@ -56,7 +61,7 @@ async function syncRemotiveJobs(limit = 300) {
       city: detectCity(job.candidate_required_location),
       salaryMinUsd: salary.min,
       salaryMaxUsd: salary.max,
-      currency: "USD",
+      currency: hasSalary ? "USD" : undefined,
       source: "Remotive",
       url: job.url,
       technologies: job.tags.join(", "),
@@ -82,7 +87,7 @@ type ArbeitnowJob = {
   created_at: number;
 };
 
-async function syncArbeitnowJobs() {
+async function syncArbeitnowJobs(): Promise<SyncResult> {
   const response = await fetch("https://www.arbeitnow.com/api/job-board-api", {
     next: { revalidate: 0 },
   });
@@ -93,7 +98,7 @@ async function syncArbeitnowJobs() {
   let updated = 0;
 
   for (const job of payload.data) {
-    const country = detectCountryFromText(`${job.location} ${job.description} ${job.title}`);
+    const country = detectCountry(job.location);
     if (!country) continue;
 
     const skills = extractSkillsFromText(job.title, job.description, job.tags);
@@ -103,7 +108,6 @@ async function syncArbeitnowJobs() {
       company: job.company_name || "Unknown",
       country,
       city: detectCity(job.location),
-      currency: "USD",
       source: "Arbeitnow",
       url: job.url,
       technologies: job.tags.join(", "),
@@ -119,39 +123,65 @@ async function syncArbeitnowJobs() {
 }
 
 export async function syncAllJobSources(limit = 300) {
-  const [adzuna, africanBoards, apify, remoteok, remotive, arbeitnow] = await Promise.all([
-    syncAdzunaWithLog(),
-    syncAfricanJobBoards(),
-    syncApifyWithLog(),
-    syncRemoteOkWithLog(),
-    runSourceSync("Remotive", () => syncRemotiveJobs(limit)),
-    runSourceSync("Arbeitnow", syncArbeitnowJobs),
+  const [
+    adzuna,
+    africanBoards,
+    apify,
+    freehire,
+    jooble,
+    reliefweb,
+    remoteok,
+    undp,
+    unCareers,
+    unWomen,
+    remotive,
+    arbeitnow,
+  ] = await Promise.all([
+      syncAdzunaWithLog(),
+      syncAfricanJobBoards(),
+      syncApifyWithLog(),
+      syncFreehireWithLog(),
+      syncJoobleWithLog(),
+      syncReliefWebWithLog(),
+      syncRemoteOkWithLog(),
+      syncUndpWithLog(),
+      syncUnCareersWithLog(),
+      syncUnWomenWithLog(),
+      runSourceSync("Remotive", () => syncRemotiveJobs(limit)),
+      runSourceSync("Arbeitnow", syncArbeitnowJobs),
   ]);
 
-  const inserted =
-    adzuna.inserted +
-    africanBoards.brighterMonday.inserted +
-    africanBoards.jobberman.inserted +
-    apify.inserted +
-    remoteok.inserted +
-    remotive.inserted +
-    arbeitnow.inserted;
+  const results = [
+    adzuna,
+    africanBoards.brighterMonday,
+    africanBoards.jobberman,
+    apify,
+    freehire,
+    jooble,
+    reliefweb,
+    remoteok,
+    undp,
+    unCareers,
+    unWomen,
+    remotive,
+    arbeitnow,
+  ];
 
-  const updated =
-    adzuna.updated +
-    africanBoards.brighterMonday.updated +
-    africanBoards.jobberman.updated +
-    apify.updated +
-    remoteok.updated +
-    remotive.updated +
-    arbeitnow.updated;
+  const inserted = results.reduce((sum, r) => sum + r.inserted, 0);
+  const updated = results.reduce((sum, r) => sum + r.updated, 0);
 
   return {
     adzuna,
     brighterMonday: africanBoards.brighterMonday,
     jobberman: africanBoards.jobberman,
     apify,
+    freehire,
+    jooble,
+    reliefweb,
     remoteok,
+    undp,
+    unCareers,
+    unWomen,
     remotive,
     arbeitnow,
     inserted,
