@@ -15,6 +15,7 @@ import {
   growthPct,
 } from "@/lib/analytics";
 import { hasSyllabus } from "@/lib/syllabus-data";
+import { getWorkforceContext } from "@/lib/world-bank";
 
 export { COUNTRIES, COUNTRY_FLAGS };
 
@@ -74,6 +75,8 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
     averageSalaryData,
     recentJobs,
     olderJobs,
+    recentCompanies,
+    olderCompanies,
     recentSalaryAvg,
     olderSalaryAvg,
     recentSkillCount,
@@ -87,6 +90,16 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
     prisma.job.count({ where: { ...where, postedAt: { gte: thirtyDaysAgo } } }),
     prisma.job.count({
       where: { ...where, postedAt: { gte: sixtyDaysAgo, lt: thirtyDaysAgo } },
+    }),
+    prisma.job.findMany({
+      where: { ...where, postedAt: { gte: thirtyDaysAgo } },
+      distinct: ["company"],
+      select: { company: true },
+    }),
+    prisma.job.findMany({
+      where: { ...where, postedAt: { gte: sixtyDaysAgo, lt: thirtyDaysAgo } },
+      distinct: ["company"],
+      select: { company: true },
     }),
     prisma.job.aggregate({
       where: { ...where, postedAt: { gte: thirtyDaysAgo }, salaryMinUsd: { not: null } },
@@ -111,19 +124,6 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
       },
     }),
     prisma.job.findFirst({ orderBy: { updatedAt: "desc" }, select: { updatedAt: true } }),
-  ]);
-
-  const [recentCompanies, olderCompanies] = await Promise.all([
-    prisma.job.findMany({
-      where: { ...where, postedAt: { gte: thirtyDaysAgo } },
-      distinct: ["company"],
-      select: { company: true },
-    }),
-    prisma.job.findMany({
-      where: { ...where, postedAt: { gte: sixtyDaysAgo, lt: thirtyDaysAgo } },
-      distinct: ["company"],
-      select: { company: true },
-    }),
   ]);
 
   const jobGrowth = growthPct(recentJobs, olderJobs);
@@ -157,12 +157,13 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
     getTopSkills(where, totalJobs),
   ]);
 
-  const [emergingTechnologies, skillGap, priorSkillGap, demandVsSupply, syllabusGap] = await Promise.all([
+  const [emergingTechnologies, skillGap, priorSkillGap, demandVsSupply, syllabusGap, workforceContext] = await Promise.all([
     getEmergingTechnologies(where),
     getSkillGaps(where, totalJobs),
     getSkillGaps(where, totalJobs, thirtyDaysAgo),
     getDemandVsSupply(where, topSkillsWithName),
     hasSyllabus(country) ? getSyllabusGap(country, where) : Promise.resolve(null),
+    getWorkforceContext(country),
   ]);
 
   const gapChange = growthPct(skillGap.overall, priorSkillGap.overall);
@@ -180,10 +181,9 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
   const [insights, alerts] = await Promise.all([
     generateInsights(
       where,
-      jobGrowth,
+      recentJobs,
       topSkillsWithName[0]?.name,
       avgSalaryUsd,
-      salaryGrowth,
     ),
     generateAlerts(where, skillGap, emergingTechnologies),
   ]);
@@ -197,6 +197,9 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
       }),
       avgSalaryUsd,
       salaryCoveragePct: asPercent(jobsWithSalary, totalJobs),
+      jobsLast30Days: recentJobs,
+      companiesLast30Days: recentCompanies.length,
+      skillsLast30Days: recentSkillCount,
       growthPct: jobGrowth,
       companyGrowthPct: Number(companyGrowth.toFixed(1)),
       skillsGrowthPct: skillsGrowth,
@@ -228,6 +231,7 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
     topSkills: topSkillsWithName,
     skillGap,
     syllabusGap,
+    workforceContext,
     emergingTechnologies,
     demandVsSupply,
     insights,
@@ -294,6 +298,7 @@ export async function getJobsList(
     })),
     total,
     uniqueCompanies: companies.length,
+    jobsLast30Days: recentJobs,
     growthPct: growthPct(recentJobs, olderJobs),
     source: source ?? null,
     page,

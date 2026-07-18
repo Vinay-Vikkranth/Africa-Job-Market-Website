@@ -36,6 +36,7 @@ import {
   KpiCard,
 } from "@/app/components/charts/shared";
 import { AfricaChoroplethMap } from "@/app/components/africa-choropleth-map";
+import { WorkforceContextSection } from "@/app/components/workforce-context";
 
 export function OverviewContent({ data, country }: { data: DashboardData; country: string }) {
   const [mapView, setMapView] = useState<"map" | "table">("map");
@@ -58,9 +59,7 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
         <KpiCard
           title="Total Job Postings"
           value={formatInt(data.kpis.totalJobs)}
-          change={data.kpis.growthPct}
-          changeLabel={data.kpis.growthPct === 0 ? "not enough history yet" : "vs previous 30 days"}
-          trend={data.kpis.growthPct >= 0 ? "up" : "down"}
+          caption={`${formatInt(data.kpis.jobsLast30Days)} in last 30 days`}
           icon={Briefcase}
           iconBg="bg-blue-500"
           sparkColor="#3b82f6"
@@ -69,9 +68,7 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
         <KpiCard
           title="Unique Companies"
           value={formatInt(data.kpis.uniqueCompanies)}
-          change={data.kpis.companyGrowthPct}
-          changeLabel={data.kpis.growthPct === 0 ? "not enough history yet" : "vs previous 30 days"}
-          trend={data.kpis.companyGrowthPct >= 0 ? "up" : "down"}
+          caption={`${formatInt(data.kpis.companiesLast30Days)} in last 30 days`}
           icon={Building2}
           iconBg="bg-emerald-500"
           sparkColor="#10b981"
@@ -80,9 +77,7 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
         <KpiCard
           title="In-Demand Skills"
           value={formatInt(data.kpis.inDemandSkills)}
-          change={data.kpis.skillsGrowthPct}
-          changeLabel={data.kpis.growthPct === 0 ? "not enough history yet" : "vs previous 30 days"}
-          trend={data.kpis.skillsGrowthPct >= 0 ? "up" : "down"}
+          caption={`${formatInt(data.kpis.skillsLast30Days)} in last 30 days`}
           icon={Target}
           iconBg="bg-violet-500"
           sparkColor="#8b5cf6"
@@ -91,27 +86,25 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
         <KpiCard
           title="Avg. Salary (USD)"
           value={data.kpis.avgSalaryUsd > 0 ? formatCurrency(data.kpis.avgSalaryUsd) : "N/A"}
-          change={Math.abs(data.kpis.salaryGrowthPct)}
-          changeLabel={`${data.kpis.salaryCoveragePct}% postings include salary`}
-          trend={data.kpis.salaryGrowthPct >= 0 ? "up" : "down"}
+          caption={`${data.kpis.salaryCoveragePct}% postings include salary`}
           icon={DollarSign}
           iconBg="bg-amber-500"
           sparkColor="#f59e0b"
           sparkData={data.trends.salary}
+          sparkFormat={formatCurrency}
         />
         <KpiCard
-          title={data.syllabusGap ? `Curriculum Gap — ${data.syllabusGap.country}` : "Skill Gap (Overall)"}
+          title={data.syllabusGap ? `Skill Gap — ${data.syllabusGap.country}` : "Skill Gap (Overall)"}
           value={`${data.kpis.overallGapPct}%`}
-          change={Math.abs(data.kpis.gapChangePct)}
-          changeLabel={data.syllabusGap ? `${data.syllabusGap.source}` : "vs previous period"}
-          trend={data.kpis.gapChangePct <= 0 ? "down" : "up"}
-          invertTrend
+          caption={data.syllabusGap ? data.syllabusGap.source : undefined}
           icon={AlertTriangle}
           iconBg="bg-red-500"
           sparkColor="#ef4444"
           sparkData={data.trends.gap}
         />
       </section>
+
+      {data.workforceContext && <WorkforceContextSection context={data.workforceContext} />}
 
       <section className="grid gap-4 lg:grid-cols-12">
         <article className="dashboard-card p-5 lg:col-span-4">
@@ -244,7 +237,7 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
 
       <section className="grid gap-4 lg:grid-cols-12">
         <article className="dashboard-card p-5 lg:col-span-3">
-          <h2 className="mb-4 text-sm font-semibold text-slate-900">Jobs by City (Top 10)</h2>
+          <h2 className="mb-4 text-sm font-semibold text-slate-900">Remote Jobs by City (Top 10)</h2>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={data.jobsByCity} layout="vertical" margin={{ top: 0, right: 10, left: 0, bottom: 0 }}>
@@ -271,7 +264,7 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
             </ResponsiveContainer>
             <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
               <span className="text-2xl font-bold text-slate-900">{data.kpis.overallGapPct}%</span>
-              <span className="text-[10px] text-slate-500">{data.syllabusGap ? "Curriculum Gap" : "Overall Gap"}</span>
+              <span className="text-[10px] text-slate-500">{data.syllabusGap ? "Skill Gap" : "Overall Gap"}</span>
             </div>
           </div>
           <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1.5">

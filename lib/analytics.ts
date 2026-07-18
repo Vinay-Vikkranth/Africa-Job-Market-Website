@@ -20,17 +20,14 @@ export async function getSkillMentionsInPeriod(
   from: Date,
   to: Date,
 ) {
-  const jobs = await prisma.job.findMany({
-    where: { ...where, postedAt: { gte: from, lt: to } },
-    select: { id: true },
-  });
-  if (jobs.length === 0) return new Map<string, number>();
-
+  // Filter through the relation instead of an IN(...) list of job IDs, which
+  // exceeds SQLite's bound-parameter limit on large datasets.
   const mentions = await prisma.jobSkill.groupBy({
     by: ["skillId"],
-    where: { jobId: { in: jobs.map((j) => j.id) } },
+    where: { job: { ...where, postedAt: { gte: from, lt: to } } },
     _count: { skillId: true },
   });
+  if (mentions.length === 0) return new Map<string, number>();
 
   const skills = await prisma.skill.findMany({
     where: { id: { in: mentions.map((m) => m.skillId) } },
@@ -156,12 +153,14 @@ export async function getSyllabusGap(
   const curriculum = COUNTRY_CURRICULA[country];
   if (!curriculum) return null;
 
-  const jobs = await prisma.job.findMany({ where, select: { id: true } });
-  if (!jobs.length) return null;
+  const jobCount = await prisma.job.count({ where });
+  if (jobCount === 0) return null;
 
+  // Filter through the relation instead of an IN(...) list of job IDs, which
+  // exceeds SQLite's bound-parameter limit on large datasets.
   const skillRows = await prisma.jobSkill.groupBy({
     by: ["skillId"],
-    where: { jobId: { in: jobs.map((j) => j.id) } },
+    where: { job: where },
     _count: { skillId: true },
     orderBy: { _count: { skillId: "desc" } },
   });
@@ -220,8 +219,8 @@ export async function getSyllabusGap(
   };
 }
 
-export async function getWeeklyGapTrend(where: Record<string, unknown>, weeks = 8) {
-  const points: number[] = [];
+export async function getWeeklyGapTrend(where: Record<string, unknown>, weeks = 8): Promise<WeeklyPoint[]> {
+  const points: WeeklyPoint[] = [];
   const now = Date.now();
   for (let i = weeks - 1; i >= 0; i--) {
     const end = new Date(now - i * 7 * MS_DAY);
@@ -232,7 +231,7 @@ export async function getWeeklyGapTrend(where: Record<string, unknown>, weeks = 
       _count: { skillId: true },
     });
     if (mentions.length === 0) {
-      points.push(0);
+      points.push({ weekStart: start.toISOString(), weekEnd: end.toISOString(), value: 0 });
       continue;
     }
     const skills = await prisma.skill.findMany({
@@ -248,7 +247,8 @@ export async function getWeeklyGapTrend(where: Record<string, unknown>, weeks = 
       if (cat !== "other") demand[cat] += row._count.skillId;
     }
     const total = Object.values(demand).reduce((a, b) => a + b, 0);
-    points.push(total === 0 ? 0 : Math.round((Math.max(...Object.values(demand)) / total) * 100));
+    const value = total === 0 ? 0 : Math.round((Math.max(...Object.values(demand)) / total) * 100);
+    points.push({ weekStart: start.toISOString(), weekEnd: end.toISOString(), value });
   }
   return points;
 }
@@ -297,10 +297,9 @@ export async function getDemandVsSupply(
 
 export async function generateInsights(
   where: Record<string, unknown>,
-  growth: number,
+  jobsLast30Days: number,
   topSkillName: string | undefined,
   avgSalary: number,
-  salaryGrowth: number,
 ) {
   const insights: { icon: string; text: string; href: string }[] = [];
 
@@ -351,17 +350,14 @@ export async function generateInsights(
 
   insights.push({
     icon: "salary",
-    text:
-      salaryGrowth !== 0
-        ? `Average posted salary moved ${salaryGrowth > 0 ? "up" : "down"} ${Math.abs(salaryGrowth)}% vs the prior period (${avgSalary > 0 ? `$${avgSalary.toLocaleString()} avg` : "limited salary data"}).`
-        : `Average posted salary is ${avgSalary > 0 ? `$${avgSalary.toLocaleString()}` : "not widely disclosed"} across current postings.`,
+    text: `Average posted salary is ${avgSalary > 0 ? `$${avgSalary.toLocaleString()}` : "not widely disclosed"} across current postings.`,
     href: "/salary",
   });
 
   if (insights.length < 4) {
     insights.push({
       icon: "chart",
-      text: `Job posting volume changed ${growth > 0 ? "+" : ""}${growth}% compared to the previous 30-day window.`,
+      text: `${jobsLast30Days} job postings ingested in the last 30 days across current filters.`,
       href: "/",
     });
   }
@@ -424,8 +420,10 @@ export async function generateAlerts(
   return alerts.slice(0, 6);
 }
 
-export async function getWeeklyJobTrend(where: Record<string, unknown>, weeks = 8) {
-  const points: number[] = [];
+export type WeeklyPoint = { weekStart: string; weekEnd: string; value: number };
+
+export async function getWeeklyJobTrend(where: Record<string, unknown>, weeks = 8): Promise<WeeklyPoint[]> {
+  const points: WeeklyPoint[] = [];
   const now = Date.now();
   for (let i = weeks - 1; i >= 0; i--) {
     const end = new Date(now - i * 7 * MS_DAY);
@@ -433,13 +431,13 @@ export async function getWeeklyJobTrend(where: Record<string, unknown>, weeks = 
     const count = await prisma.job.count({
       where: { ...where, postedAt: { gte: start, lt: end } },
     });
-    points.push(count);
+    points.push({ weekStart: start.toISOString(), weekEnd: end.toISOString(), value: count });
   }
   return points;
 }
 
-export async function getWeeklyCompanyTrend(where: Record<string, unknown>, weeks = 8) {
-  const points: number[] = [];
+export async function getWeeklyCompanyTrend(where: Record<string, unknown>, weeks = 8): Promise<WeeklyPoint[]> {
+  const points: WeeklyPoint[] = [];
   const now = Date.now();
   for (let i = weeks - 1; i >= 0; i--) {
     const end = new Date(now - i * 7 * MS_DAY);
@@ -449,13 +447,13 @@ export async function getWeeklyCompanyTrend(where: Record<string, unknown>, week
       distinct: ["company"],
       select: { company: true },
     });
-    points.push(companies.length);
+    points.push({ weekStart: start.toISOString(), weekEnd: end.toISOString(), value: companies.length });
   }
   return points;
 }
 
-export async function getWeeklySkillTrend(where: Record<string, unknown>, weeks = 8) {
-  const points: number[] = [];
+export async function getWeeklySkillTrend(where: Record<string, unknown>, weeks = 8): Promise<WeeklyPoint[]> {
+  const points: WeeklyPoint[] = [];
   const now = Date.now();
   for (let i = weeks - 1; i >= 0; i--) {
     const end = new Date(now - i * 7 * MS_DAY);
@@ -464,13 +462,13 @@ export async function getWeeklySkillTrend(where: Record<string, unknown>, weeks 
       by: ["skillId"],
       where: { job: { ...where, postedAt: { gte: start, lt: end } } },
     });
-    points.push(skills.length);
+    points.push({ weekStart: start.toISOString(), weekEnd: end.toISOString(), value: skills.length });
   }
   return points;
 }
 
-export async function getWeeklySalaryTrend(where: Record<string, unknown>, weeks = 8) {
-  const points: number[] = [];
+export async function getWeeklySalaryTrend(where: Record<string, unknown>, weeks = 8): Promise<WeeklyPoint[]> {
+  const points: WeeklyPoint[] = [];
   const now = Date.now();
   for (let i = weeks - 1; i >= 0; i--) {
     const end = new Date(now - i * 7 * MS_DAY);
@@ -479,7 +477,7 @@ export async function getWeeklySalaryTrend(where: Record<string, unknown>, weeks
       where: { ...where, postedAt: { gte: start, lt: end }, salaryMinUsd: { not: null } },
       _avg: { salaryMinUsd: true },
     });
-    points.push(Math.round(avg._avg.salaryMinUsd ?? 0));
+    points.push({ weekStart: start.toISOString(), weekEnd: end.toISOString(), value: Math.round(avg._avg.salaryMinUsd ?? 0) });
   }
   return points;
 }

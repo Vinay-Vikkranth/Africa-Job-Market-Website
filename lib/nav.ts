@@ -20,7 +20,7 @@ export const NAV_ITEMS = [
 
 export const PAGE_META: Record<string, { title: string; subtitle: string }> = {
   "/": {
-    title: "Overview",
+    title: "Africa's Regional Skills Observatory (Last 30 days)",
     subtitle: "Real-time insights into Africa's job market and skills landscape",
   },
   "/jobs": {

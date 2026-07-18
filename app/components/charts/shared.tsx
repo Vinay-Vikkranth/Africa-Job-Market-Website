@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Area, AreaChart, ResponsiveContainer, Tooltip } from "recharts";
-import { ChevronRight, TrendingDown, TrendingUp } from "lucide-react";
+import { ChevronRight } from "lucide-react";
+import type { WeeklyPoint } from "@/lib/analytics";
 
 export function formatInt(value: number) {
   return new Intl.NumberFormat("en-US").format(value);
@@ -28,42 +29,51 @@ const MAP_POSITIONS: Record<string, { x: number; y: number }> = {
   "South Africa": { x: 58, y: 88 },
 };
 
-const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
-
-function shortDate(date: Date) {
-  return new Intl.DateTimeFormat("en", { month: "short", day: "numeric" }).format(date);
+function formatWeekRange(weekStart: string, weekEnd: string) {
+  const start = new Date(weekStart);
+  // weekEnd is exclusive (start of the following week) — show the inclusive last day.
+  const end = new Date(new Date(weekEnd).getTime() - 24 * 60 * 60 * 1000);
+  const sameMonth = start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
+  const startLabel = start.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  const endLabel = end.toLocaleDateString(
+    "en-US",
+    sameMonth ? { day: "numeric", year: "numeric" } : { month: "short", day: "numeric", year: "numeric" },
+  );
+  return `${startLabel} – ${endLabel}`;
 }
 
-/**
- * Each sparkline point is one week; the last point is the current week.
- * Mirrors the server-side weekly bucketing in lib/analytics.ts.
- */
-function weekLabel(index: number, total: number) {
-  const end = new Date(Date.now() - (total - 1 - index) * WEEK_MS);
-  const start = new Date(end.getTime() - WEEK_MS);
-  return `${shortDate(start)} – ${shortDate(end)}`;
+function SparklineTooltip({
+  active,
+  payload,
+  formatValue = formatInt,
+}: {
+  active?: boolean;
+  payload?: { payload: WeeklyPoint }[];
+  formatValue?: (value: number) => string;
+}) {
+  if (!active || !payload || payload.length === 0) return null;
+  const point = payload[0].payload;
+  return (
+    <div className="rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-xs shadow-sm">
+      <p className="font-medium text-slate-700">{formatWeekRange(point.weekStart, point.weekEnd)}</p>
+      <p className="text-slate-500">{formatValue(point.value)}</p>
+    </div>
+  );
 }
 
 export function Sparkline({
   data,
   color,
-  label = "value",
   formatValue = formatInt,
 }: {
-  data: number[];
+  data: WeeklyPoint[];
   color: string;
-  label?: string;
   formatValue?: (value: number) => string;
 }) {
-  const chartData = data.map((value, index) => ({
-    index,
-    value,
-    week: weekLabel(index, data.length),
-  }));
   return (
     <div className="h-10 w-full">
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={chartData} margin={{ top: 4, right: 0, left: 0, bottom: 0 }}>
+        <AreaChart data={data} margin={{ top: 4, right: 0, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id={`grad-${color.replace("#", "")}`} x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor={color} stopOpacity={0.35} />
@@ -71,21 +81,10 @@ export function Sparkline({
             </linearGradient>
           </defs>
           <Tooltip
+            content={<SparklineTooltip formatValue={formatValue} />}
             cursor={{ stroke: color, strokeWidth: 1, strokeDasharray: "3 3" }}
             wrapperStyle={{ zIndex: 40, outline: "none" }}
             allowEscapeViewBox={{ x: false, y: true }}
-            content={({ active, payload }) => {
-              if (!active || !payload?.length) return null;
-              const point = payload[0].payload as { value: number; week: string };
-              return (
-                <div className="rounded-lg bg-slate-900 px-3 py-2 text-xs text-white shadow-lg">
-                  <p className="font-semibold">{point.week}</p>
-                  <p className="mt-0.5">
-                    {formatValue(point.value)} {label}
-                  </p>
-                </div>
-              );
-            }}
           />
           <Area
             type="monotone"
@@ -105,55 +104,32 @@ export function Sparkline({
 export function KpiCard({
   title,
   value,
-  change,
-  changeLabel,
-  trend,
+  caption,
   icon: Icon,
   iconBg,
   sparkColor,
   sparkData,
-  sparkLabel,
   sparkFormat,
-  invertTrend,
 }: {
   title: string;
   value: string;
-  change: number;
-  changeLabel: string;
-  trend: "up" | "down";
+  caption?: string;
   icon: React.ElementType;
   iconBg: string;
   sparkColor: string;
-  sparkData: number[];
-  sparkLabel?: string;
+  sparkData: WeeklyPoint[];
   sparkFormat?: (value: number) => string;
-  invertTrend?: boolean;
 }) {
-  const isPositive = invertTrend ? trend === "down" : trend === "up";
   return (
     <article className="dashboard-card p-4">
-      <div className="flex items-start justify-between">
-        <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${iconBg}`}>
-          <Icon className="h-5 w-5 text-white" />
-        </div>
-        {change === 0 ? (
-          <span className="text-xs font-medium text-slate-400">—</span>
-        ) : (
-          <div
-            className={`flex items-center gap-1 text-xs font-semibold ${
-              isPositive ? "text-emerald-600" : "text-red-500"
-            }`}
-          >
-            {trend === "up" ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />}
-            {Math.abs(change)}%
-          </div>
-        )}
+      <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${iconBg}`}>
+        <Icon className="h-5 w-5 text-white" />
       </div>
       <p className="mt-3 text-xs font-medium uppercase tracking-wide text-slate-500">{title}</p>
       <p className="mt-1 text-2xl font-bold text-slate-900">{value}</p>
-      <p className="mt-0.5 text-xs text-slate-400">{changeLabel}</p>
+      <p className="mt-0.5 text-xs text-slate-400">{caption}</p>
       <div className="mt-3">
-        <Sparkline data={sparkData} color={sparkColor} label={sparkLabel} formatValue={sparkFormat} />
+        <Sparkline data={sparkData} color={sparkColor} formatValue={sparkFormat} />
       </div>
     </article>
   );

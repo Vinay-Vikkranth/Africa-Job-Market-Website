@@ -12,14 +12,10 @@ export function SalaryContent({ data }: { data: DashboardData }) {
         <KpiCard
           title="Avg. Salary (USD)"
           value={data.kpis.avgSalaryUsd > 0 ? formatCurrency(data.kpis.avgSalaryUsd) : "N/A"}
-          change={Math.abs(data.kpis.salaryGrowthPct)}
-          changeLabel="vs previous 30 days"
-          trend={data.kpis.salaryGrowthPct >= 0 ? "up" : "down"}
           icon={DollarSign}
           iconBg="bg-amber-500"
           sparkColor="#f59e0b"
           sparkData={data.trends.salary}
-          sparkLabel="avg. salary of jobs posted this week"
           sparkFormat={formatCurrency}
         />
         <article className="dashboard-card p-4">
@@ -58,7 +54,6 @@ export function SalaryContent({ data }: { data: DashboardData }) {
             <Sparkline
               data={data.trends.salary}
               color="#f59e0b"
-              label="avg. salary of jobs posted this week"
               formatValue={formatCurrency}
             />
           </div>

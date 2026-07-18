@@ -58,8 +58,8 @@ export function JobsContent({
           <p className="text-2xl font-bold">{formatInt(jobs.uniqueCompanies)}</p>
         </article>
         <article className="dashboard-card p-4">
-          <p className="text-xs text-slate-500">30-Day Growth</p>
-          <p className="text-2xl font-bold">{jobs.growthPct}%</p>
+          <p className="text-xs text-slate-500">Jobs Posted (Last 30 Days)</p>
+          <p className="text-2xl font-bold">{formatInt(jobs.jobsLast30Days)}</p>
         </article>
       </section>
 
