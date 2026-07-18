@@ -6,7 +6,6 @@ import {
   DollarSign,
   LayoutDashboard,
   Target,
-  Zap,
 } from "lucide-react";
 
 export const NAV_ITEMS = [
@@ -14,7 +13,6 @@ export const NAV_ITEMS = [
   { href: "/jobs", label: "Jobs Overview", icon: Briefcase },
   { href: "/skills", label: "Skills Demand", icon: Target },
   { href: "/salary", label: "Salary Insights", icon: DollarSign },
-  { href: "/tech", label: "Emerging Tech", icon: Zap },
   { href: "/gaps", label: "Skill Gaps", icon: BarChart3 },
   { href: "/reports", label: "Reports", icon: Download },
   { href: "/alerts", label: "Alerts", icon: Bell },
@@ -36,10 +34,6 @@ export const PAGE_META: Record<string, { title: string; subtitle: string }> = {
   "/salary": {
     title: "Salary Insights",
     subtitle: "Salary distributions derived from postings that disclose compensation",
-  },
-  "/tech": {
-    title: "Emerging Tech",
-    subtitle: "Fastest-growing technologies by mention growth over the last 30 days",
   },
   "/gaps": {
     title: "Skill Gaps",

@@ -1,21 +1,24 @@
 import { NextResponse } from "next/server";
 import { syncAllJobSources } from "@/lib/sync-jobs";
-import { ensureBaselineData } from "@/lib/seed-baseline";
 
 export async function POST() {
   try {
-    const baseline = await ensureBaselineData();
     const result = await syncAllJobSources();
     return NextResponse.json({
       ok: true,
       message: "Data sync completed from all sources.",
-      baselineInserted: baseline.inserted,
       sources: {
         adzuna: result.adzuna,
         brighterMonday: result.brighterMonday,
         jobberman: result.jobberman,
         apify: result.apify,
+        freehire: result.freehire,
+        jooble: result.jooble,
+        reliefweb: result.reliefweb,
         remoteok: result.remoteok,
+        undp: result.undp,
+        unCareers: result.unCareers,
+        unWomen: result.unWomen,
         remotive: result.remotive,
         arbeitnow: result.arbeitnow,
       },

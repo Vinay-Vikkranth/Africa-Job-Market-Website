@@ -49,13 +49,6 @@ export async function generatePdfReport(data: DashboardData, country: string): P
     });
     doc.moveDown();
 
-    doc.fontSize(16).fillColor("#0f172a").text("Emerging Technologies (30-day growth)");
-    doc.moveDown(0.5);
-    data.emergingTechnologies.slice(0, 8).forEach((tech) => {
-      doc.fontSize(11).fillColor("#334155").text(`${tech.name}: +${tech.growthPct}%`);
-    });
-    doc.moveDown();
-
     doc.fontSize(16).fillColor("#0f172a").text("Data Sources");
     doc.moveDown(0.5);
     data.meta.dataSources.forEach((source) => {

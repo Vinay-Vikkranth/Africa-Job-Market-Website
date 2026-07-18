@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { syncAllJobSources } from "@/lib/sync-jobs";
-import { ensureBaselineData } from "@/lib/seed-baseline";
 
 function isAuthorized(request: NextRequest) {
   const secret = process.env.CRON_SECRET;
@@ -15,7 +14,6 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    await ensureBaselineData();
     const result = await syncAllJobSources();
     return NextResponse.json({
       ok: true,

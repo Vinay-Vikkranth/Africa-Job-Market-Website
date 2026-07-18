@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { syncAllJobSources } from "../lib/sync-jobs";
 
 async function run() {

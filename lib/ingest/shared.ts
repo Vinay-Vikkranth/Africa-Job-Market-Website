@@ -1,16 +1,28 @@
 import { prisma } from "@/lib/prisma";
 import { extractSkillsFromText as escoExtract } from "@/lib/esco-extractor";
 
+/**
+ * Parses annual USD salaries from free-form text. Returns {} unless the text
+ * is clearly USD-denominated ("$" or "USD"), handles "k" suffixes ($90k), and
+ * discards implausible annual figures so hourly rates or stray numbers are
+ * never stored as salaries.
+ */
 export function parseSalaryFromText(salaryText: string | null | undefined): {
   min?: number;
   max?: number;
 } {
   if (!salaryText) return {};
-  const numeric = salaryText.match(/\d[\d,]*/g) ?? [];
-  if (numeric.length === 0) return {};
-  const parsed = numeric
-    .map((chunk) => Number(chunk.replace(/,/g, "")))
-    .filter((value) => Number.isFinite(value) && value > 0);
+  const text = salaryText.toLowerCase();
+  if (!text.includes("$") && !text.includes("usd")) return {};
+
+  const matches = [...text.matchAll(/(\d[\d,]*(?:\.\d+)?)\s*(k)?/g)];
+  const parsed = matches
+    .map((m) => {
+      const base = Number(m[1].replace(/,/g, ""));
+      return m[2] ? base * 1000 : base;
+    })
+    .filter((value) => Number.isFinite(value) && value >= 5000 && value <= 1_000_000);
+
   if (parsed.length === 0) return {};
   if (parsed.length === 1) return { min: parsed[0], max: parsed[0] };
   return { min: Math.min(...parsed), max: Math.max(...parsed) };
@@ -100,7 +112,7 @@ export async function upsertIngestedJob(job: IngestJobInput) {
 
   const isNew = createdJob.createdAt.getTime() === createdJob.updatedAt.getTime();
 
-  for (const skillName of job.skills) {
+  for (const skillName of new Set(job.skills)) {
     const skill = await prisma.skill.upsert({
       where: { name: skillName },
       create: { name: skillName },
@@ -136,7 +148,14 @@ export async function runSourceSync(
 ): Promise<SyncResult & { source: string }> {
   try {
     const result = await fn();
-    await recordSyncRun(source, result.inserted, result.updated, "success");
+    const hasErrors = (result.errors?.length ?? 0) > 0;
+    await recordSyncRun(
+      source,
+      result.inserted,
+      result.updated,
+      hasErrors && result.inserted === 0 && result.updated === 0 ? "error" : "success",
+      result.errors?.join("; "),
+    );
     return { ...result, source };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";

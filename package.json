@@ -11,6 +11,7 @@
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
     "sync": "tsx scripts/sync.ts",
+    "sync:official": "tsx scripts/sync-official.ts",
     "db:generate": "prisma generate"
   },
   "dependencies": {
@@ -20,6 +21,7 @@
     "better-sqlite3": "^12.11.1",
     "cheerio": "^1.2.0",
     "d3-geo": "^3.1.1",
+    "dotenv": "^17.4.2",
     "lucide-react": "^1.22.0",
     "next": "16.2.9",
     "pdfkit": "^0.19.1",

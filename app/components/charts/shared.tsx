@@ -1,7 +1,9 @@
 "use client";
 
-import { Area, AreaChart, ResponsiveContainer } from "recharts";
-import { TrendingDown, TrendingUp } from "lucide-react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { Area, AreaChart, ResponsiveContainer, Tooltip } from "recharts";
+import { ChevronRight, TrendingDown, TrendingUp } from "lucide-react";
 
 export function formatInt(value: number) {
   return new Intl.NumberFormat("en-US").format(value);
@@ -26,8 +28,38 @@ const MAP_POSITIONS: Record<string, { x: number; y: number }> = {
   "South Africa": { x: 58, y: 88 },
 };
 
-export function Sparkline({ data, color }: { data: number[]; color: string }) {
-  const chartData = data.map((value, index) => ({ index, value }));
+const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+
+function shortDate(date: Date) {
+  return new Intl.DateTimeFormat("en", { month: "short", day: "numeric" }).format(date);
+}
+
+/**
+ * Each sparkline point is one week; the last point is the current week.
+ * Mirrors the server-side weekly bucketing in lib/analytics.ts.
+ */
+function weekLabel(index: number, total: number) {
+  const end = new Date(Date.now() - (total - 1 - index) * WEEK_MS);
+  const start = new Date(end.getTime() - WEEK_MS);
+  return `${shortDate(start)} – ${shortDate(end)}`;
+}
+
+export function Sparkline({
+  data,
+  color,
+  label = "value",
+  formatValue = formatInt,
+}: {
+  data: number[];
+  color: string;
+  label?: string;
+  formatValue?: (value: number) => string;
+}) {
+  const chartData = data.map((value, index) => ({
+    index,
+    value,
+    week: weekLabel(index, data.length),
+  }));
   return (
     <div className="h-10 w-full">
       <ResponsiveContainer width="100%" height="100%">
@@ -38,6 +70,23 @@ export function Sparkline({ data, color }: { data: number[]; color: string }) {
               <stop offset="100%" stopColor={color} stopOpacity={0} />
             </linearGradient>
           </defs>
+          <Tooltip
+            cursor={{ stroke: color, strokeWidth: 1, strokeDasharray: "3 3" }}
+            wrapperStyle={{ zIndex: 40, outline: "none" }}
+            allowEscapeViewBox={{ x: false, y: true }}
+            content={({ active, payload }) => {
+              if (!active || !payload?.length) return null;
+              const point = payload[0].payload as { value: number; week: string };
+              return (
+                <div className="rounded-lg bg-slate-900 px-3 py-2 text-xs text-white shadow-lg">
+                  <p className="font-semibold">{point.week}</p>
+                  <p className="mt-0.5">
+                    {formatValue(point.value)} {label}
+                  </p>
+                </div>
+              );
+            }}
+          />
           <Area
             type="monotone"
             dataKey="value"
@@ -45,6 +94,7 @@ export function Sparkline({ data, color }: { data: number[]; color: string }) {
             strokeWidth={2}
             fill={`url(#grad-${color.replace("#", "")})`}
             dot={false}
+            activeDot={{ r: 3, fill: color, stroke: "#fff", strokeWidth: 1.5 }}
           />
         </AreaChart>
       </ResponsiveContainer>
@@ -62,6 +112,8 @@ export function KpiCard({
   iconBg,
   sparkColor,
   sparkData,
+  sparkLabel,
+  sparkFormat,
   invertTrend,
 }: {
   title: string;
@@ -73,6 +125,8 @@ export function KpiCard({
   iconBg: string;
   sparkColor: string;
   sparkData: number[];
+  sparkLabel?: string;
+  sparkFormat?: (value: number) => string;
   invertTrend?: boolean;
 }) {
   const isPositive = invertTrend ? trend === "down" : trend === "up";
@@ -99,7 +153,7 @@ export function KpiCard({
       <p className="mt-1 text-2xl font-bold text-slate-900">{value}</p>
       <p className="mt-0.5 text-xs text-slate-400">{changeLabel}</p>
       <div className="mt-3">
-        <Sparkline data={sparkData} color={sparkColor} />
+        <Sparkline data={sparkData} color={sparkColor} label={sparkLabel} formatValue={sparkFormat} />
       </div>
     </article>
   );
@@ -148,17 +202,31 @@ export function AfricaMap({
 }
 
 export function DataSourceBadge({ sources }: { sources: { source: string; _count: { source: number } }[] }) {
+  const searchParams = useSearchParams();
   if (sources.length === 0) return null;
+
   return (
     <div className="flex flex-wrap gap-2">
-      {sources.map((s) => (
-        <span
-          key={s.source}
-          className="rounded-full bg-slate-100 px-2.5 py-1 text-xs text-slate-600"
-        >
-          {s.source}: {formatInt(s._count.source)}
-        </span>
-      ))}
+      {sources.map((s) => {
+        const params = new URLSearchParams();
+        const country = searchParams.get("country");
+        if (country) params.set("country", country);
+        params.set("source", s.source);
+
+        return (
+          <Link
+            key={s.source}
+            href={`/jobs?${params.toString()}`}
+            title={`View all ${s.source} job postings`}
+            className="group flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1 text-xs text-slate-600 transition hover:bg-blue-50 hover:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <span>
+              {s.source}: {formatInt(s._count.source)}
+            </span>
+            <ChevronRight className="h-3 w-3 transition group-hover:translate-x-0.5" />
+          </Link>
+        );
+      })}
     </div>
   );
 }

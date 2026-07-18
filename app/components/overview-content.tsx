@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import {
   Bar,
   BarChart,
@@ -41,21 +40,6 @@ import { AfricaChoroplethMap } from "@/app/components/africa-choropleth-map";
 export function OverviewContent({ data, country }: { data: DashboardData; country: string }) {
   const [mapView, setMapView] = useState<"map" | "table">("map");
   const [showAllSkills, setShowAllSkills] = useState(false);
-
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-
-  function handleCountryClick(clicked: string) {
-    const params = new URLSearchParams(searchParams.toString());
-    if (country === clicked) {
-      params.delete("country");
-    } else {
-      params.set("country", clicked);
-    }
-    const qs = params.toString();
-    router.push(qs ? `${pathname}?${qs}` : pathname);
-  }
 
   const gapChartData = [
     { name: "Technical", value: data.skillGap.technical },
@@ -155,11 +139,7 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
             </div>
           </div>
           {mapView === "map" ? (
-            <AfricaChoroplethMap
-              countries={data.jobsByCountry}
-              selectedCountry={country === "All Countries" ? undefined : country}
-              onCountryClick={handleCountryClick}
-            />
+            <AfricaChoroplethMap countries={data.jobsByCountry} />
           ) : (
             <div className="space-y-2">
               {data.jobsByCountry.map((item) => (

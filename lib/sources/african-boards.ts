@@ -1,8 +1,7 @@
-import * as cheerio from "cheerio";
-import { detectCountryFromText } from "@/lib/city-country";
+import { createHash } from "node:crypto";
+import { detectCountry } from "@/lib/city-country";
 import {
   extractSkillsFromText,
-  parseSalaryFromText,
   runSourceSync,
   upsertIngestedJob,
   type SyncResult,
@@ -41,10 +40,30 @@ type ParsedListing = {
   location: string;
   url: string;
   description: string;
-  salaryText?: string;
   postedAt: Date;
 };
 
+function textFromJsonLdLocation(location: unknown): string {
+  if (!location) return "";
+  if (typeof location === "string") return location;
+  if (Array.isArray(location)) return location.map(textFromJsonLdLocation).join(", ");
+  if (typeof location === "object") {
+    const record = location as Record<string, unknown>;
+    const address = record.address;
+    if (address && typeof address === "object") {
+      const a = address as Record<string, unknown>;
+      return [a.addressLocality, a.addressRegion, a.addressCountry]
+        .filter(Boolean)
+        .join(", ");
+    }
+    return String(record.name ?? "");
+  }
+  return "";
+}
+
+// Only structured JSON-LD JobPosting entries are ingested. Loose HTML link
+// scraping was removed because it captured navigation links ("Post A Job",
+// category pages) as fake job records.
 function parseJsonLdJobs(html: string): ParsedListing[] {
   const listings: ParsedListing[] = [];
   const regex = /<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
@@ -53,73 +72,40 @@ function parseJsonLdJobs(html: string): ParsedListing[] {
   while ((match = regex.exec(html)) !== null) {
     try {
       const json = JSON.parse(match[1]) as unknown;
-      const items = Array.isArray(json) ? json : [json];
+      const roots = Array.isArray(json) ? json : [json];
+      const items = roots.flatMap((root) => {
+        if (root && typeof root === "object" && Array.isArray((root as Record<string, unknown>)["@graph"])) {
+          return (root as Record<string, unknown>)["@graph"] as unknown[];
+        }
+        return [root];
+      });
+
       for (const item of items) {
         if (!item || typeof item !== "object") continue;
         const record = item as Record<string, unknown>;
         if (record["@type"] !== "JobPosting") continue;
 
-        const title = String(record.title ?? "");
+        const title = String(record.title ?? "").trim();
         const company =
           typeof record.hiringOrganization === "object" && record.hiringOrganization
             ? String((record.hiringOrganization as Record<string, unknown>).name ?? "Unknown")
             : "Unknown";
-        const location =
-          typeof record.jobLocation === "object" && record.jobLocation
-            ? JSON.stringify(record.jobLocation)
-            : String(record.jobLocation ?? "");
-        const url = String(record.url ?? record.sameAs ?? "");
-        const description = String(record.description ?? "");
-        const salaryText =
-          typeof record.baseSalary === "object"
-            ? JSON.stringify(record.baseSalary)
-            : String(record.baseSalary ?? "");
-        const postedAt = record.datePosted
-          ? new Date(String(record.datePosted))
-          : new Date();
+        const location = textFromJsonLdLocation(record.jobLocation);
+        const url = String(record.url ?? record.sameAs ?? "").trim();
+        const description = String(record.description ?? "")
+          .replace(/<[^>]+>/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+        const postedAt = record.datePosted ? new Date(String(record.datePosted)) : new Date();
 
         if (title && url) {
-          listings.push({ title, company, location, url, description, salaryText, postedAt });
+          listings.push({ title, company, location, url, description, postedAt });
         }
       }
     } catch {
       // skip malformed JSON-LD blocks
     }
   }
-
-  return listings;
-}
-
-function parseHtmlCards(html: string, baseUrl: string): ParsedListing[] {
-  const $ = cheerio.load(html);
-  const listings: ParsedListing[] = [];
-
-  $("a[href*='/job']").each((_, el) => {
-    const href = $(el).attr("href") ?? "";
-    if (!href || href.includes("login")) return;
-
-    const title = $(el).find("h2, h3, .job-title, [class*='title']").first().text().trim()
-      || $(el).text().trim().split("\n")[0]?.trim();
-    if (!title || title.length < 4 || title.length > 120) return;
-
-    const parent = $(el).closest("article, li, div[class*='job'], div[class*='card']");
-    const company =
-      parent.find("[class*='company'], .company, [data-testid*='company']").first().text().trim()
-      || "Unknown";
-    const location =
-      parent.find("[class*='location'], .location, [data-testid*='location']").first().text().trim()
-      || "";
-    const url = href.startsWith("http") ? href : `${baseUrl}${href.startsWith("/") ? "" : "/"}${href}`;
-
-    listings.push({
-      title,
-      company: company || "Unknown",
-      location,
-      url,
-      description: parent.text().slice(0, 2000),
-      postedAt: new Date(),
-    });
-  });
 
   return listings;
 }
@@ -151,9 +137,7 @@ function dedupeListings(listings: ParsedListing[]) {
   });
 }
 
-async function syncBoard(
-  config: (typeof BOARD_CONFIG)[number],
-): Promise<SyncResult> {
+async function syncBoard(config: (typeof BOARD_CONFIG)[number]): Promise<SyncResult> {
   let inserted = 0;
   let updated = 0;
   const errors: string[] = [];
@@ -165,18 +149,17 @@ async function syncBoard(
       errors.push(`Failed to fetch ${config.baseUrl}${path}`);
       continue;
     }
-    allListings.push(...parseJsonLdJobs(html), ...parseHtmlCards(html, config.baseUrl));
+    allListings.push(...parseJsonLdJobs(html));
   }
 
-  for (const listing of dedupeListings(allListings).slice(0, 80)) {
+  for (const listing of dedupeListings(allListings).slice(0, 100)) {
     const country =
-      detectCountryFromText(`${listing.location} ${listing.description} ${listing.title}`) ??
-      config.country;
+      detectCountry(listing.location) ?? config.country;
     const city = listing.location.split(",")[0]?.trim() || "Unknown";
-    const salary = parseSalaryFromText(listing.salaryText);
     const skills = extractSkillsFromText(listing.title, listing.description);
 
-    const slug = Buffer.from(listing.url).toString("base64url").slice(0, 40);
+    // Full-URL hash prevents the ID collisions caused by truncated base64 slugs.
+    const slug = createHash("sha256").update(listing.url).digest("hex").slice(0, 24);
     const { isNew } = await upsertIngestedJob({
       externalId: `${config.source.toLowerCase()}-${slug}`,
       title: listing.title,
@@ -186,9 +169,6 @@ async function syncBoard(
       source: config.source,
       url: listing.url,
       technologies: skills.join(", "),
-      salaryMinUsd: salary.min,
-      salaryMaxUsd: salary.max,
-      currency: "USD",
       postedAt: listing.postedAt,
       skills,
     });

@@ -1,53 +1,62 @@
+import { createHash } from "node:crypto";
 import { upsertIngestedJob, runSourceSync, extractSkillsFromText, parseSalaryFromText, type SyncResult } from "@/lib/ingest/shared";
+import { detectCountry } from "@/lib/city-country";
+import { ISO2_TO_COUNTRY } from "@/lib/constants";
 
-// ISO-2 country codes returned by this actor → our country names
-const ISO2_TO_COUNTRY: Record<string, string> = {
-  ZA: "South Africa",
-  NG: "Nigeria",
-  KE: "Kenya",
-  GH: "Ghana",
-  TZ: "Tanzania",
-  RW: "Rwanda",
-  UG: "Uganda",
-  ET: "Ethiopia",
-  EG: "Egypt",
-  SN: "Senegal",
-  CM: "Cameroon",
-  CI: "Ivory Coast",
-};
-
-// Actual actor: jungle_synthesizer/africa-jobs-aggregator-scraper
-// Supports platforms: careers24, jobberman, brightermonday, myjobmag
+/**
+ * Optional Apify Africa Jobs Aggregator integration.
+ * Set APIFY_TOKEN in environment to enable Careers24 + Jobberman + BrighterMonday + MyJobMag via Apify.
+ */
 const ACTOR_ID = "6fF8mqZ0K0JhnB0RM";
 
 type ApifyJob = {
-  job_id?: string;
-  platform?: string;
+  job_id?: string | null;
   title?: string;
   company?: string | null;
-  location_country?: string | null;
   location_city?: string | null;
-  employment_type?: string | null;
+  location_country?: string | null;
   salary_range?: string | null;
-  currency?: string | null;
-  description?: string | null;
-  experience_level?: string | null;
-  posted_at?: string | null;
+  description?: string;
   apply_url?: string;
+  platform?: string;
+  posted_at?: string | null;
   scraped_at?: string;
 };
 
-function parsePostedAt(raw: string | null | undefined): Date {
-  if (!raw) return new Date();
-  // Format: "Posted: 07 Jul 2026 \r\n\r\n                        30 Days left"
-  const match = raw.match(/Posted:\s*(\d{1,2}\s+\w+\s+\d{4})/i);
-  if (match) {
-    const parsed = new Date(match[1]);
-    if (!isNaN(parsed.getTime())) return parsed;
+function parsePostedAt(postedAt?: string | null, scrapedAt?: string): Date {
+  if (postedAt) {
+    // Format: "Posted: 07 Jul 2026 \r\n\r\n                        30 Days left"
+    const match = postedAt.match(/Posted:\s*(\d{1,2}\s+\w+\s+\d{4})/i);
+    if (match) {
+      const parsed = new Date(match[1]);
+      if (!Number.isNaN(parsed.getTime())) return parsed;
+    }
+    const includesYear = /\b\d{4}\b/.test(postedAt);
+    const value = includesYear ? postedAt : `${postedAt} ${new Date().getUTCFullYear()}`;
+    const parsed = new Date(value);
+    if (!Number.isNaN(parsed.getTime())) return parsed;
   }
-  // Try ISO date fallback
-  const iso = new Date(raw);
-  return isNaN(iso.getTime()) ? new Date() : iso;
+  const scraped = scrapedAt ? new Date(scrapedAt) : new Date();
+  return Number.isNaN(scraped.getTime()) ? new Date() : scraped;
+}
+
+function normalizePlatform(platform?: string) {
+  const names: Record<string, string> = {
+    brightermonday: "BrighterMonday",
+    careers24: "Careers24",
+    jobberman: "Jobberman",
+    myjobmag: "MyJobMag",
+  };
+  return names[platform?.toLowerCase() ?? ""] ?? "Apify";
+}
+
+function safeCity(city?: string | null) {
+  if (!city) return "Unknown";
+  // Some actor rows place employment metadata in location_city.
+  if (/\b(full[\s-]?time|part[\s-]?time|hybrid|remote|contract)\b/i.test(city)) {
+    return "Unknown";
+  }
+  return city.split(",")[0].trim() || "Unknown";
 }
 
 export async function syncApifyAfricaJobs(): Promise<SyncResult> {
@@ -82,27 +91,29 @@ export async function syncApifyAfricaJobs(): Promise<SyncResult> {
     if (!title || !url) continue;
 
     // Resolve country from ISO-2 code first, then fall back to text detection
-    const isoCountry = job.location_country ? ISO2_TO_COUNTRY[job.location_country.toUpperCase()] : undefined;
-    const country = isoCountry ?? "South Africa"; // careers24 is ZA-only
-    const city = job.location_city?.split(",")[0]?.trim() ?? "Unknown";
-    const platform = job.platform ?? "Apify";
-    const salary = parseSalaryFromText(job.salary_range);
+    const country =
+      (job.location_country ? ISO2_TO_COUNTRY[job.location_country.toUpperCase()] : undefined) ??
+      detectCountry(job.location_city) ??
+      "South Africa"; // careers24 is ZA-only
+
     const skills = extractSkillsFromText(title, job.description ?? "");
-    const slug = Buffer.from(url).toString("base64url").slice(0, 40);
+    const platform = normalizePlatform(job.platform);
+    const salary = parseSalaryFromText(job.salary_range);
+    const slug = createHash("sha256").update(url).digest("hex").slice(0, 24);
 
     const { isNew } = await upsertIngestedJob({
-      externalId: `apify-${platform}-${job.job_id ?? slug}`,
+      externalId: `apify-${slug}`,
       title,
       company: job.company ?? "Unknown",
       country,
-      city,
-      source: platform === "careers24" ? "Careers24" : platform === "jobberman" ? "Jobberman" : platform === "brightermonday" ? "BrighterMonday" : "Apify",
+      city: safeCity(job.location_city),
+      source: platform,
       url,
-      description: job.description ?? undefined,
+      description: job.description,
       technologies: skills.join(", "),
       salaryMinUsd: salary.min,
       salaryMaxUsd: salary.max,
-      postedAt: parsePostedAt(job.posted_at ?? job.scraped_at),
+      postedAt: parsePostedAt(job.posted_at, job.scraped_at),
       skills,
     });
 

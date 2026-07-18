@@ -19,6 +19,8 @@ export function SalaryContent({ data }: { data: DashboardData }) {
           iconBg="bg-amber-500"
           sparkColor="#f59e0b"
           sparkData={data.trends.salary}
+          sparkLabel="avg. salary of jobs posted this week"
+          sparkFormat={formatCurrency}
         />
         <article className="dashboard-card p-4">
           <p className="text-xs text-slate-500">Salary Disclosure Rate</p>
@@ -53,7 +55,12 @@ export function SalaryContent({ data }: { data: DashboardData }) {
         <article className="dashboard-card p-5">
           <h2 className="mb-4 text-sm font-semibold text-slate-900">Weekly Salary Trend</h2>
           <div className="h-24">
-            <Sparkline data={data.trends.salary} color="#f59e0b" />
+            <Sparkline
+              data={data.trends.salary}
+              color="#f59e0b"
+              label="avg. salary of jobs posted this week"
+              formatValue={formatCurrency}
+            />
           </div>
           <div className="mt-6 space-y-3">
             {data.salariesByCountry.map((item) => (
