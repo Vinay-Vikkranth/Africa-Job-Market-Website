@@ -209,7 +209,7 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
           <DemographicsGapCard snapshot={data.demographics} />
           <div className="grid gap-4 lg:grid-cols-3">
             <div className="lg:col-span-1">
-              <CurriculumGapCard gap={data.curriculumGap} />
+              <CurriculumGapCard gap={data.curriculumGap} syllabusGap={data.syllabusGap} />
             </div>
             <article className="dashboard-card p-5 lg:col-span-2">
               <h2 className="mb-4 text-sm font-semibold text-slate-900">Jobs by City (Top 10)</h2>

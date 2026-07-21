@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { categorizeSkill } from "@/lib/skill-categories";
+import { COUNTRY_SYLLABUSES, findCurriculumMatch } from "@/lib/syllabus-data";
 
 const MS_DAY = 24 * 60 * 60 * 1000;
 
@@ -92,6 +93,75 @@ export async function getWeeklyGapTrend(where: Record<string, unknown>, weeks = 
     points.push(total === 0 ? 0 : Math.round((Math.max(...Object.values(demand)) / total) * 100));
   }
   return points;
+}
+
+export type SyllabusGapResult = {
+  country: string;
+  source: string;
+  programs: string[];
+  coverageRate: number;
+  gapRate: number;
+  coveredSkills: { skill: string; mentions: number; curriculumSkill: string }[];
+  gapSkills: { skill: string; mentions: number }[];
+  totalMentions: number;
+  coveredMentions: number;
+};
+
+/** Compare top job-posting skills against a country's parsed syllabus (when available). */
+export async function getSyllabusGap(
+  country: string,
+  where: Record<string, unknown>,
+): Promise<SyllabusGapResult | null> {
+  const syllabus = COUNTRY_SYLLABUSES[country];
+  if (!syllabus) return null;
+
+  const jobCount = await prisma.job.count({ where });
+  if (jobCount === 0) return null;
+
+  // Filter through the job relation — avoids SQLite IN(...) limits on large job lists.
+  const topSkillRows = await prisma.jobSkill.groupBy({
+    by: ["skillId"],
+    where: { job: where },
+    _count: { skillId: true },
+    orderBy: { _count: { skillId: "desc" } },
+    take: 50,
+  });
+
+  const skillRecords = await prisma.skill.findMany({
+    where: { id: { in: topSkillRows.map((r) => r.skillId) } },
+    select: { id: true, name: true },
+  });
+  const nameMap = new Map(skillRecords.map((s) => [s.id, s.name]));
+
+  const covered: { skill: string; mentions: number; curriculumSkill: string }[] = [];
+  const notCovered: { skill: string; mentions: number }[] = [];
+
+  for (const row of topSkillRows) {
+    const name = nameMap.get(row.skillId);
+    if (!name) continue;
+    const match = findCurriculumMatch(name, syllabus);
+    if (match) {
+      covered.push({ skill: name, mentions: row._count.skillId, curriculumSkill: match.name });
+    } else {
+      notCovered.push({ skill: name, mentions: row._count.skillId });
+    }
+  }
+
+  const totalMentions = topSkillRows.reduce((s, r) => s + r._count.skillId, 0) || 1;
+  const coveredMentions = covered.reduce((s, r) => s + r.mentions, 0);
+  const coverageRate = Math.round((coveredMentions / totalMentions) * 100);
+
+  return {
+    country,
+    source: syllabus.source,
+    programs: syllabus.programs,
+    coverageRate,
+    gapRate: 100 - coverageRate,
+    coveredSkills: covered.slice(0, 12),
+    gapSkills: notCovered.slice(0, 15),
+    totalMentions,
+    coveredMentions,
+  };
 }
 
 export async function getDemandVsSupply(

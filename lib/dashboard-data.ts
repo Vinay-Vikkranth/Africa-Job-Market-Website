@@ -5,6 +5,7 @@ import {
   generateInsights,
   getDemandVsSupply,
   getSkillGaps,
+  getSyllabusGap,
   getWeeklyCompanyTrend,
   getWeeklyGapTrend,
   getWeeklyJobTrend,
@@ -17,6 +18,7 @@ import { getYouthEmploymentSnapshot } from "@/lib/youth-employment";
 import { getDemographicsSnapshot } from "@/lib/demographics";
 import { getCurriculumGapSnapshot } from "@/lib/curriculum-gap";
 import { getWorkforceContext } from "@/lib/workforce-context";
+import { hasSyllabus } from "@/lib/syllabus-data";
 
 export { COUNTRIES, COUNTRY_FLAGS };
 
@@ -192,6 +194,10 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
     demographics,
     gapTrend,
   );
+  const syllabusGap =
+    country !== "All Countries" && hasSyllabus(country)
+      ? await getSyllabusGap(country, where)
+      : null;
 
   return {
     kpis: {
@@ -238,6 +244,7 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
     demographics,
     workforceContext: getWorkforceContext(country),
     curriculumGap,
+    syllabusGap,
     insights,
     alerts,
     meta: {

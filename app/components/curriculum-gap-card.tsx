@@ -2,6 +2,7 @@
 
 import { AlertTriangle } from "lucide-react";
 import { Sparkline } from "@/app/components/charts/shared";
+import type { SyllabusGapResult } from "@/lib/analytics";
 import type { CurriculumGapSnapshot } from "@/lib/curriculum-gap";
 import { DataSourceButton } from "@/app/components/data-source-button";
 
@@ -31,8 +32,15 @@ const LEVEL_STYLES: Record<
   },
 };
 
-export function CurriculumGapCard({ gap }: { gap: CurriculumGapSnapshot }) {
+export function CurriculumGapCard({
+  gap,
+  syllabusGap,
+}: {
+  gap: CurriculumGapSnapshot;
+  syllabusGap?: SyllabusGapResult | null;
+}) {
   const styles = LEVEL_STYLES[gap.level];
+  const usingSyllabus = syllabusGap != null;
 
   return (
     <article className="dashboard-card flex h-full flex-col p-4">
@@ -43,32 +51,56 @@ export function CurriculumGapCard({ gap }: { gap: CurriculumGapSnapshot }) {
           </div>
           <div>
             <h2 className="text-xs font-bold uppercase tracking-wide text-slate-800">
-              Curriculum pressure
+              {usingSyllabus ? "Curriculum gap" : "Curriculum pressure"}
             </h2>
-            <span className="mt-0.5 inline-block rounded bg-amber-100 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-amber-800">
-              Proxy metric
+            <span
+              className={`mt-0.5 inline-block rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide ${
+                usingSyllabus
+                  ? "bg-emerald-100 text-emerald-800"
+                  : "bg-amber-100 text-amber-800"
+              }`}
+            >
+              {usingSyllabus ? syllabusGap.source : "Proxy metric"}
             </span>
           </div>
         </div>
-        <DataSourceButton sourceId="curriculum-proxy" label="Method" />
+        <DataSourceButton
+          sourceId={usingSyllabus ? "nuc-syllabus" : "curriculum-proxy"}
+          label="Method"
+        />
       </div>
 
       <div className="mt-3 flex items-center gap-2">
         <p className="text-3xl font-bold tracking-tight text-slate-900">
-          {gap.gapPct == null ? "—" : `${gap.gapPct}%`}
+          {usingSyllabus ? `${syllabusGap.gapRate}%` : gap.gapPct == null ? "—" : `${gap.gapPct}%`}
         </p>
-        <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${styles.badge}`}>
-          {gap.level === "Unavailable" ? "Unavailable" : gap.level.replace(" Gap", "")}
-        </span>
+        {!usingSyllabus && (
+          <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${styles.badge}`}>
+            {gap.level === "Unavailable" ? "Unavailable" : gap.level.replace(" Gap", "")}
+          </span>
+        )}
       </div>
 
-      <p className="mt-2 text-xs leading-relaxed text-slate-600">{gap.methodNote}</p>
-      {gap.frameworksHint && (
+      <p className="mt-2 text-xs leading-relaxed text-slate-600">
+        {usingSyllabus
+          ? `${syllabusGap.coverageRate}% of top skill mentions in job postings match ${syllabusGap.source} computing programmes.`
+          : gap.methodNote}
+      </p>
+      {!usingSyllabus && gap.frameworksHint && (
         <p className="mt-1 text-[10px] leading-snug text-slate-400">{gap.frameworksHint}</p>
       )}
 
       <div className="mt-3 flex-1">
-        {gap.sparkData.length > 0 ? (
+        {usingSyllabus ? (
+          <p className="text-[11px] text-slate-500">
+            {syllabusGap.programs.length} programmes · {syllabusGap.gapSkills.length} priority
+            gaps identified. See full breakdown on{" "}
+            <a href="/gaps" className="font-medium text-blue-600 hover:underline">
+              Skill Mix
+            </a>
+            .
+          </p>
+        ) : gap.sparkData.length > 0 ? (
           <Sparkline
             data={gap.sparkData}
             color={styles.spark}
@@ -84,12 +116,14 @@ export function CurriculumGapCard({ gap }: { gap: CurriculumGapSnapshot }) {
         )}
       </div>
 
-      <p className="mt-2 text-[10px] leading-snug text-slate-400">
-        Hard-skill demand {gap.hardSkillDemandPct}%
-        {gap.educationReadinessPct != null
-          ? ` · education readiness ${gap.educationReadinessPct}%`
-          : " · education readiness unavailable"}
-      </p>
+      {!usingSyllabus && (
+        <p className="mt-2 text-[10px] leading-snug text-slate-400">
+          Hard-skill demand {gap.hardSkillDemandPct}%
+          {gap.educationReadinessPct != null
+            ? ` · education readiness ${gap.educationReadinessPct}%`
+            : " · education readiness unavailable"}
+        </p>
+      )}
     </article>
   );
 }

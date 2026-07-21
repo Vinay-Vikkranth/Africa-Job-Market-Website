@@ -4,6 +4,7 @@ import { Bar, BarChart, Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from
 import type { DashboardData } from "@/lib/dashboard-data";
 import { GAP_COLORS } from "@/app/components/charts/shared";
 import { DataSourceButton } from "@/app/components/data-source-button";
+import { SyllabusGapSection } from "@/app/components/syllabus-gap-section";
 
 export function GapsContent({ data }: { data: DashboardData }) {
   const gapChartData = [
@@ -14,7 +15,10 @@ export function GapsContent({ data }: { data: DashboardData }) {
   ];
 
   return (
-    <section className="grid gap-4 lg:grid-cols-2">
+    <div className="space-y-6">
+      {data.syllabusGap && <SyllabusGapSection gap={data.syllabusGap} />}
+
+      <section className="grid gap-4 lg:grid-cols-2">
       <article className="dashboard-card p-5">
         <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
           <h2 className="text-sm font-semibold text-slate-900">Skill category mix</h2>
@@ -100,6 +104,7 @@ export function GapsContent({ data }: { data: DashboardData }) {
           ))}
         </div>
       </article>
-    </section>
+      </section>
+    </div>
   );
 }

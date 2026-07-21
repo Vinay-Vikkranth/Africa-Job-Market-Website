@@ -32,7 +32,7 @@ export type CurriculumGapSnapshot = {
 
 /** Well-known national curriculum frameworks (reference only — not parsed). */
 const FRAMEWORK_HINTS: Record<string, string> = {
-  Nigeria: "NUC CCMAS / NERDC (syllabus not machine-parsed yet)",
+  Nigeria: "NUC CCMAS 2022 (parsed — see Skill Mix when Nigeria is selected)",
   "South Africa": "CAPS / NQF (syllabus not machine-parsed yet)",
   Kenya: "CBC (syllabus not machine-parsed yet)",
   Ghana: "NaCCA standards (syllabus not machine-parsed yet)",
