@@ -1,7 +1,19 @@
 import { NextResponse } from "next/server";
 import { syncAllJobSources } from "@/lib/sync-jobs";
 
-export async function POST() {
+export async function POST(request: Request) {
+  // Opt-in lock for production cron: set SYNC_REQUIRE_SECRET=1 and SYNC_SECRET=...
+  if (process.env.SYNC_REQUIRE_SECRET === "1") {
+    const expected = process.env.SYNC_SECRET;
+    const provided = request.headers.get("x-sync-secret");
+    if (!expected || provided !== expected) {
+      return NextResponse.json(
+        { ok: false, message: "Unauthorized. Provide x-sync-secret header." },
+        { status: 401 },
+      );
+    }
+  }
+
   try {
     const result = await syncAllJobSources();
     return NextResponse.json({

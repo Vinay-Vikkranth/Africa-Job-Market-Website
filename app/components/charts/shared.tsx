@@ -118,7 +118,7 @@ export function KpiCard({
 }: {
   title: string;
   value: string;
-  change: number;
+  change: number | null;
   changeLabel: string;
   trend: "up" | "down";
   icon: React.ElementType;
@@ -136,14 +136,20 @@ export function KpiCard({
         <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${iconBg}`}>
           <Icon className="h-5 w-5 text-white" />
         </div>
-        <div
-          className={`flex items-center gap-1 text-xs font-semibold ${
-            isPositive ? "text-emerald-600" : "text-red-500"
-          }`}
-        >
-          {trend === "up" ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />}
-          {Math.abs(change)}%
-        </div>
+        {change == null ? (
+          <span className="text-[11px] font-medium text-slate-400" title="Not enough prior-period data to compute change">
+            n/a
+          </span>
+        ) : (
+          <div
+            className={`flex items-center gap-1 text-xs font-semibold ${
+              isPositive ? "text-emerald-600" : "text-red-500"
+            }`}
+          >
+            {trend === "up" ? <TrendingUp className="h-3.5 w-3.5" /> : <TrendingDown className="h-3.5 w-3.5" />}
+            {Math.abs(change)}%
+          </div>
+        )}
       </div>
       <p className="mt-3 text-xs font-medium uppercase tracking-wide text-slate-500">{title}</p>
       <p className="mt-1 text-2xl font-bold text-slate-900">{value}</p>
@@ -202,7 +208,7 @@ export function DataSourceBadge({ sources }: { sources: { source: string; _count
   if (sources.length === 0) return null;
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap items-center gap-2">
       {sources.map((s) => {
         const params = new URLSearchParams();
         const country = searchParams.get("country");
@@ -223,6 +229,12 @@ export function DataSourceBadge({ sources }: { sources: { source: string; _count
           </Link>
         );
       })}
+      <Link
+        href="/sources#job-boards"
+        className="rounded-full border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-500 transition hover:border-blue-200 hover:text-blue-700"
+      >
+        All data sources →
+      </Link>
     </div>
   );
 }

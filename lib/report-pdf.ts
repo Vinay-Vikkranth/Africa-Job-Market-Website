@@ -30,8 +30,10 @@ export async function generatePdfReport(data: DashboardData, country: string): P
     doc.text(
       `Average salary (USD): ${data.kpis.avgSalaryUsd > 0 ? `$${data.kpis.avgSalaryUsd.toLocaleString()}` : "N/A"}`,
     );
-    doc.text(`Overall skill gap index: ${data.kpis.overallGapPct}%`);
-    doc.text(`30-day job growth: ${data.kpis.growthPct}%`);
+    doc.text(`Top skill-category share of demand: ${data.kpis.overallGapPct}%`);
+    doc.text(
+      `30-day job growth: ${data.kpis.growthPct == null ? "n/a" : `${data.kpis.growthPct}%`}`,
+    );
     doc.moveDown();
 
     doc.fontSize(16).fillColor("#0f172a").text("Top 10 In-Demand Skills");

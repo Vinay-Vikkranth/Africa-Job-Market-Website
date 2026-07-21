@@ -12,6 +12,11 @@ import {
   getWeeklySkillTrend,
   growthPct,
 } from "@/lib/analytics";
+import { getRegionalJobBreakdown } from "@/lib/regional-jobs";
+import { getYouthEmploymentSnapshot } from "@/lib/youth-employment";
+import { getDemographicsSnapshot } from "@/lib/demographics";
+import { getCurriculumGapSnapshot } from "@/lib/curriculum-gap";
+import { getWorkforceContext } from "@/lib/workforce-context";
 
 export { COUNTRIES, COUNTRY_FLAGS };
 
@@ -125,7 +130,8 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
     Math.round(olderSalaryAvg._avg.salaryMinUsd ?? 0),
   );
 
-  const [jobsByCountry, jobsByCity, salaryByCountry, topSkillsWithName] = await Promise.all([
+  const [jobsByCountry, jobsByCity, salaryByCountry, topSkillsWithName, regionalJobs] =
+    await Promise.all([
     // Always group across ALL countries (no country filter) so the map keeps
     // showing every country's counts even when the dashboard is filtered.
     prisma.job.groupBy({
@@ -147,6 +153,7 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
       orderBy: { _avg: { salaryMinUsd: "desc" } },
     }),
     getTopSkills(where, totalJobs, 10),
+    country === "All Countries" ? Promise.resolve(null) : getRegionalJobBreakdown(country),
   ]);
 
   const [skillGap, priorSkillGap, demandVsSupply] = await Promise.all([
@@ -178,6 +185,14 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
     generateAlerts(where, skillGap),
   ]);
 
+  const demographics = getDemographicsSnapshot(country);
+  const curriculumGap = getCurriculumGapSnapshot(
+    country,
+    skillGap,
+    demographics,
+    gapTrend,
+  );
+
   return {
     kpis: {
       totalJobs,
@@ -188,7 +203,7 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
       avgSalaryUsd,
       salaryCoveragePct: asPercent(jobsWithSalary, totalJobs),
       growthPct: jobGrowth,
-      companyGrowthPct: Number(companyGrowth.toFixed(1)),
+      companyGrowthPct: companyGrowth,
       skillsGrowthPct: skillsGrowth,
       salaryGrowthPct: salaryGrowth,
       gapChangePct: gapChange,
@@ -210,6 +225,7 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
       city: item.city,
       jobs: item._count.city,
     })),
+    regionalJobs,
     salariesByCountry: salaryByCountry.map((item) => ({
       country: item.country,
       avgSalary: Math.round(item._avg.salaryMinUsd ?? 0),
@@ -218,6 +234,10 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
     topSkills: topSkillsWithName,
     skillGap,
     demandVsSupply,
+    youthEmployment: getYouthEmploymentSnapshot(country, topSkillsWithName),
+    demographics,
+    workforceContext: getWorkforceContext(country),
+    curriculumGap,
     insights,
     alerts,
     meta: {

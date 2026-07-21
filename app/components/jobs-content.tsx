@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { ExternalLink, X } from "lucide-react";
 import { formatCurrency, formatInt } from "@/app/components/charts/shared";
+import { DataSourceButton } from "@/app/components/data-source-button";
 
 type JobsPayload = Awaited<ReturnType<typeof import("@/lib/dashboard-data").getJobsList>>;
 
@@ -28,6 +29,12 @@ export function JobsContent({
 
   return (
     <>
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+        <p className="text-xs text-slate-500">
+          Job rows below are ingested from public boards — open Data Sources for the full list.
+        </p>
+        <DataSourceButton sourceId="job-boards" />
+      </div>
       {source && (
         <div className="flex items-center justify-between rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">
           <p>
@@ -59,7 +66,12 @@ export function JobsContent({
         </article>
         <article className="dashboard-card p-4">
           <p className="text-xs text-slate-500">30-Day Growth</p>
-          <p className="text-2xl font-bold">{jobs.growthPct}%</p>
+          <p className="text-2xl font-bold">
+            {jobs.growthPct == null ? "n/a" : `${jobs.growthPct}%`}
+          </p>
+          {jobs.growthPct == null && (
+            <p className="mt-1 text-[11px] text-slate-400">Not enough prior-period data</p>
+          )}
         </article>
       </section>
 

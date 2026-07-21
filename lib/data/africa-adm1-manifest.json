@@ -1,0 +1,3914 @@
+{
+  "Algeria": {
+    "iso3": "DZA",
+    "geoJsonPath": "/data/regions/dza.geojson",
+    "regions": [
+      {
+        "id": "DZ-01",
+        "name": "Adrar"
+      },
+      {
+        "id": "DZ-44",
+        "name": "Aïn Defla"
+      },
+      {
+        "id": "DZ-46",
+        "name": "Aïn Témouchent"
+      },
+      {
+        "id": "DZ-16",
+        "name": "Algiers"
+      },
+      {
+        "id": "DZ-23",
+        "name": "Annaba"
+      },
+      {
+        "id": "DZ-05",
+        "name": "Batna"
+      },
+      {
+        "id": "DZ-08",
+        "name": "Béchar"
+      },
+      {
+        "id": "DZ-06",
+        "name": "Béjaïa"
+      },
+      {
+        "id": "DZ-07",
+        "name": "Biskra"
+      },
+      {
+        "id": "DZ-09",
+        "name": "Blida"
+      },
+      {
+        "id": "DZ-34",
+        "name": "Bordj Bou Arréridj"
+      },
+      {
+        "id": "DZ-10",
+        "name": "Bouïra"
+      },
+      {
+        "id": "DZ-35",
+        "name": "Boumerdès"
+      },
+      {
+        "id": "DZ-02",
+        "name": "Chlef"
+      },
+      {
+        "id": "DZ-25",
+        "name": "Constantine"
+      },
+      {
+        "id": "DZ-17",
+        "name": "Djelfa"
+      },
+      {
+        "id": "DZ-32",
+        "name": "El Bayadh"
+      },
+      {
+        "id": "DZ-39",
+        "name": "El Oued"
+      },
+      {
+        "id": "DZ-36",
+        "name": "El Tarf"
+      },
+      {
+        "id": "DZ-47",
+        "name": "Ghardaïa"
+      },
+      {
+        "id": "DZ-24",
+        "name": "Guelma"
+      },
+      {
+        "id": "DZ-33",
+        "name": "Illizi"
+      },
+      {
+        "id": "DZ-18",
+        "name": "Jijel"
+      },
+      {
+        "id": "DZ-40",
+        "name": "Khenchela"
+      },
+      {
+        "id": "DZ-03",
+        "name": "Laghouat"
+      },
+      {
+        "id": "DZ-28",
+        "name": "M'Sila"
+      },
+      {
+        "id": "DZ-29",
+        "name": "Mascara"
+      },
+      {
+        "id": "DZ-26",
+        "name": "Médéa"
+      },
+      {
+        "id": "DZ-43",
+        "name": "Mila"
+      },
+      {
+        "id": "DZ-27",
+        "name": "Mostaganem"
+      },
+      {
+        "id": "DZ-45",
+        "name": "Naama"
+      },
+      {
+        "id": "DZ-31",
+        "name": "Oran"
+      },
+      {
+        "id": "DZ-30",
+        "name": "Ouargla"
+      },
+      {
+        "id": "DZ-04",
+        "name": "Oum El Bouaghi"
+      },
+      {
+        "id": "DZ-48",
+        "name": "Relizane"
+      },
+      {
+        "id": "DZ-20",
+        "name": "Saïda"
+      },
+      {
+        "id": "DZ-19",
+        "name": "Sétif"
+      },
+      {
+        "id": "DZ-22",
+        "name": "Sidi Bel Abbès"
+      },
+      {
+        "id": "DZ-21",
+        "name": "Skikda"
+      },
+      {
+        "id": "DZ-41",
+        "name": "Souk Ahras"
+      },
+      {
+        "id": "DZ-11",
+        "name": "Tamanghasset"
+      },
+      {
+        "id": "DZ-12",
+        "name": "Tébessa"
+      },
+      {
+        "id": "DZ-14",
+        "name": "Tiaret"
+      },
+      {
+        "id": "DZ-37",
+        "name": "Tindouf"
+      },
+      {
+        "id": "DZ-42",
+        "name": "Tipasa"
+      },
+      {
+        "id": "DZ-38",
+        "name": "Tissemsilt"
+      },
+      {
+        "id": "DZ-15",
+        "name": "Tizi Ouzou"
+      },
+      {
+        "id": "DZ-13",
+        "name": "Tlemcen"
+      }
+    ]
+  },
+  "Angola": {
+    "iso3": "AGO",
+    "geoJsonPath": "/data/regions/ago.geojson",
+    "regions": [
+      {
+        "id": "AO-BGO",
+        "name": "Bengo"
+      },
+      {
+        "id": "AO-BGU",
+        "name": "Benguela"
+      },
+      {
+        "id": "AO-BIE",
+        "name": "Bié"
+      },
+      {
+        "id": "AO-CAB",
+        "name": "Cabinda"
+      },
+      {
+        "id": "AO-CCU",
+        "name": "Cuando Cubango"
+      },
+      {
+        "id": "AO-CNO",
+        "name": "Cuanza Norte"
+      },
+      {
+        "id": "AO-CUS",
+        "name": "Cuanza Sul"
+      },
+      {
+        "id": "AO-CNN",
+        "name": "Cunene"
+      },
+      {
+        "id": "AO-HUA",
+        "name": "Huambo"
+      },
+      {
+        "id": "AO-HUI",
+        "name": "Huíla"
+      },
+      {
+        "id": "AO-LUA",
+        "name": "Luanda"
+      },
+      {
+        "id": "AO-LNO",
+        "name": "Lunda Norte"
+      },
+      {
+        "id": "AO-LSU",
+        "name": "Lunda Sul"
+      },
+      {
+        "id": "AO-MAL",
+        "name": "Malanje"
+      },
+      {
+        "id": "AO-MOX",
+        "name": "Moxico"
+      },
+      {
+        "id": "AO-NAM",
+        "name": "Namibe"
+      },
+      {
+        "id": "AO-UIG",
+        "name": "Uíge"
+      },
+      {
+        "id": "AO-ZAI",
+        "name": "Zaire"
+      }
+    ]
+  },
+  "Benin": {
+    "iso3": "BEN",
+    "geoJsonPath": "/data/regions/ben.geojson",
+    "regions": [
+      {
+        "id": "BJ-AL",
+        "name": "Alibori"
+      },
+      {
+        "id": "BJ-AK",
+        "name": "Atakora"
+      },
+      {
+        "id": "BJ-AQ",
+        "name": "Atlantique"
+      },
+      {
+        "id": "BJ-BO",
+        "name": "Borgou"
+      },
+      {
+        "id": "BJ-CO",
+        "name": "Collines"
+      },
+      {
+        "id": "BJ-DO",
+        "name": "Donga"
+      },
+      {
+        "id": "BJ-KO",
+        "name": "Kouffo"
+      },
+      {
+        "id": "BJ-LI",
+        "name": "Littoral"
+      },
+      {
+        "id": "BJ-MO",
+        "name": "Mono"
+      },
+      {
+        "id": "BJ-OU",
+        "name": "Ouémé"
+      },
+      {
+        "id": "BJ-PL",
+        "name": "Plateau"
+      },
+      {
+        "id": "BJ-ZO",
+        "name": "Zou"
+      }
+    ]
+  },
+  "Botswana": {
+    "iso3": "BWA",
+    "geoJsonPath": "/data/regions/bwa.geojson",
+    "regions": [
+      {
+        "id": "BW-CE",
+        "name": "Central"
+      },
+      {
+        "id": "BW-FR",
+        "name": "Francistown"
+      },
+      {
+        "id": "BW-GA",
+        "name": "Gaborone"
+      },
+      {
+        "id": "BW-GH",
+        "name": "Ghanzi"
+      },
+      {
+        "id": "BW-JW",
+        "name": "Jwaneng"
+      },
+      {
+        "id": "BW-KG",
+        "name": "Kgalagadi"
+      },
+      {
+        "id": "BW-KL",
+        "name": "Kgatleng"
+      },
+      {
+        "id": "BW-KW",
+        "name": "Kweneng"
+      },
+      {
+        "id": "BW-LO",
+        "name": "Lobatse"
+      },
+      {
+        "id": "BW-NE",
+        "name": "North-East"
+      },
+      {
+        "id": "BW-NW",
+        "name": "North-West"
+      },
+      {
+        "id": "BW-SP",
+        "name": "Selebi-Phikwe"
+      },
+      {
+        "id": "BW-SE",
+        "name": "South-East"
+      },
+      {
+        "id": "BW-SO",
+        "name": "Southern"
+      },
+      {
+        "id": "BW-ST",
+        "name": "Sowa"
+      }
+    ]
+  },
+  "Burkina Faso": {
+    "iso3": "BFA",
+    "geoJsonPath": "/data/regions/bfa.geojson",
+    "regions": [
+      {
+        "id": "BF-BAL",
+        "name": "Balé"
+      },
+      {
+        "id": "BF-BAM",
+        "name": "Bam"
+      },
+      {
+        "id": "BF-BAN",
+        "name": "Banwa"
+      },
+      {
+        "id": "BF-BAZ",
+        "name": "Bazèga"
+      },
+      {
+        "id": "BF-BGR",
+        "name": "Bougouriba"
+      },
+      {
+        "id": "BF-BLG",
+        "name": "Boulgou"
+      },
+      {
+        "id": "BF-BLK",
+        "name": "Boulkiemdé"
+      },
+      {
+        "id": "BF-COM",
+        "name": "Comoé"
+      },
+      {
+        "id": "BF-GAN",
+        "name": "Ganzourgou"
+      },
+      {
+        "id": "BF-GNA",
+        "name": "Gnagna"
+      },
+      {
+        "id": "BF-GOU",
+        "name": "Gourma"
+      },
+      {
+        "id": "BF-HOU",
+        "name": "Houet"
+      },
+      {
+        "id": "BF-IOB",
+        "name": "Ioba"
+      },
+      {
+        "id": "BF-KAD",
+        "name": "Kadiogo"
+      },
+      {
+        "id": "BF-KEN",
+        "name": "Kénédougou"
+      },
+      {
+        "id": "BF-KMD",
+        "name": "Komondjari"
+      },
+      {
+        "id": "BF-KMP",
+        "name": "Kompienga"
+      },
+      {
+        "id": "BF-KOS",
+        "name": "Kossi"
+      },
+      {
+        "id": "BF-KOP",
+        "name": "Koulpélogo"
+      },
+      {
+        "id": "BF-KOT",
+        "name": "Kouritenga"
+      },
+      {
+        "id": "BF-KOW",
+        "name": "Kourwéogo"
+      },
+      {
+        "id": "BF-LER",
+        "name": "Léraba"
+      },
+      {
+        "id": "BF-LOR",
+        "name": "Loroum"
+      },
+      {
+        "id": "BF-MOU",
+        "name": "Mouhoun"
+      },
+      {
+        "id": "BF-NAO",
+        "name": "Nahouri"
+      },
+      {
+        "id": "BF-NAM",
+        "name": "Namentenga"
+      },
+      {
+        "id": "BF-NAY",
+        "name": "Nayala"
+      },
+      {
+        "id": "BF-NOU",
+        "name": "Noumbiel"
+      },
+      {
+        "id": "BF-OUB",
+        "name": "Oubritenga"
+      },
+      {
+        "id": "BF-OUD",
+        "name": "Oudalan"
+      },
+      {
+        "id": "BF-PAS",
+        "name": "Passoré"
+      },
+      {
+        "id": "BF-PON",
+        "name": "Poni"
+      },
+      {
+        "id": "BF-SNG",
+        "name": "Sanguié"
+      },
+      {
+        "id": "BF-SMT",
+        "name": "Sanmatenga"
+      },
+      {
+        "id": "BF-SEN",
+        "name": "Séno"
+      },
+      {
+        "id": "BF-SIS",
+        "name": "Sissili"
+      },
+      {
+        "id": "BF-SOM",
+        "name": "Soum"
+      },
+      {
+        "id": "BF-SOR",
+        "name": "Sourou"
+      },
+      {
+        "id": "BF-TAP",
+        "name": "Tapoa"
+      },
+      {
+        "id": "BF-TUI",
+        "name": "Tuy"
+      },
+      {
+        "id": "BF-YAG",
+        "name": "Yagha"
+      },
+      {
+        "id": "BF-YAT",
+        "name": "Yatenga"
+      },
+      {
+        "id": "BF-ZIR",
+        "name": "Ziro"
+      },
+      {
+        "id": "BF-ZON",
+        "name": "Zondoma"
+      },
+      {
+        "id": "BF-ZOU",
+        "name": "Zoundwéogo"
+      }
+    ]
+  },
+  "Burundi": {
+    "iso3": "BDI",
+    "geoJsonPath": "/data/regions/bdi.geojson",
+    "regions": [
+      {
+        "id": "BI-BB",
+        "name": "Bubanza"
+      },
+      {
+        "id": "BI-BM",
+        "name": "Bujumbura Mairie"
+      },
+      {
+        "id": "BI-BL",
+        "name": "Bujumbura Rural"
+      },
+      {
+        "id": "BI-BR",
+        "name": "Bururi"
+      },
+      {
+        "id": "BI-CA",
+        "name": "Cankuzo"
+      },
+      {
+        "id": "BI-CI",
+        "name": "Cibitoke"
+      },
+      {
+        "id": "BI-GI",
+        "name": "Gitega"
+      },
+      {
+        "id": "BI-KR",
+        "name": "Karuzi"
+      },
+      {
+        "id": "BI-KY",
+        "name": "Kayanza"
+      },
+      {
+        "id": "BI-KI",
+        "name": "Kirundo"
+      },
+      {
+        "id": "BI-MA",
+        "name": "Makamba"
+      },
+      {
+        "id": "BI-MU",
+        "name": "Muramvya"
+      },
+      {
+        "id": "BI-MY",
+        "name": "Muyinga"
+      },
+      {
+        "id": "BI-MW",
+        "name": "Mwaro"
+      },
+      {
+        "id": "BI-NG",
+        "name": "Ngozi"
+      },
+      {
+        "id": "BI-RT",
+        "name": "Rutana"
+      },
+      {
+        "id": "BI-RY",
+        "name": "Ruyigi"
+      }
+    ]
+  },
+  "Cabo Verde": {
+    "iso3": "CPV",
+    "geoJsonPath": "/data/regions/cpv.geojson",
+    "regions": [
+      {
+        "id": "CV-BV",
+        "name": "Boa Vista"
+      },
+      {
+        "id": "CV-BR",
+        "name": "Brava"
+      },
+      {
+        "id": "CV-MA",
+        "name": "Maio"
+      },
+      {
+        "id": "CV-MO",
+        "name": "Mosteiros"
+      },
+      {
+        "id": "CV-PA",
+        "name": "Paul"
+      },
+      {
+        "id": "CV-PN",
+        "name": "Porto Novo"
+      },
+      {
+        "id": "CV-PR",
+        "name": "Praia"
+      },
+      {
+        "id": "CV-RB",
+        "name": "Ribeira Brava"
+      },
+      {
+        "id": "CV-RG",
+        "name": "Ribeira Grande"
+      },
+      {
+        "id": "CV-RS",
+        "name": "Ribeira Grande de Santiago"
+      },
+      {
+        "id": "CV-SL",
+        "name": "Sal"
+      },
+      {
+        "id": "CV-CA",
+        "name": "Santa Catarina"
+      },
+      {
+        "id": "CV-CF",
+        "name": "Santa Catarina do Fogo"
+      },
+      {
+        "id": "CV-CR",
+        "name": "Santa Cruz"
+      },
+      {
+        "id": "CV-SD",
+        "name": "São Domingos"
+      },
+      {
+        "id": "CV-SF",
+        "name": "São Filipe"
+      },
+      {
+        "id": "CV-SO",
+        "name": "São Lourenço dos Órgãos"
+      },
+      {
+        "id": "CV-SM",
+        "name": "São Miguel"
+      },
+      {
+        "id": "CV-SS",
+        "name": "São Salvador do Mundo"
+      },
+      {
+        "id": "CV-SV",
+        "name": "São Vicente"
+      },
+      {
+        "id": "CV-TA",
+        "name": "Tarrafal"
+      },
+      {
+        "id": "CV-TS",
+        "name": "Tarrafal de São Nicolau"
+      }
+    ]
+  },
+  "Cameroon": {
+    "iso3": "CMR",
+    "geoJsonPath": "/data/regions/cmr.geojson",
+    "regions": [
+      {
+        "id": "CM-AD",
+        "name": "Adamawa"
+      },
+      {
+        "id": "CM-CE",
+        "name": "Centre"
+      },
+      {
+        "id": "CM-ES",
+        "name": "East"
+      },
+      {
+        "id": "CM-EN",
+        "name": "Far North"
+      },
+      {
+        "id": "CM-LT",
+        "name": "Littoral"
+      },
+      {
+        "id": "CM-NO",
+        "name": "North"
+      },
+      {
+        "id": "CM-NW",
+        "name": "Northwest"
+      },
+      {
+        "id": "CM-SU",
+        "name": "South"
+      },
+      {
+        "id": "CM-SW",
+        "name": "Southwest"
+      },
+      {
+        "id": "CM-OU",
+        "name": "West"
+      }
+    ]
+  },
+  "Central African Republic": {
+    "iso3": "CAF",
+    "geoJsonPath": "/data/regions/caf.geojson",
+    "regions": [
+      {
+        "id": "CF-BB",
+        "name": "Bamingui-Bangoran Prefecture"
+      },
+      {
+        "id": "CF-BGF",
+        "name": "Bangui"
+      },
+      {
+        "id": "CF-BK",
+        "name": "Basse-Kotto Prefecture"
+      },
+      {
+        "id": "CF-HM",
+        "name": "Haut-Mbomou Prefecture"
+      },
+      {
+        "id": "CF-HK",
+        "name": "Haute-Kotto Prefecture"
+      },
+      {
+        "id": "CF-KG",
+        "name": "Kémo Prefecture"
+      },
+      {
+        "id": "CF-LB",
+        "name": "Lobaye Prefecture"
+      },
+      {
+        "id": "CF-HS",
+        "name": "Mambéré-Kadéï"
+      },
+      {
+        "id": "CF-MB",
+        "name": "Mbomou Prefecture"
+      },
+      {
+        "id": "CF-KB",
+        "name": "Nana-Grébizi Economic Prefecture"
+      },
+      {
+        "id": "CF-NM",
+        "name": "Nana-Mambéré Prefecture"
+      },
+      {
+        "id": "CF-MP",
+        "name": "Ombella-M'Poko Prefecture"
+      },
+      {
+        "id": "CF-UK",
+        "name": "Ouaka Prefecture"
+      },
+      {
+        "id": "CF-AC",
+        "name": "Ouham Prefecture"
+      },
+      {
+        "id": "CF-OP",
+        "name": "Ouham-Pendé Prefecture"
+      },
+      {
+        "id": "CF-SE",
+        "name": "Sangha-Mbaéré"
+      },
+      {
+        "id": "CF-VK",
+        "name": "Vakaga Prefecture"
+      }
+    ]
+  },
+  "Chad": {
+    "iso3": "TCD",
+    "geoJsonPath": "/data/regions/tcd.geojson",
+    "regions": [
+      {
+        "id": "TD-BG",
+        "name": "Bahr el Gazel"
+      },
+      {
+        "id": "TD-BA",
+        "name": "Batha"
+      },
+      {
+        "id": "TD-BO",
+        "name": "Borkou"
+      },
+      {
+        "id": "TD-CB",
+        "name": "Chari-Baguirmi"
+      },
+      {
+        "id": "TD-X01~",
+        "name": "Ennedi"
+      },
+      {
+        "id": "TD-GR",
+        "name": "Guéra"
+      },
+      {
+        "id": "TD-HL",
+        "name": "Hadjer-Lamis"
+      },
+      {
+        "id": "TD-KA",
+        "name": "Kanem"
+      },
+      {
+        "id": "TD-LC",
+        "name": "Lac"
+      },
+      {
+        "id": "TD-LO",
+        "name": "Logone Occidental"
+      },
+      {
+        "id": "TD-LR",
+        "name": "Logone Oriental"
+      },
+      {
+        "id": "TD-MA",
+        "name": "Mandoul"
+      },
+      {
+        "id": "TD-ME",
+        "name": "Mayo-Kebbi Est"
+      },
+      {
+        "id": "TD-MO",
+        "name": "Mayo-Kebbi Ouest"
+      },
+      {
+        "id": "TD-MC",
+        "name": "Moyen-Chari"
+      },
+      {
+        "id": "TD-ND",
+        "name": "N'Djamena"
+      },
+      {
+        "id": "TD-OD",
+        "name": "Ouaddaï"
+      },
+      {
+        "id": "TD-SA",
+        "name": "Salamat"
+      },
+      {
+        "id": "TD-SI",
+        "name": "Sila"
+      },
+      {
+        "id": "TD-TA",
+        "name": "Tandjilé"
+      },
+      {
+        "id": "TD-TI",
+        "name": "Tibesti"
+      },
+      {
+        "id": "TD-WF",
+        "name": "Wadi Fira"
+      }
+    ]
+  },
+  "Comoros": {
+    "iso3": "COM",
+    "geoJsonPath": "/data/regions/com.geojson",
+    "regions": [
+      {
+        "id": "KM-G",
+        "name": "Andjazîdja"
+      },
+      {
+        "id": "KM-A",
+        "name": "Anjouan"
+      },
+      {
+        "id": "KM-M",
+        "name": "Mohéli"
+      }
+    ]
+  },
+  "Democratic Republic of the Congo": {
+    "iso3": "COD",
+    "geoJsonPath": "/data/regions/cod.geojson",
+    "regions": [
+      {
+        "id": "CD-BN",
+        "name": "Bandundu"
+      },
+      {
+        "id": "CD-EQ",
+        "name": "Équateur"
+      },
+      {
+        "id": "CD-KW",
+        "name": "Kasaï-Occidental"
+      },
+      {
+        "id": "CD-KE",
+        "name": "Kasaï-Oriental"
+      },
+      {
+        "id": "CD-KA",
+        "name": "Katanga"
+      },
+      {
+        "id": "CD-KN",
+        "name": "Kinshasa"
+      },
+      {
+        "id": "CD-BC",
+        "name": "Kongo Central"
+      },
+      {
+        "id": "CD-MA",
+        "name": "Maniema"
+      },
+      {
+        "id": "CD-NK",
+        "name": "North Kivu"
+      },
+      {
+        "id": "CD-OR",
+        "name": "Orientale"
+      },
+      {
+        "id": "CD-SK",
+        "name": "South Kivu"
+      }
+    ]
+  },
+  "Djibouti": {
+    "iso3": "DJI",
+    "geoJsonPath": "/data/regions/dji.geojson",
+    "regions": [
+      {
+        "id": "DJ-AS",
+        "name": "Ali Sabieh"
+      },
+      {
+        "id": "DJ-AR",
+        "name": "Arta"
+      },
+      {
+        "id": "DJ-DI",
+        "name": "Dikhil"
+      },
+      {
+        "id": "DJ-DJ",
+        "name": "Djibouti"
+      },
+      {
+        "id": "DJ-OB",
+        "name": "Obock"
+      },
+      {
+        "id": "DJ-TA",
+        "name": "Tadjourah"
+      }
+    ]
+  },
+  "Egypt": {
+    "iso3": "EGY",
+    "geoJsonPath": "/data/regions/egy.geojson",
+    "regions": [
+      {
+        "id": "EG-SHR",
+        "name": "Al Sharqia"
+      },
+      {
+        "id": "EG-ALX",
+        "name": "Alexandria"
+      },
+      {
+        "id": "EG-ASN",
+        "name": "Aswan"
+      },
+      {
+        "id": "EG-AST",
+        "name": "Asyut"
+      },
+      {
+        "id": "EG-BH",
+        "name": "Beheira"
+      },
+      {
+        "id": "EG-BNS",
+        "name": "Beni Suef"
+      },
+      {
+        "id": "EG-C",
+        "name": "Cairo"
+      },
+      {
+        "id": "EG-DK",
+        "name": "Dakahlia"
+      },
+      {
+        "id": "EG-DT",
+        "name": "Damietta"
+      },
+      {
+        "id": "EG-FYM",
+        "name": "Faiyum"
+      },
+      {
+        "id": "EG-GH",
+        "name": "Gharbia"
+      },
+      {
+        "id": "EG-GZ",
+        "name": "Giza"
+      },
+      {
+        "id": "EG-IS",
+        "name": "Ismailia"
+      },
+      {
+        "id": "EG-KFS",
+        "name": "Kafr el-Sheikh"
+      },
+      {
+        "id": "EG-LX",
+        "name": "Luxor"
+      },
+      {
+        "id": "EG-MT",
+        "name": "Matrouh"
+      },
+      {
+        "id": "EG-MN",
+        "name": "Minya"
+      },
+      {
+        "id": "EG-MNF",
+        "name": "Monufia"
+      },
+      {
+        "id": "EG-WAD",
+        "name": "New Valley"
+      },
+      {
+        "id": "EG-SIN",
+        "name": "North Sinai"
+      },
+      {
+        "id": "EG-PTS",
+        "name": "Port Said"
+      },
+      {
+        "id": "EG-KB",
+        "name": "Qalyubia"
+      },
+      {
+        "id": "EG-KN",
+        "name": "Qena"
+      },
+      {
+        "id": "EG-BA",
+        "name": "Red Sea"
+      },
+      {
+        "id": "EG-SHG",
+        "name": "Sohag"
+      },
+      {
+        "id": "EG-JS",
+        "name": "South Sinai"
+      },
+      {
+        "id": "EG-SUZ",
+        "name": "Suez"
+      }
+    ]
+  },
+  "Equatorial Guinea": {
+    "iso3": "GNQ",
+    "geoJsonPath": "/data/regions/gnq.geojson",
+    "regions": [
+      {
+        "id": "GQ-AN",
+        "name": "Annobón"
+      },
+      {
+        "id": "GQ-BN",
+        "name": "Bioko Norte"
+      },
+      {
+        "id": "GQ-BS",
+        "name": "Bioko Sur"
+      },
+      {
+        "id": "GQ-CS",
+        "name": "Centro Sur"
+      },
+      {
+        "id": "GQ-KN",
+        "name": "Kié-Ntem"
+      },
+      {
+        "id": "GQ-LI",
+        "name": "Litoral"
+      },
+      {
+        "id": "GQ-WN",
+        "name": "Wele-Nzas"
+      }
+    ]
+  },
+  "Eritrea": {
+    "iso3": "ERI",
+    "geoJsonPath": "/data/regions/eri.geojson",
+    "regions": [
+      {
+        "id": "ER-AN",
+        "name": "Anseba"
+      },
+      {
+        "id": "ER-DU",
+        "name": "Debub"
+      },
+      {
+        "id": "ER-GB",
+        "name": "Gash-Barka"
+      },
+      {
+        "id": "ER-MA",
+        "name": "Maekel"
+      },
+      {
+        "id": "ER-SK",
+        "name": "Northern Red Sea"
+      },
+      {
+        "id": "ER-DK",
+        "name": "Southern Red Sea"
+      }
+    ]
+  },
+  "Eswatini": {
+    "iso3": "SWZ",
+    "geoJsonPath": "/data/regions/swz.geojson",
+    "regions": [
+      {
+        "id": "SZ-HH",
+        "name": "Hhohho"
+      },
+      {
+        "id": "SZ-LU",
+        "name": "Lubombo"
+      },
+      {
+        "id": "SZ-MA",
+        "name": "Manzini"
+      },
+      {
+        "id": "SZ-SH",
+        "name": "Shiselweni"
+      }
+    ]
+  },
+  "Ethiopia": {
+    "iso3": "ETH",
+    "geoJsonPath": "/data/regions/eth.geojson",
+    "regions": [
+      {
+        "id": "ET-AA",
+        "name": "Addis Ababa"
+      },
+      {
+        "id": "ET-AF",
+        "name": "Afar"
+      },
+      {
+        "id": "ET-AM",
+        "name": "Amhara"
+      },
+      {
+        "id": "ET-BE",
+        "name": "Benishangul-Gumuz"
+      },
+      {
+        "id": "ET-DD",
+        "name": "Dire Dawa"
+      },
+      {
+        "id": "ET-GA",
+        "name": "Gambela"
+      },
+      {
+        "id": "ET-HA",
+        "name": "Harari"
+      },
+      {
+        "id": "ET-OR",
+        "name": "Oromia"
+      },
+      {
+        "id": "ET-SO",
+        "name": "Somali"
+      },
+      {
+        "id": "ET-SN",
+        "name": "Southern Nations"
+      },
+      {
+        "id": "ET-TI",
+        "name": "Tigray"
+      }
+    ]
+  },
+  "Gabon": {
+    "iso3": "GAB",
+    "geoJsonPath": "/data/regions/gab.geojson",
+    "regions": [
+      {
+        "id": "GA-1",
+        "name": "Estuaire"
+      },
+      {
+        "id": "GA-2",
+        "name": "Haut-Ogooué"
+      },
+      {
+        "id": "GA-3",
+        "name": "Moyen-Ogooué"
+      },
+      {
+        "id": "GA-4",
+        "name": "Ngounié"
+      },
+      {
+        "id": "GA-5",
+        "name": "Nyanga"
+      },
+      {
+        "id": "GA-6",
+        "name": "Ogooué-Ivindo"
+      },
+      {
+        "id": "GA-7",
+        "name": "Ogooué-Lolo"
+      },
+      {
+        "id": "GA-8",
+        "name": "Ogooué-Maritime"
+      },
+      {
+        "id": "GA-9",
+        "name": "Woleu-Ntem"
+      }
+    ]
+  },
+  "Gambia": {
+    "iso3": "GMB",
+    "geoJsonPath": "/data/regions/gmb.geojson",
+    "regions": [
+      {
+        "id": "GM-B",
+        "name": "Banjul"
+      },
+      {
+        "id": "GM-M",
+        "name": "Central River"
+      },
+      {
+        "id": "GM-L",
+        "name": "Lower River"
+      },
+      {
+        "id": "GM-N",
+        "name": "North Bank"
+      },
+      {
+        "id": "GM-U",
+        "name": "Upper River"
+      },
+      {
+        "id": "GM-W",
+        "name": "West Coast"
+      }
+    ]
+  },
+  "Ghana": {
+    "iso3": "GHA",
+    "geoJsonPath": "/data/regions/gha.geojson",
+    "regions": [
+      {
+        "id": "GH-AH",
+        "name": "Ashanti"
+      },
+      {
+        "id": "GH-BA",
+        "name": "Brong-Ahafo"
+      },
+      {
+        "id": "GH-CP",
+        "name": "Central"
+      },
+      {
+        "id": "GH-EP",
+        "name": "Eastern"
+      },
+      {
+        "id": "GH-AA",
+        "name": "Greater Accra"
+      },
+      {
+        "id": "GH-NP",
+        "name": "Northern"
+      },
+      {
+        "id": "GH-UE",
+        "name": "Upper East"
+      },
+      {
+        "id": "GH-UW",
+        "name": "Upper West"
+      },
+      {
+        "id": "GH-TV",
+        "name": "Volta"
+      },
+      {
+        "id": "GH-WP",
+        "name": "Western"
+      }
+    ]
+  },
+  "Guinea": {
+    "iso3": "GIN",
+    "geoJsonPath": "/data/regions/gin.geojson",
+    "regions": [
+      {
+        "id": "GN-BE",
+        "name": "Beyla Prefecture"
+      },
+      {
+        "id": "GN-BF",
+        "name": "Boffa Prefecture"
+      },
+      {
+        "id": "GN-BK",
+        "name": "Boké"
+      },
+      {
+        "id": "GN-C",
+        "name": "Conakry"
+      },
+      {
+        "id": "GN-CO",
+        "name": "Coyah Prefecture"
+      },
+      {
+        "id": "GN-DB",
+        "name": "Dabola Prefecture"
+      },
+      {
+        "id": "GN-DL",
+        "name": "Dalaba Prefecture"
+      },
+      {
+        "id": "GN-DI",
+        "name": "Dinguiraye Prefecture"
+      },
+      {
+        "id": "GN-DU",
+        "name": "Dubréka Prefecture"
+      },
+      {
+        "id": "GN-FA",
+        "name": "Faranah"
+      },
+      {
+        "id": "GN-FO",
+        "name": "Forécariah Prefecture"
+      },
+      {
+        "id": "GN-FR",
+        "name": "Fria Prefecture"
+      },
+      {
+        "id": "GN-GA",
+        "name": "Gaoual Prefecture"
+      },
+      {
+        "id": "GN-GU",
+        "name": "Guéckédou Prefecture"
+      },
+      {
+        "id": "GN-K",
+        "name": "Kankan"
+      },
+      {
+        "id": "GN-KE",
+        "name": "Kérouané Prefecture"
+      },
+      {
+        "id": "GN-KD",
+        "name": "Kindia"
+      },
+      {
+        "id": "GN-KS",
+        "name": "Kissidougou Prefecture"
+      },
+      {
+        "id": "GN-KB",
+        "name": "Koubia Prefecture"
+      },
+      {
+        "id": "GN-KN",
+        "name": "Koundara Prefecture"
+      },
+      {
+        "id": "GN-KO",
+        "name": "Kouroussa Prefecture"
+      },
+      {
+        "id": "GN-LA",
+        "name": "Labé Prefecture"
+      },
+      {
+        "id": "GN-LE",
+        "name": "Lélouma Prefecture"
+      },
+      {
+        "id": "GN-LO",
+        "name": "Lola Prefecture"
+      },
+      {
+        "id": "GN-MC",
+        "name": "Macenta Prefecture"
+      },
+      {
+        "id": "GN-ML",
+        "name": "Mali Prefecture"
+      },
+      {
+        "id": "GN-MM",
+        "name": "Mamou Prefecture"
+      },
+      {
+        "id": "GN-MD",
+        "name": "Mandiana Prefecture"
+      },
+      {
+        "id": "GN-NZ",
+        "name": "Nzérékoré Prefecture"
+      },
+      {
+        "id": "GN-PI",
+        "name": "Pita Prefecture"
+      },
+      {
+        "id": "GN-SI",
+        "name": "Siguiri Prefecture"
+      },
+      {
+        "id": "GN-TE",
+        "name": "Télimélé Prefecture"
+      },
+      {
+        "id": "GN-TO",
+        "name": "Tougué Prefecture"
+      },
+      {
+        "id": "GN-YO",
+        "name": "Yomou Prefecture"
+      }
+    ]
+  },
+  "Guinea-Bissau": {
+    "iso3": "GNB",
+    "geoJsonPath": "/data/regions/gnb.geojson",
+    "regions": [
+      {
+        "id": "GW-BA",
+        "name": "Bafatá"
+      },
+      {
+        "id": "GW-BM",
+        "name": "Biombo"
+      },
+      {
+        "id": "GW-BS",
+        "name": "Bissau"
+      },
+      {
+        "id": "GW-BL",
+        "name": "Bolama"
+      },
+      {
+        "id": "GW-CA",
+        "name": "Cacheu"
+      },
+      {
+        "id": "GW-GA",
+        "name": "Gabú"
+      },
+      {
+        "id": "GW-OI",
+        "name": "Oio"
+      },
+      {
+        "id": "GW-QU",
+        "name": "Quinara"
+      },
+      {
+        "id": "GW-TO",
+        "name": "Tombali"
+      }
+    ]
+  },
+  "Ivory Coast": {
+    "iso3": "CIV",
+    "geoJsonPath": "/data/regions/civ.geojson",
+    "regions": [
+      {
+        "id": "CI-16",
+        "name": "Agnéby"
+      },
+      {
+        "id": "CI-17",
+        "name": "Bafing"
+      },
+      {
+        "id": "CI-09",
+        "name": "Bas-Sassandra"
+      },
+      {
+        "id": "CI-05",
+        "name": "Comoé"
+      },
+      {
+        "id": "CI-10",
+        "name": "Denguélé"
+      },
+      {
+        "id": "CI-06",
+        "name": "Dix-Huit Montagnes"
+      },
+      {
+        "id": "CI-18",
+        "name": "Fromager"
+      },
+      {
+        "id": "CI-02",
+        "name": "Haut-Sassandra"
+      },
+      {
+        "id": "CI-07",
+        "name": "Lacs"
+      },
+      {
+        "id": "CI-01",
+        "name": "Lagunes"
+      },
+      {
+        "id": "CI-12",
+        "name": "Marahoué"
+      },
+      {
+        "id": "CI-19",
+        "name": "Moyen-Cavally"
+      },
+      {
+        "id": "CI-11",
+        "name": "N'zi-Comoé"
+      },
+      {
+        "id": "CI-03",
+        "name": "Savanes"
+      },
+      {
+        "id": "CI-15",
+        "name": "Sud-Bandama"
+      },
+      {
+        "id": "CI-13",
+        "name": "Sud-Comoé"
+      },
+      {
+        "id": "CI-04",
+        "name": "Vallée du Bandama"
+      },
+      {
+        "id": "CI-14",
+        "name": "Worodougou"
+      },
+      {
+        "id": "CI-08",
+        "name": "Zanzan"
+      }
+    ]
+  },
+  "Kenya": {
+    "iso3": "KEN",
+    "geoJsonPath": "/data/regions/ken.geojson",
+    "regions": [
+      {
+        "id": "KE-200",
+        "name": "Central"
+      },
+      {
+        "id": "KE-300",
+        "name": "Coast"
+      },
+      {
+        "id": "KE-400",
+        "name": "Eastern"
+      },
+      {
+        "id": "KE-110",
+        "name": "Nairobi"
+      },
+      {
+        "id": "KE-500",
+        "name": "North Eastern"
+      },
+      {
+        "id": "KE-600",
+        "name": "Nyanza"
+      },
+      {
+        "id": "KE-700",
+        "name": "Rift Valley"
+      },
+      {
+        "id": "KE-800",
+        "name": "Western"
+      }
+    ]
+  },
+  "Lesotho": {
+    "iso3": "LSO",
+    "geoJsonPath": "/data/regions/lso.geojson",
+    "regions": [
+      {
+        "id": "LS-D",
+        "name": "Berea"
+      },
+      {
+        "id": "LS-B",
+        "name": "Butha-Buthe"
+      },
+      {
+        "id": "LS-C",
+        "name": "Leribe"
+      },
+      {
+        "id": "LS-E",
+        "name": "Mafeteng"
+      },
+      {
+        "id": "LS-A",
+        "name": "Maseru"
+      },
+      {
+        "id": "LS-F",
+        "name": "Mohale's Hoek"
+      },
+      {
+        "id": "LS-J",
+        "name": "Mokhotlong"
+      },
+      {
+        "id": "LS-H",
+        "name": "Qacha's Nek"
+      },
+      {
+        "id": "LS-G",
+        "name": "Quthing"
+      },
+      {
+        "id": "LS-K",
+        "name": "Thaba-Tseka"
+      }
+    ]
+  },
+  "Liberia": {
+    "iso3": "LBR",
+    "geoJsonPath": "/data/regions/lbr.geojson",
+    "regions": [
+      {
+        "id": "LR-BM",
+        "name": "Bomi"
+      },
+      {
+        "id": "LR-BG",
+        "name": "Bong"
+      },
+      {
+        "id": "LR-X1~",
+        "name": "Gbarpolu"
+      },
+      {
+        "id": "LR-GB",
+        "name": "Grand Bassa"
+      },
+      {
+        "id": "LR-CM",
+        "name": "Grand Cape Mount"
+      },
+      {
+        "id": "LR-GG",
+        "name": "Grand Gedeh"
+      },
+      {
+        "id": "LR-GK",
+        "name": "Grand Kru"
+      },
+      {
+        "id": "LR-LO",
+        "name": "Lofa"
+      },
+      {
+        "id": "LR-MG",
+        "name": "Margibi"
+      },
+      {
+        "id": "LR-MY",
+        "name": "Maryland"
+      },
+      {
+        "id": "LR-MO",
+        "name": "Montserrado"
+      },
+      {
+        "id": "LR-NI",
+        "name": "Nimba"
+      },
+      {
+        "id": "LR-RI",
+        "name": "River Cess"
+      },
+      {
+        "id": "LR-X2~",
+        "name": "River Gee"
+      },
+      {
+        "id": "LR-SI",
+        "name": "Sinoe"
+      }
+    ]
+  },
+  "Libya": {
+    "iso3": "LBY",
+    "geoJsonPath": "/data/regions/lby.geojson",
+    "regions": [
+      {
+        "id": "LY-AJ",
+        "name": "Ajdabiya"
+      },
+      {
+        "id": "LY-QB",
+        "name": "Al Qubbah"
+      },
+      {
+        "id": "LY-WS",
+        "name": "Ash Shati"
+      },
+      {
+        "id": "LY-BA",
+        "name": "Benghazi"
+      },
+      {
+        "id": "LY-BU",
+        "name": "Butnan"
+      },
+      {
+        "id": "LY-GD",
+        "name": "Ghadames"
+      },
+      {
+        "id": "LY-GT",
+        "name": "Ghat"
+      },
+      {
+        "id": "LY-JA",
+        "name": "Jabal al Akhdar"
+      },
+      {
+        "id": "LY-JI",
+        "name": "Jafara"
+      },
+      {
+        "id": "LY-JU",
+        "name": "Jufra"
+      },
+      {
+        "id": "LY-KF",
+        "name": "Kufra"
+      },
+      {
+        "id": "LY-MJ",
+        "name": "Marj"
+      },
+      {
+        "id": "LY-MI",
+        "name": "Misrata"
+      },
+      {
+        "id": "LY-MZ",
+        "name": "Mizdah"
+      },
+      {
+        "id": "LY-MB",
+        "name": "Murqub"
+      },
+      {
+        "id": "LY-MQ",
+        "name": "Murzuq"
+      },
+      {
+        "id": "LY-NQ",
+        "name": "Nuqat al Khams"
+      },
+      {
+        "id": "LY-SB",
+        "name": "Sabha"
+      },
+      {
+        "id": "LY-SR",
+        "name": "Sirte"
+      },
+      {
+        "id": "LY-TN",
+        "name": "Tripoli District"
+      },
+      {
+        "id": "LY-WD",
+        "name": "Wadi al Hayaa"
+      },
+      {
+        "id": "LY-ZA",
+        "name": "Zawiya"
+      }
+    ]
+  },
+  "Madagascar": {
+    "iso3": "MDG",
+    "geoJsonPath": "/data/regions/mdg.geojson",
+    "regions": [
+      {
+        "id": "MG-F",
+        "name": "Amoron'i Mania"
+      },
+      {
+        "id": "MG-U",
+        "name": "Androy"
+      },
+      {
+        "id": "MG-T",
+        "name": "Antananarivo"
+      },
+      {
+        "id": "MG-M",
+        "name": "Betsiboka"
+      },
+      {
+        "id": "MG-D",
+        "name": "Diana"
+      },
+      {
+        "id": "MG-A",
+        "name": "Toamasina"
+      }
+    ]
+  },
+  "Malawi": {
+    "iso3": "MWI",
+    "geoJsonPath": "/data/regions/mwi.geojson",
+    "regions": [
+      {
+        "id": "MW-BA",
+        "name": "Balaka"
+      },
+      {
+        "id": "MW-BL",
+        "name": "Blantyre"
+      },
+      {
+        "id": "MW-CK",
+        "name": "Chikwawa"
+      },
+      {
+        "id": "MW-CR",
+        "name": "Chiradzulu"
+      },
+      {
+        "id": "MW-CT",
+        "name": "Chitipa"
+      },
+      {
+        "id": "MW-DE",
+        "name": "Dedza"
+      },
+      {
+        "id": "MW-DO",
+        "name": "Dowa"
+      },
+      {
+        "id": "MW-KS",
+        "name": "Kasungu"
+      },
+      {
+        "id": "MW-LK",
+        "name": "Likoma"
+      },
+      {
+        "id": "MW-LI",
+        "name": "Lilongwe"
+      },
+      {
+        "id": "MW-MH",
+        "name": "Machinga"
+      },
+      {
+        "id": "MW-MG",
+        "name": "Mangochi"
+      },
+      {
+        "id": "MW-MC",
+        "name": "Mchinji"
+      },
+      {
+        "id": "MW-MU",
+        "name": "Mulanje"
+      },
+      {
+        "id": "MW-MW",
+        "name": "Mwanza"
+      },
+      {
+        "id": "MW-MZ",
+        "name": "Mzimba"
+      },
+      {
+        "id": "MW-NE",
+        "name": "Neno"
+      },
+      {
+        "id": "MW-NB",
+        "name": "Nkhata Bay"
+      },
+      {
+        "id": "MW-NK",
+        "name": "Nkhotakota"
+      },
+      {
+        "id": "MW-NS",
+        "name": "Nsanje"
+      },
+      {
+        "id": "MW-NU",
+        "name": "Ntcheu"
+      },
+      {
+        "id": "MW-NI",
+        "name": "Ntchisi"
+      },
+      {
+        "id": "MW-PH",
+        "name": "Phalombe"
+      },
+      {
+        "id": "MW-RU",
+        "name": "Rumphi"
+      },
+      {
+        "id": "MW-SA",
+        "name": "Salima"
+      },
+      {
+        "id": "MW-TH",
+        "name": "Thyolo"
+      },
+      {
+        "id": "MW-ZO",
+        "name": "Zomba"
+      }
+    ]
+  },
+  "Mali": {
+    "iso3": "MLI",
+    "geoJsonPath": "/data/regions/mli.geojson",
+    "regions": [
+      {
+        "id": "ML-BKO",
+        "name": "Bamako"
+      },
+      {
+        "id": "ML-7",
+        "name": "Gao"
+      },
+      {
+        "id": "ML-1",
+        "name": "Kayes"
+      },
+      {
+        "id": "ML-8",
+        "name": "Kidal"
+      },
+      {
+        "id": "ML-2",
+        "name": "Koulikoro"
+      },
+      {
+        "id": "ML-5",
+        "name": "Mopti"
+      },
+      {
+        "id": "ML-4",
+        "name": "Ségou"
+      },
+      {
+        "id": "ML-6",
+        "name": "Tombouctou"
+      },
+      {
+        "id": "ML-3",
+        "name": "Wassoulou"
+      }
+    ]
+  },
+  "Mauritania": {
+    "iso3": "MRT",
+    "geoJsonPath": "/data/regions/mrt.geojson",
+    "regions": [
+      {
+        "id": "MR-07",
+        "name": "Adrar"
+      },
+      {
+        "id": "MR-03",
+        "name": "Assaba"
+      },
+      {
+        "id": "MR-05",
+        "name": "Brakna"
+      },
+      {
+        "id": "MR-08",
+        "name": "Dakhlet Nouadhibou"
+      },
+      {
+        "id": "MR-04",
+        "name": "Gorgol"
+      },
+      {
+        "id": "MR-10",
+        "name": "Guidimaka"
+      },
+      {
+        "id": "MR-01",
+        "name": "Hodh Ech Chargui"
+      },
+      {
+        "id": "MR-02",
+        "name": "Hodh El Gharbi"
+      },
+      {
+        "id": "MR-12",
+        "name": "Inchiri"
+      },
+      {
+        "id": "MR-NKC",
+        "name": "Nouakchott"
+      },
+      {
+        "id": "MR-09",
+        "name": "Tagant"
+      },
+      {
+        "id": "MR-11",
+        "name": "Tiris Zemmour"
+      },
+      {
+        "id": "MR-06",
+        "name": "Trarza"
+      }
+    ]
+  },
+  "Mauritius": {
+    "iso3": "MUS",
+    "geoJsonPath": "/data/regions/mus.geojson",
+    "regions": [
+      {
+        "id": "MU-AG",
+        "name": "Agaléga"
+      },
+      {
+        "id": "MU-BR",
+        "name": "Beau Bassin-Rose Hill"
+      },
+      {
+        "id": "MU-CU",
+        "name": "Curepipe"
+      },
+      {
+        "id": "MU-FL",
+        "name": "Flacq"
+      },
+      {
+        "id": "MU-GP",
+        "name": "Grand Port"
+      },
+      {
+        "id": "MU-MO",
+        "name": "Moka"
+      },
+      {
+        "id": "MU-PA",
+        "name": "Pamplemousses"
+      },
+      {
+        "id": "MU-PW",
+        "name": "Plaines Wilhems"
+      },
+      {
+        "id": "MU-PL",
+        "name": "Port Louis"
+      },
+      {
+        "id": "MU-QB",
+        "name": "Quatre Bornes"
+      },
+      {
+        "id": "MU-RR",
+        "name": "Rivière du Rempart"
+      },
+      {
+        "id": "MU-BL",
+        "name": "Rivière Noire"
+      },
+      {
+        "id": "MU-RO",
+        "name": "Rodrigues"
+      },
+      {
+        "id": "MU-SA",
+        "name": "Savanne"
+      },
+      {
+        "id": "MU-VP",
+        "name": "Vacoas-Phoenix"
+      }
+    ]
+  },
+  "Morocco": {
+    "iso3": "MAR",
+    "geoJsonPath": "/data/regions/mar.geojson",
+    "regions": [
+      {
+        "id": "MA-09",
+        "name": "Chaouia-Ouardigha"
+      },
+      {
+        "id": "MA-10",
+        "name": "Doukkala Abda"
+      },
+      {
+        "id": "MA-05",
+        "name": "Fès-méknas-boulmane"
+      },
+      {
+        "id": "MA-02",
+        "name": "Gharb-Chrarda-Béni Hssen"
+      },
+      {
+        "id": "MA-08",
+        "name": "Grand Casablanca"
+      },
+      {
+        "id": "MA-14",
+        "name": "Guelmim-Es Semara"
+      },
+      {
+        "id": "MA-15",
+        "name": "Laâyoune-Boujdour-Sakia El Hamra"
+      },
+      {
+        "id": "MA-11",
+        "name": "Marrakesh-Tensift-El Haouz"
+      },
+      {
+        "id": "MA-06",
+        "name": "Meknès-Tafilalet"
+      },
+      {
+        "id": "MA-04",
+        "name": "Oriental"
+      },
+      {
+        "id": "MA-16",
+        "name": "Oued Ed-Dahab"
+      },
+      {
+        "id": "MA-07",
+        "name": "Rabat-Salé-Zemmour-Zaër"
+      },
+      {
+        "id": "MA-13",
+        "name": "Suss-Massa-Draa"
+      },
+      {
+        "id": "MA-12",
+        "name": "Tadla-Azilal"
+      },
+      {
+        "id": "MA-01",
+        "name": "Tangier-Tetouan"
+      },
+      {
+        "id": "MA-03",
+        "name": "Taza-Al Hoceïma-Taounate"
+      }
+    ]
+  },
+  "Mozambique": {
+    "iso3": "MOZ",
+    "geoJsonPath": "/data/regions/moz.geojson",
+    "regions": [
+      {
+        "id": "MZ-P",
+        "name": "Cabo Delgado"
+      },
+      {
+        "id": "MZ-G",
+        "name": "Gaza"
+      },
+      {
+        "id": "MZ-I",
+        "name": "Inhambane"
+      },
+      {
+        "id": "MZ-B",
+        "name": "Manica"
+      },
+      {
+        "id": "MZ-L",
+        "name": "Maputo"
+      },
+      {
+        "id": "MZ-N",
+        "name": "Nampula"
+      },
+      {
+        "id": "MZ-A",
+        "name": "Niassa"
+      },
+      {
+        "id": "MZ-S",
+        "name": "Sofala"
+      },
+      {
+        "id": "MZ-T",
+        "name": "Tete"
+      },
+      {
+        "id": "MZ-Q",
+        "name": "Zambezia"
+      }
+    ]
+  },
+  "Namibia": {
+    "iso3": "NAM",
+    "geoJsonPath": "/data/regions/nam.geojson",
+    "regions": [
+      {
+        "id": "NA-ER",
+        "name": "Erongo"
+      },
+      {
+        "id": "NA-HA",
+        "name": "Hardap"
+      },
+      {
+        "id": "NA-KA",
+        "name": "Karas"
+      },
+      {
+        "id": "NA-OK",
+        "name": "Kavango"
+      },
+      {
+        "id": "NA-KH",
+        "name": "Khomas"
+      },
+      {
+        "id": "NA-KU",
+        "name": "Kunene"
+      },
+      {
+        "id": "NA-OW",
+        "name": "Ohangwena"
+      },
+      {
+        "id": "NA-OH",
+        "name": "Omaheke"
+      },
+      {
+        "id": "NA-OS",
+        "name": "Omusati"
+      },
+      {
+        "id": "NA-ON",
+        "name": "Oshana"
+      },
+      {
+        "id": "NA-OT",
+        "name": "Oshikoto"
+      },
+      {
+        "id": "NA-OD",
+        "name": "Otjozondjupa"
+      },
+      {
+        "id": "NA-CA",
+        "name": "Zambezi"
+      }
+    ]
+  },
+  "Niger": {
+    "iso3": "NER",
+    "geoJsonPath": "/data/regions/ner.geojson",
+    "regions": [
+      {
+        "id": "NE-1",
+        "name": "Agadez"
+      },
+      {
+        "id": "NE-2",
+        "name": "Diffa"
+      },
+      {
+        "id": "NE-3",
+        "name": "Dosso"
+      },
+      {
+        "id": "NE-4",
+        "name": "Maradi"
+      },
+      {
+        "id": "NE-8",
+        "name": "Niamey"
+      },
+      {
+        "id": "NE-5",
+        "name": "Tahoua"
+      },
+      {
+        "id": "NE-6",
+        "name": "Tillabéri"
+      },
+      {
+        "id": "NE-7",
+        "name": "Zinder"
+      }
+    ]
+  },
+  "Nigeria": {
+    "iso3": "NGA",
+    "geoJsonPath": "/data/regions/nga.geojson",
+    "regions": [
+      {
+        "id": "NG-AB",
+        "name": "Abia State"
+      },
+      {
+        "id": "NG-AD",
+        "name": "Adamawa State"
+      },
+      {
+        "id": "NG-AK",
+        "name": "Akwa Ibom State"
+      },
+      {
+        "id": "NG-AN",
+        "name": "Anambra State"
+      },
+      {
+        "id": "NG-BA",
+        "name": "Bauchi State"
+      },
+      {
+        "id": "NG-BY",
+        "name": "Bayelsa State"
+      },
+      {
+        "id": "NG-BE",
+        "name": "Benue State"
+      },
+      {
+        "id": "NG-BO",
+        "name": "Borno State"
+      },
+      {
+        "id": "NG-CR",
+        "name": "Cross River State"
+      },
+      {
+        "id": "NG-DE",
+        "name": "Delta State"
+      },
+      {
+        "id": "NG-EB",
+        "name": "Ebonyi State"
+      },
+      {
+        "id": "NG-ED",
+        "name": "Edo State"
+      },
+      {
+        "id": "NG-EK",
+        "name": "Ekiti State"
+      },
+      {
+        "id": "NG-EN",
+        "name": "Enugu State"
+      },
+      {
+        "id": "NG-FC",
+        "name": "Federal Capital Territory"
+      },
+      {
+        "id": "NG-GO",
+        "name": "Gombe State"
+      },
+      {
+        "id": "NG-IM",
+        "name": "Imo State"
+      },
+      {
+        "id": "NG-JI",
+        "name": "Jigawa State"
+      },
+      {
+        "id": "NG-KD",
+        "name": "Kaduna State"
+      },
+      {
+        "id": "NG-KN",
+        "name": "Kano State"
+      },
+      {
+        "id": "NG-KT",
+        "name": "Katsina State"
+      },
+      {
+        "id": "NG-KE",
+        "name": "Kebbi State"
+      },
+      {
+        "id": "NG-KO",
+        "name": "Kogi State"
+      },
+      {
+        "id": "NG-KW",
+        "name": "Kwara State"
+      },
+      {
+        "id": "NG-LA",
+        "name": "Lagos"
+      },
+      {
+        "id": "NG-NA",
+        "name": "Nasarawa State"
+      },
+      {
+        "id": "NG-NI",
+        "name": "Niger State"
+      },
+      {
+        "id": "NG-OG",
+        "name": "Ogun State"
+      },
+      {
+        "id": "NG-ON",
+        "name": "Ondo State"
+      },
+      {
+        "id": "NG-OS",
+        "name": "Osun State"
+      },
+      {
+        "id": "NG-OY",
+        "name": "Oyo State"
+      },
+      {
+        "id": "NG-PL",
+        "name": "Plateau State"
+      },
+      {
+        "id": "NG-RI",
+        "name": "Rivers State"
+      },
+      {
+        "id": "NG-SO",
+        "name": "Sokoto State"
+      },
+      {
+        "id": "NG-TA",
+        "name": "Taraba State"
+      },
+      {
+        "id": "NG-YO",
+        "name": "Yobe State"
+      },
+      {
+        "id": "NG-ZA",
+        "name": "Zamfara State"
+      }
+    ]
+  },
+  "Republic of the Congo": {
+    "iso3": "COG",
+    "geoJsonPath": "/data/regions/cog.geojson",
+    "regions": [
+      {
+        "id": "CG-11",
+        "name": "Bouenza"
+      },
+      {
+        "id": "CG-BZV",
+        "name": "Brazzaville"
+      },
+      {
+        "id": "CG-8",
+        "name": "Cuvette"
+      },
+      {
+        "id": "CG-15",
+        "name": "Cuvette-Ouest"
+      },
+      {
+        "id": "CG-5",
+        "name": "Kouilou"
+      },
+      {
+        "id": "CG-2",
+        "name": "Lékoumou"
+      },
+      {
+        "id": "CG-7",
+        "name": "Likouala"
+      },
+      {
+        "id": "CG-9",
+        "name": "Niari"
+      },
+      {
+        "id": "CG-14",
+        "name": "Plateaux"
+      },
+      {
+        "id": "CG-16",
+        "name": "Pointe-Noire"
+      },
+      {
+        "id": "CG-12",
+        "name": "Pool"
+      },
+      {
+        "id": "CG-13",
+        "name": "Sangha"
+      }
+    ]
+  },
+  "Rwanda": {
+    "iso3": "RWA",
+    "geoJsonPath": "/data/regions/rwa.geojson",
+    "regions": [
+      {
+        "id": "RW-02",
+        "name": "Eastern"
+      },
+      {
+        "id": "RW-01",
+        "name": "Kigali"
+      },
+      {
+        "id": "RW-03",
+        "name": "Northern"
+      },
+      {
+        "id": "RW-05",
+        "name": "Southern"
+      },
+      {
+        "id": "RW-04",
+        "name": "Western"
+      }
+    ]
+  },
+  "Sao Tome and Principe": {
+    "iso3": "STP",
+    "geoJsonPath": "/data/regions/stp.geojson",
+    "regions": [
+      {
+        "id": "ST-P",
+        "name": "Príncipe"
+      },
+      {
+        "id": "ST-S",
+        "name": "São Tomé"
+      }
+    ]
+  },
+  "Senegal": {
+    "iso3": "SEN",
+    "geoJsonPath": "/data/regions/sen.geojson",
+    "regions": [
+      {
+        "id": "SN-DK",
+        "name": "Dakar"
+      },
+      {
+        "id": "SN-DB",
+        "name": "Diourbel"
+      },
+      {
+        "id": "SN-FK",
+        "name": "Fatick"
+      },
+      {
+        "id": "SN-KA",
+        "name": "Kaffrine"
+      },
+      {
+        "id": "SN-KL",
+        "name": "Kaolack"
+      },
+      {
+        "id": "SN-KE",
+        "name": "Kédougou"
+      },
+      {
+        "id": "SN-KD",
+        "name": "Kolda"
+      },
+      {
+        "id": "SN-LG",
+        "name": "Louga"
+      },
+      {
+        "id": "SN-MT",
+        "name": "Matam"
+      },
+      {
+        "id": "SN-SL",
+        "name": "Saint-Louis"
+      },
+      {
+        "id": "SN-SE",
+        "name": "Sédhiou"
+      },
+      {
+        "id": "SN-TC",
+        "name": "Tambacounda"
+      },
+      {
+        "id": "SN-TH",
+        "name": "Thiès"
+      },
+      {
+        "id": "SN-ZG",
+        "name": "Ziguinchor"
+      }
+    ]
+  },
+  "Seychelles": {
+    "iso3": "SYC",
+    "geoJsonPath": "/data/regions/syc.geojson",
+    "regions": [
+      {
+        "id": "SC-02",
+        "name": "Anse Boileau"
+      },
+      {
+        "id": "SC-03",
+        "name": "Anse Etoile"
+      },
+      {
+        "id": "SC-05",
+        "name": "Anse Royale"
+      },
+      {
+        "id": "SC-01",
+        "name": "Anse-aux-Pins"
+      },
+      {
+        "id": "SC-04",
+        "name": "Au Cap"
+      },
+      {
+        "id": "SC-06",
+        "name": "Baie Lazare"
+      },
+      {
+        "id": "SC-07",
+        "name": "Baie Sainte Anne"
+      },
+      {
+        "id": "SC-08",
+        "name": "Beau Vallon"
+      },
+      {
+        "id": "SC-09",
+        "name": "Bel Air"
+      },
+      {
+        "id": "SC-10",
+        "name": "Bel Ombre"
+      },
+      {
+        "id": "SC-11",
+        "name": "Cascade"
+      },
+      {
+        "id": "SC-X02~",
+        "name": "Coralline Seychelles"
+      },
+      {
+        "id": "SC-12",
+        "name": "Glacis"
+      },
+      {
+        "id": "SC-13",
+        "name": "Grand'Anse Praslin"
+      },
+      {
+        "id": "SC-14",
+        "name": "Grand'Anse Praslin"
+      },
+      {
+        "id": "SC-15",
+        "name": "La Digue"
+      },
+      {
+        "id": "SC-16",
+        "name": "La Rivière Anglaise"
+      },
+      {
+        "id": "SC-24",
+        "name": "Les Mamelles"
+      },
+      {
+        "id": "SC-17",
+        "name": "Mont Buxton"
+      },
+      {
+        "id": "SC-18",
+        "name": "Mont Fleuri"
+      },
+      {
+        "id": "SC-19",
+        "name": "Plaisance"
+      },
+      {
+        "id": "SC-20",
+        "name": "Pointe La Rue"
+      },
+      {
+        "id": "SC-21",
+        "name": "Port Glaud"
+      },
+      {
+        "id": "SC-25",
+        "name": "Roche Caiman"
+      },
+      {
+        "id": "SC-22",
+        "name": "Saint Louis"
+      },
+      {
+        "id": "SC-23",
+        "name": "Takamaka"
+      }
+    ]
+  },
+  "Sierra Leone": {
+    "iso3": "SLE",
+    "geoJsonPath": "/data/regions/sle.geojson",
+    "regions": [
+      {
+        "id": "SL-E",
+        "name": "Eastern"
+      },
+      {
+        "id": "SL-N",
+        "name": "Northern"
+      },
+      {
+        "id": "SL-S",
+        "name": "Southern"
+      },
+      {
+        "id": "SL-W",
+        "name": "Western Area"
+      }
+    ]
+  },
+  "Somalia": {
+    "iso3": "SOM",
+    "geoJsonPath": "/data/regions/som.geojson",
+    "regions": [
+      {
+        "id": "SO-BK",
+        "name": "Bakool"
+      },
+      {
+        "id": "SO-BN",
+        "name": "Banaadir"
+      },
+      {
+        "id": "SO-BR",
+        "name": "Bari"
+      },
+      {
+        "id": "SO-BY",
+        "name": "Bay"
+      },
+      {
+        "id": "SO-GA",
+        "name": "Galguduud"
+      },
+      {
+        "id": "SO-GE",
+        "name": "Gedo"
+      },
+      {
+        "id": "SO-HI",
+        "name": "Hiran"
+      },
+      {
+        "id": "SO-JH",
+        "name": "Lower Juba"
+      },
+      {
+        "id": "SO-SH",
+        "name": "Lower Shebelle"
+      },
+      {
+        "id": "SO-JD",
+        "name": "Middle Juba"
+      },
+      {
+        "id": "SO-SD",
+        "name": "Middle Shebelle"
+      },
+      {
+        "id": "SO-MU",
+        "name": "Mudug"
+      },
+      {
+        "id": "SO-NU",
+        "name": "Nugal"
+      }
+    ]
+  },
+  "South Africa": {
+    "iso3": "ZAF",
+    "geoJsonPath": "/data/regions/zaf.geojson",
+    "regions": [
+      {
+        "id": "ZA-EC",
+        "name": "Eastern Cape"
+      },
+      {
+        "id": "ZA-FS",
+        "name": "Free State"
+      },
+      {
+        "id": "ZA-GT",
+        "name": "Gauteng"
+      },
+      {
+        "id": "ZA-NL",
+        "name": "KwaZulu-Natal"
+      },
+      {
+        "id": "ZA-LP",
+        "name": "Limpopo"
+      },
+      {
+        "id": "ZA-MP",
+        "name": "Mpumalanga"
+      },
+      {
+        "id": "ZA-NW",
+        "name": "North West"
+      },
+      {
+        "id": "ZA-NC",
+        "name": "Northern Cape"
+      },
+      {
+        "id": "ZA-WC",
+        "name": "Western Cape"
+      }
+    ]
+  },
+  "South Sudan": {
+    "iso3": "SSD",
+    "geoJsonPath": "/data/regions/ssd.geojson",
+    "regions": [
+      {
+        "id": "SS-EC",
+        "name": "Central Equatoria"
+      },
+      {
+        "id": "SS-EE",
+        "name": "Eastern Equatoria"
+      },
+      {
+        "id": "SS-JG",
+        "name": "Jonglei"
+      },
+      {
+        "id": "SS-LK",
+        "name": "Lakes"
+      },
+      {
+        "id": "SS-BN",
+        "name": "Northern Bahr el Ghazal"
+      },
+      {
+        "id": "SS-UY",
+        "name": "Unity"
+      },
+      {
+        "id": "SS-NU",
+        "name": "Upper Nile"
+      },
+      {
+        "id": "SS-WR",
+        "name": "Warrap"
+      },
+      {
+        "id": "SS-BW",
+        "name": "Western Bahr el Ghazal"
+      },
+      {
+        "id": "SS-EW",
+        "name": "Western Equatoria"
+      }
+    ]
+  },
+  "Sudan": {
+    "iso3": "SDN",
+    "geoJsonPath": "/data/regions/sdn.geojson",
+    "regions": [
+      {
+        "id": "SD-GZ",
+        "name": "Al Jazirah"
+      },
+      {
+        "id": "SD-GD",
+        "name": "Al Qadarif"
+      },
+      {
+        "id": "SD-NB",
+        "name": "Blue Nile"
+      },
+      {
+        "id": "SD-DE",
+        "name": "Central Darfur"
+      },
+      {
+        "id": "SD-DS",
+        "name": "East Darfur"
+      },
+      {
+        "id": "SD-KA",
+        "name": "Kassala"
+      },
+      {
+        "id": "SD-KH",
+        "name": "Khartoum"
+      },
+      {
+        "id": "SD-DN",
+        "name": "North Darfur"
+      },
+      {
+        "id": "SD-KN",
+        "name": "North Kordofan"
+      },
+      {
+        "id": "SD-NO",
+        "name": "Northern"
+      },
+      {
+        "id": "SD-RS",
+        "name": "Red Sea"
+      },
+      {
+        "id": "SD-NR",
+        "name": "River Nile"
+      },
+      {
+        "id": "SD-SI",
+        "name": "Sennar"
+      },
+      {
+        "id": "SD-KS",
+        "name": "South Kordofan"
+      },
+      {
+        "id": "SD-DW",
+        "name": "West Soudan"
+      },
+      {
+        "id": "SD-NW",
+        "name": "White Nile"
+      }
+    ]
+  },
+  "Tanzania": {
+    "iso3": "TZA",
+    "geoJsonPath": "/data/regions/tza.geojson",
+    "regions": [
+      {
+        "id": "TZ-01",
+        "name": "Arusha"
+      },
+      {
+        "id": "TZ-02",
+        "name": "Dar es Salaam"
+      },
+      {
+        "id": "TZ-03",
+        "name": "Dodoma"
+      },
+      {
+        "id": "TZ-27",
+        "name": "Geita"
+      },
+      {
+        "id": "TZ-04",
+        "name": "Iringa"
+      },
+      {
+        "id": "TZ-05",
+        "name": "Kagera"
+      },
+      {
+        "id": "TZ-28",
+        "name": "Katavi"
+      },
+      {
+        "id": "TZ-08",
+        "name": "Kigoma"
+      },
+      {
+        "id": "TZ-09",
+        "name": "Kilimanjaro"
+      },
+      {
+        "id": "TZ-12",
+        "name": "Lindi"
+      },
+      {
+        "id": "TZ-26",
+        "name": "Manyara"
+      },
+      {
+        "id": "TZ-13",
+        "name": "Mara"
+      },
+      {
+        "id": "TZ-14",
+        "name": "Mbeya"
+      },
+      {
+        "id": "TZ-15",
+        "name": "Mjini Magharibi"
+      },
+      {
+        "id": "TZ-16",
+        "name": "Morogoro"
+      },
+      {
+        "id": "TZ-17",
+        "name": "Mtwara"
+      },
+      {
+        "id": "TZ-18",
+        "name": "Mwanza"
+      },
+      {
+        "id": "TZ-29",
+        "name": "Njombe"
+      },
+      {
+        "id": "TZ-06",
+        "name": "North Pemba"
+      },
+      {
+        "id": "TZ-19",
+        "name": "Pwani"
+      },
+      {
+        "id": "TZ-20",
+        "name": "Rukwa"
+      },
+      {
+        "id": "TZ-21",
+        "name": "Ruvuma"
+      },
+      {
+        "id": "TZ-22",
+        "name": "Shinyanga"
+      },
+      {
+        "id": "TZ-30",
+        "name": "Simiyu"
+      },
+      {
+        "id": "TZ-23",
+        "name": "Singida"
+      },
+      {
+        "id": "TZ-10",
+        "name": "South Pemba"
+      },
+      {
+        "id": "TZ-24",
+        "name": "Tabora"
+      },
+      {
+        "id": "TZ-25",
+        "name": "Tanga"
+      },
+      {
+        "id": "TZ-07",
+        "name": "Unguja North"
+      },
+      {
+        "id": "TZ-11",
+        "name": "Unguja South"
+      }
+    ]
+  },
+  "Togo": {
+    "iso3": "TGO",
+    "geoJsonPath": "/data/regions/tgo.geojson",
+    "regions": [
+      {
+        "id": "TG-C",
+        "name": "Centre"
+      },
+      {
+        "id": "TG-K",
+        "name": "Kara"
+      },
+      {
+        "id": "TG-M",
+        "name": "Maritime"
+      },
+      {
+        "id": "TG-P",
+        "name": "Plateaux"
+      },
+      {
+        "id": "TG-S",
+        "name": "Savanes"
+      }
+    ]
+  },
+  "Tunisia": {
+    "iso3": "TUN",
+    "geoJsonPath": "/data/regions/tun.geojson",
+    "regions": [
+      {
+        "id": "TN-31",
+        "name": "Beja"
+      },
+      {
+        "id": "TN-13",
+        "name": "Ben Arous"
+      },
+      {
+        "id": "TN-23",
+        "name": "Bizerte"
+      },
+      {
+        "id": "TN-81",
+        "name": "Gabès"
+      },
+      {
+        "id": "TN-71",
+        "name": "Gafsa"
+      },
+      {
+        "id": "TN-32",
+        "name": "Jendouba"
+      },
+      {
+        "id": "TN-41",
+        "name": "Kairouan"
+      },
+      {
+        "id": "TN-42",
+        "name": "Kasserine"
+      },
+      {
+        "id": "TN-73",
+        "name": "Kebili"
+      },
+      {
+        "id": "TN-33",
+        "name": "Kef"
+      },
+      {
+        "id": "TN-53",
+        "name": "Mahdia"
+      },
+      {
+        "id": "TN-14",
+        "name": "Manouba"
+      },
+      {
+        "id": "TN-82",
+        "name": "Medenine"
+      },
+      {
+        "id": "TN-52",
+        "name": "Monastir"
+      },
+      {
+        "id": "TN-21",
+        "name": "Nabeul"
+      },
+      {
+        "id": "TN-61",
+        "name": "Sfax"
+      },
+      {
+        "id": "TN-43",
+        "name": "Sidi Bouzid"
+      },
+      {
+        "id": "TN-34",
+        "name": "Siliana"
+      },
+      {
+        "id": "TN-51",
+        "name": "Sousse"
+      },
+      {
+        "id": "TN-83",
+        "name": "Tataouine"
+      },
+      {
+        "id": "TN-72",
+        "name": "Tozeur"
+      },
+      {
+        "id": "TN-11",
+        "name": "Tunis"
+      },
+      {
+        "id": "TN-22",
+        "name": "Zaghouan"
+      }
+    ]
+  },
+  "Uganda": {
+    "iso3": "UGA",
+    "geoJsonPath": "/data/regions/uga.geojson",
+    "regions": [
+      {
+        "id": "UG-317",
+        "name": "Abim"
+      },
+      {
+        "id": "UG-301",
+        "name": "Adjumani"
+      },
+      {
+        "id": "UG-322",
+        "name": "Agago"
+      },
+      {
+        "id": "UG-323",
+        "name": "Alebtong"
+      },
+      {
+        "id": "UG-314",
+        "name": "Amolatar"
+      },
+      {
+        "id": "UG-324",
+        "name": "Amudat"
+      },
+      {
+        "id": "UG-216",
+        "name": "Amuria"
+      },
+      {
+        "id": "UG-319",
+        "name": "Amuru"
+      },
+      {
+        "id": "UG-302",
+        "name": "Apac"
+      },
+      {
+        "id": "UG-303",
+        "name": "Arua"
+      },
+      {
+        "id": "UG-217",
+        "name": "Budaka"
+      },
+      {
+        "id": "UG-223",
+        "name": "Bududa"
+      },
+      {
+        "id": "UG-201",
+        "name": "Bugiri"
+      },
+      {
+        "id": "UG-325",
+        "name": "Buhweju"
+      },
+      {
+        "id": "UG-117",
+        "name": "Buikwe"
+      },
+      {
+        "id": "UG-224",
+        "name": "Bukedea"
+      },
+      {
+        "id": "UG-118",
+        "name": "Bukomansimbi"
+      },
+      {
+        "id": "UG-218",
+        "name": "Bukwo"
+      },
+      {
+        "id": "UG-225",
+        "name": "Bulambuli"
+      },
+      {
+        "id": "UG-419",
+        "name": "Buliisa"
+      },
+      {
+        "id": "UG-401",
+        "name": "Bundibugyo"
+      },
+      {
+        "id": "UG-402",
+        "name": "Bushenyi"
+      },
+      {
+        "id": "UG-202",
+        "name": "Busia"
+      },
+      {
+        "id": "UG-219",
+        "name": "Butaleja"
+      },
+      {
+        "id": "UG-119",
+        "name": "Butambala"
+      },
+      {
+        "id": "UG-120",
+        "name": "Buvuma"
+      },
+      {
+        "id": "UG-226",
+        "name": "Buyende"
+      },
+      {
+        "id": "UG-318",
+        "name": "Dokolo"
+      },
+      {
+        "id": "UG-121",
+        "name": "Gomba"
+      },
+      {
+        "id": "UG-304",
+        "name": "Gulu"
+      },
+      {
+        "id": "UG-403",
+        "name": "Hoima"
+      },
+      {
+        "id": "UG-416",
+        "name": "Ibanda"
+      },
+      {
+        "id": "UG-203",
+        "name": "Iganga"
+      },
+      {
+        "id": "UG-417",
+        "name": "Isingiro"
+      },
+      {
+        "id": "UG-204",
+        "name": "Jinja"
+      },
+      {
+        "id": "UG-315",
+        "name": "Kaabong"
+      },
+      {
+        "id": "UG-404",
+        "name": "Kabale"
+      },
+      {
+        "id": "UG-405",
+        "name": "Kabarole"
+      },
+      {
+        "id": "UG-213",
+        "name": "Kaberamaido"
+      },
+      {
+        "id": "UG-101",
+        "name": "Kalangala"
+      },
+      {
+        "id": "UG-220",
+        "name": "Kaliro"
+      },
+      {
+        "id": "UG-122",
+        "name": "Kalungu"
+      },
+      {
+        "id": "UG-102",
+        "name": "Kampala"
+      },
+      {
+        "id": "UG-205",
+        "name": "Kamuli"
+      },
+      {
+        "id": "UG-413",
+        "name": "Kamwenge"
+      },
+      {
+        "id": "UG-414",
+        "name": "Kanungu"
+      },
+      {
+        "id": "UG-206",
+        "name": "Kapchorwa"
+      },
+      {
+        "id": "UG-406",
+        "name": "Kasese"
+      },
+      {
+        "id": "UG-207",
+        "name": "Katakwi"
+      },
+      {
+        "id": "UG-112",
+        "name": "Kayunga"
+      },
+      {
+        "id": "UG-407",
+        "name": "Kibaale"
+      },
+      {
+        "id": "UG-103",
+        "name": "Kiboga"
+      },
+      {
+        "id": "UG-227",
+        "name": "Kibuku"
+      },
+      {
+        "id": "UG-420",
+        "name": "Kiryandongo"
+      },
+      {
+        "id": "UG-408",
+        "name": "Kisoro"
+      },
+      {
+        "id": "UG-305",
+        "name": "Kitgum"
+      },
+      {
+        "id": "UG-316",
+        "name": "Koboko"
+      },
+      {
+        "id": "UG-326",
+        "name": "Kole"
+      },
+      {
+        "id": "UG-306",
+        "name": "Kotido"
+      },
+      {
+        "id": "UG-208",
+        "name": "Kumi"
+      },
+      {
+        "id": "UG-228",
+        "name": "Kween"
+      },
+      {
+        "id": "UG-123",
+        "name": "Kyankwanzi"
+      },
+      {
+        "id": "UG-421",
+        "name": "Kyegegwa"
+      },
+      {
+        "id": "UG-415",
+        "name": "Kyenjojo"
+      },
+      {
+        "id": "UG-327",
+        "name": "Lamwo"
+      },
+      {
+        "id": "UG-307",
+        "name": "Lira"
+      },
+      {
+        "id": "UG-229",
+        "name": "Luuka"
+      },
+      {
+        "id": "UG-104",
+        "name": "Luwero"
+      },
+      {
+        "id": "UG-124",
+        "name": "Lwengo"
+      },
+      {
+        "id": "UG-116",
+        "name": "Lyantonde"
+      },
+      {
+        "id": "UG-221",
+        "name": "Manafwa"
+      },
+      {
+        "id": "UG-320",
+        "name": "Maracha"
+      },
+      {
+        "id": "UG-105",
+        "name": "Masaka"
+      },
+      {
+        "id": "UG-409",
+        "name": "Masindi"
+      },
+      {
+        "id": "UG-214",
+        "name": "Mayuge"
+      },
+      {
+        "id": "UG-209",
+        "name": "Mbale"
+      },
+      {
+        "id": "UG-410",
+        "name": "Mbarara"
+      },
+      {
+        "id": "UG-422",
+        "name": "Mitooma"
+      },
+      {
+        "id": "UG-114",
+        "name": "Mityana"
+      },
+      {
+        "id": "UG-308",
+        "name": "Moroto"
+      },
+      {
+        "id": "UG-309",
+        "name": "Moyo"
+      },
+      {
+        "id": "UG-106",
+        "name": "Mpigi"
+      },
+      {
+        "id": "UG-107",
+        "name": "Mubende"
+      },
+      {
+        "id": "UG-108",
+        "name": "Mukono"
+      },
+      {
+        "id": "UG-311",
+        "name": "Nakapiripirit"
+      },
+      {
+        "id": "UG-115",
+        "name": "Nakaseke"
+      },
+      {
+        "id": "UG-109",
+        "name": "Nakasongola"
+      },
+      {
+        "id": "UG-230",
+        "name": "Namayingo"
+      },
+      {
+        "id": "UG-222",
+        "name": "Namutumba"
+      },
+      {
+        "id": "UG-328",
+        "name": "Napak"
+      },
+      {
+        "id": "UG-310",
+        "name": "Nebbi"
+      },
+      {
+        "id": "UG-231",
+        "name": "Ngora"
+      },
+      {
+        "id": "UG-423",
+        "name": "Ntoroko"
+      },
+      {
+        "id": "UG-411",
+        "name": "Ntungamo"
+      },
+      {
+        "id": "UG-329",
+        "name": "Nwoya"
+      },
+      {
+        "id": "UG-330",
+        "name": "Otuke"
+      },
+      {
+        "id": "UG-321",
+        "name": "Oyam"
+      },
+      {
+        "id": "UG-312",
+        "name": "Pader"
+      },
+      {
+        "id": "UG-210",
+        "name": "Pallisa"
+      },
+      {
+        "id": "UG-110",
+        "name": "Rakai"
+      },
+      {
+        "id": "UG-424",
+        "name": "Rubirizi"
+      },
+      {
+        "id": "UG-412",
+        "name": "Rukungiri"
+      },
+      {
+        "id": "UG-111",
+        "name": "Sembabule"
+      },
+      {
+        "id": "UG-232",
+        "name": "Serere"
+      },
+      {
+        "id": "UG-425",
+        "name": "Sheema"
+      },
+      {
+        "id": "UG-215",
+        "name": "Sironko"
+      },
+      {
+        "id": "UG-211",
+        "name": "Soroti"
+      },
+      {
+        "id": "UG-212",
+        "name": "Tororo"
+      },
+      {
+        "id": "UG-113",
+        "name": "Wakiso"
+      },
+      {
+        "id": "UG-313",
+        "name": "Yumbe"
+      },
+      {
+        "id": "UG-331",
+        "name": "Zombo"
+      }
+    ]
+  },
+  "Zambia": {
+    "iso3": "ZMB",
+    "geoJsonPath": "/data/regions/zmb.geojson",
+    "regions": [
+      {
+        "id": "ZM-02",
+        "name": "Central"
+      },
+      {
+        "id": "ZM-08",
+        "name": "Copperbelt"
+      },
+      {
+        "id": "ZM-03",
+        "name": "Eastern"
+      },
+      {
+        "id": "ZM-04",
+        "name": "Luapula"
+      },
+      {
+        "id": "ZM-09",
+        "name": "Lusaka"
+      },
+      {
+        "id": "ZM-10",
+        "name": "Muchinga"
+      },
+      {
+        "id": "ZM-05",
+        "name": "Northern"
+      },
+      {
+        "id": "ZM-06",
+        "name": "Northwestern"
+      },
+      {
+        "id": "ZM-07",
+        "name": "Southern"
+      },
+      {
+        "id": "ZM-01",
+        "name": "Western"
+      }
+    ]
+  },
+  "Zimbabwe": {
+    "iso3": "ZWE",
+    "geoJsonPath": "/data/regions/zwe.geojson",
+    "regions": [
+      {
+        "id": "ZW-BU",
+        "name": "Bulawayo"
+      },
+      {
+        "id": "ZW-HA",
+        "name": "Harare"
+      },
+      {
+        "id": "ZW-MA",
+        "name": "Manicaland"
+      },
+      {
+        "id": "ZW-MC",
+        "name": "Mashonaland Central"
+      },
+      {
+        "id": "ZW-ME",
+        "name": "Mashonaland East"
+      },
+      {
+        "id": "ZW-MW",
+        "name": "Mashonaland West"
+      },
+      {
+        "id": "ZW-MV",
+        "name": "Masvingo"
+      },
+      {
+        "id": "ZW-MN",
+        "name": "Matabeleland North"
+      },
+      {
+        "id": "ZW-MS",
+        "name": "Matabeleland South"
+      },
+      {
+        "id": "ZW-MI",
+        "name": "Midlands"
+      }
+    ]
+  }
+}

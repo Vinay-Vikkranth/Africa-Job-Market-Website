@@ -2,12 +2,16 @@
 
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { DashboardData } from "@/lib/dashboard-data";
+import { DataSourceButton } from "@/app/components/data-source-button";
 
 export function SkillsContent({ data }: { data: DashboardData }) {
   return (
     <section className="grid gap-4 lg:grid-cols-2">
       <article className="dashboard-card p-5">
-        <h2 className="mb-4 text-sm font-semibold text-slate-900">Skill Demand (% of job postings)</h2>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+          <h2 className="text-sm font-semibold text-slate-900">Skill Demand (% of job postings)</h2>
+          <DataSourceButton sourceId="job-boards" />
+        </div>
         <div className="h-96">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data.topSkills} layout="vertical" margin={{ top: 0, right: 20, left: 0, bottom: 0 }}>
@@ -41,16 +45,19 @@ export function SkillsContent({ data }: { data: DashboardData }) {
       </article>
 
       <article className="dashboard-card p-5 lg:col-span-2">
-        <h2 className="mb-2 text-sm font-semibold text-slate-900">Demand vs Supply by Skill</h2>
-        <p className="mb-4 text-xs text-slate-500">Computed from job-skill links: recent 30 days = demand, older postings = supply proxy</p>
+        <h2 className="mb-2 text-sm font-semibold text-slate-900">Recent vs older skill mentions</h2>
+        <p className="mb-4 text-xs text-slate-500">
+          From job-skill links only: recent 30 days vs older postings. This is{" "}
+          <em>not</em> a count of available workers (“supply”).
+        </p>
         <div className="h-80">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data.demandVsSupply}>
               <XAxis dataKey="skill" tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} axisLine={false} tickLine={false} />
               <Tooltip contentStyle={{ borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 12 }} />
-              <Bar dataKey="demand" name="Demand (30d)" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="supply" name="Supply (prior)" fill="#10b981" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="recent" name="Recent (30d)" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="older" name="Older postings" fill="#94a3b8" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

@@ -3,9 +3,13 @@ import { categorizeSkill } from "@/lib/skill-categories";
 
 const MS_DAY = 24 * 60 * 60 * 1000;
 
-export function growthPct(recent: number, prior: number) {
-  if (prior === 0) return recent > 0 ? 100 : 0;
-  return Number((((recent - prior) / prior) * 100).toFixed(1));
+export function growthPct(recent: number, prior: number): number | null {
+  // No meaningful % when the prior window is empty — avoid fake +100% / +600% swings.
+  if (prior <= 0) return null;
+  const pct = Number((((recent - prior) / prior) * 100).toFixed(1));
+  // Tiny baselines produce absurd percentages; treat as unavailable for display.
+  if (!Number.isFinite(pct) || Math.abs(pct) > 300) return null;
+  return pct;
 }
 
 export async function getSkillGaps(
@@ -51,8 +55,7 @@ export async function getSkillGaps(
     business: Math.round((categoryDemand.business / totalDemand) * 100),
   };
 
-  // Overall index = dominant category's share of demand. High values mean
-  // demand is concentrated in one skill category (a lopsided market).
+  // Overall = share of demand in the largest category (concentration), not a labour-supply gap.
   const overall = Math.max(gaps.technical, gaps.digital, gaps.soft, gaps.business);
 
   return { ...gaps, overall, totalJobs };
@@ -125,8 +128,10 @@ export async function getDemandVsSupply(
 
     results.push({
       skill: skill.name,
-      demand: demandCount,
-      supply: supplyCount,
+      /** Mentions in job postings from the last 30 days */
+      recent: demandCount,
+      /** Mentions in older postings (not worker supply) */
+      older: supplyCount,
     });
   }
 
@@ -135,10 +140,10 @@ export async function getDemandVsSupply(
 
 export async function generateInsights(
   where: Record<string, unknown>,
-  growth: number,
+  growth: number | null,
   topSkillName: string | undefined,
   avgSalary: number,
-  salaryGrowth: number,
+  salaryGrowth: number | null,
 ) {
   const insights: { icon: string; text: string; href: string }[] = [];
 
@@ -190,13 +195,13 @@ export async function generateInsights(
   insights.push({
     icon: "salary",
     text:
-      salaryGrowth !== 0
+      salaryGrowth != null && salaryGrowth !== 0
         ? `Average posted salary moved ${salaryGrowth > 0 ? "up" : "down"} ${Math.abs(salaryGrowth)}% vs the prior period (${avgSalary > 0 ? `$${avgSalary.toLocaleString()} avg` : "limited salary data"}).`
         : `Average posted salary is ${avgSalary > 0 ? `$${avgSalary.toLocaleString()}` : "not widely disclosed"} across current postings.`,
     href: "/salary",
   });
 
-  if (insights.length < 4) {
+  if (insights.length < 4 && growth != null) {
     insights.push({
       icon: "chart",
       text: `Job posting volume changed ${growth > 0 ? "+" : ""}${growth}% compared to the previous 30-day window.`,
@@ -216,8 +221,8 @@ export async function generateAlerts(
   if (skillGaps.overall >= 50) {
     alerts.push({
       type: "warning",
-      text: `Overall skill gap index is elevated at ${skillGaps.overall}% based on category demand distribution.`,
-      time: "Just now",
+      text: `Demand is concentrated: the top skill category accounts for ${skillGaps.overall}% of categorized skill mentions.`,
+      time: "Based on current postings",
       href: "/gaps",
     });
   }
@@ -234,16 +239,16 @@ export async function generateAlerts(
     alerts.push({
       type: "trend",
       text: `Latest ingestion: "${recentJobs[0].title}" in ${recentJobs[0].country}.`,
-      time: hoursAgo < 24 ? `${hoursAgo}h ago` : `${Math.round(hoursAgo / 24)}d ago`,
+      time: hoursAgo < 1 ? "Just now" : hoursAgo < 24 ? `${hoursAgo}h ago` : `${Math.round(hoursAgo / 24)}d ago`,
       href: "/jobs",
     });
   }
 
   if (skillGaps.technical >= 40) {
     alerts.push({
-      type: "warning",
-      text: "Technical skill demand outweighs other categories — consider accelerated tech training pathways.",
-      time: "Today",
+      type: "info",
+      text: `Technical skills are ${skillGaps.technical}% of categorized demand — employers are hiring heavily for tech capabilities.`,
+      time: "Based on current postings",
       href: "/gaps",
     });
   }
