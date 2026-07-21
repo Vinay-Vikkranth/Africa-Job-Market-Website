@@ -15,7 +15,6 @@ import {
 import { getRegionalJobBreakdown } from "@/lib/regional-jobs";
 import { getYouthEmploymentSnapshot } from "@/lib/youth-employment";
 import { getDemographicsSnapshot } from "@/lib/demographics";
-import { getCurriculumGapSnapshot } from "@/lib/curriculum-gap";
 import { getWorkforceContext } from "@/lib/workforce-context";
 import { hasSyllabus } from "@/lib/syllabus-data";
 
@@ -171,12 +170,6 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
   const alerts = await generateAlerts(where, skillGap);
 
   const demographics = getDemographicsSnapshot(country);
-  const curriculumGap = getCurriculumGapSnapshot(
-    country,
-    skillGap,
-    demographics,
-    gapTrend,
-  );
   const syllabusGap =
     country !== "All Countries" && hasSyllabus(country)
       ? await getSyllabusGap(country, where)
@@ -222,7 +215,6 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
     youthEmployment: getYouthEmploymentSnapshot(country, topSkillsWithName),
     demographics,
     workforceContext: getWorkforceContext(country),
-    curriculumGap,
     syllabusGap,
     alerts,
     meta: {

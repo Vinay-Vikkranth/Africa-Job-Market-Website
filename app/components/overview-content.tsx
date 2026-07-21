@@ -24,7 +24,6 @@ import {
 import { AfricaChoroplethMap } from "@/app/components/africa-choropleth-map";
 import { YouthEmploymentSnapshotCard } from "@/app/components/youth-employment-snapshot";
 import { DemographicsGapCard } from "@/app/components/demographics-gap-card";
-import { CurriculumGapCard } from "@/app/components/curriculum-gap-card";
 import { WorkforceContextStrip } from "@/app/components/workforce-context-strip";
 
 function trendFrom(change: number | null): "up" | "down" {
@@ -196,9 +195,6 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
         <div className="space-y-4">
           <WorkforceContextStrip context={data.workforceContext} />
           <DemographicsGapCard snapshot={data.demographics} />
-          <div className="max-w-xl">
-            <CurriculumGapCard gap={data.curriculumGap} syllabusGap={data.syllabusGap} />
-          </div>
         </div>
       </section>
     </>

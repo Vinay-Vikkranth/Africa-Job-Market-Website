@@ -47,7 +47,6 @@ export const DATA_SOURCES: DataSourceEntry[] = [
     powers: [
       "Workforce Demographics (Gender / Age / Education / Urban)",
       "Workforce Context strip",
-      "Curriculum Gap education-readiness input",
     ],
     verifyUrl: "https://data.worldbank.org/indicator",
     verifyLabel: "Open World Bank Indicators",
@@ -85,28 +84,12 @@ export const DATA_SOURCES: DataSourceEntry[] = [
     kind: "education",
     summary:
       "National Universities Commission Core Curriculum and Minimum Academic Standards for seven B.Sc. computing programmes (CS, Cybersecurity, Data Science, ICT, IS, IT, Software Engineering). Skills are mapped to job-market terms and compared against top skills from Nigeria job postings.",
-    powers: [
-      "Curriculum Gap Analysis on Skill Mix (Nigeria only)",
-      "Curriculum Gap card on Overview (replaces proxy when Nigeria is selected)",
-    ],
+    powers: ["Curriculum Gap Analysis on Skill Mix (Nigeria only)"],
     verifyUrl: "https://www.nuc.edu.ng/",
     verifyLabel: "National Universities Commission",
     refresh: "Static mapping in lib/syllabus-data.ts — extend for more countries as syllabi are parsed",
     caveat:
       "Matching uses keyword overlap between syllabus skill terms and extracted job-posting skills. It is a structured comparison, not a full document parse of every course module.",
-  },
-  {
-    id: "curriculum-proxy",
-    title: "Curriculum Gap (computed proxy)",
-    kind: "derived",
-    summary:
-      "For countries without a parsed syllabus on file, this KPI uses a transparent formula: hard-skill share in our job postings minus World Bank education-pipeline readiness. It is not a parsed NUC CCMAS / CAPS / CBC document.",
-    powers: ["Curriculum Gap KPI on Overview (when no parsed syllabus exists)"],
-    verifyUrl: "https://data.worldbank.org/indicator",
-    verifyLabel: "Verify education inputs (World Bank)",
-    refresh: "Uses latest job DB + demographics bundle",
-    caveat:
-      "If education indicators are missing for a country, the gap shows as unavailable — we do not invent a readiness score.",
   },
 ];
 
