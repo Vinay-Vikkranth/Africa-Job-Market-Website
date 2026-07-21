@@ -30,7 +30,7 @@ export function ReportsContent({
         <FileText className="h-8 w-8 text-blue-600" />
         <h2 className="mt-4 text-lg font-semibold text-slate-900">Workforce Analytics Report</h2>
         <p className="mt-2 text-sm text-slate-600">
-          Export live analytics as CSV or PDF. Reports are built from current database queries, not static files.
+          Export live analytics as a formatted PDF. Reports are built from current database queries, not static files.
         </p>
         <ReportDownloadButtons country={country} />
       </article>
@@ -57,20 +57,6 @@ export function ReportsContent({
             Skill gap index: <strong>{data.skillGap.overall}%</strong>
           </p>
         </div>
-      </article>
-
-      <article className="dashboard-card p-6 lg:col-span-2">
-        <h2 className="text-sm font-semibold text-slate-900">Data Sources in Database</h2>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {data.meta.dataSources.map((s) => (
-            <span key={s.source} className="rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700">
-              {s.source}: {formatInt(s._count.source)} jobs
-            </span>
-          ))}
-        </div>
-        <p className="mt-3 text-xs text-slate-500">
-          For more reliable Africa-specific data, add Adzuna API keys or Apify token in `.env` and run Sync Data.
-        </p>
       </article>
 
       <article className="dashboard-card p-6 lg:col-span-2">
