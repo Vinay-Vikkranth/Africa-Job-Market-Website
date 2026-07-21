@@ -232,7 +232,7 @@ export function GapsContent({ data }: { data: DashboardData }) {
     <div className="space-y-6">
 
       {/* ── View A: Skills in Demand ── */}
-      <section className="dashboard-card p-5">
+      {/* <section className="dashboard-card p-5">
         <div className="mb-4">
           <h2 className="text-base font-semibold text-slate-900">Skills in Demand</h2>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -240,7 +240,7 @@ export function GapsContent({ data }: { data: DashboardData }) {
           </p>
         </div>
         <SkillsInDemandTable skills={data.topSkills} />
-      </section>
+      </section> */}
 
       {/* ── View B: Curriculum Gap (Nigeria only) ── */}
       {sg && (

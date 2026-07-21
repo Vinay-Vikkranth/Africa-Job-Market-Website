@@ -37,6 +37,7 @@ import {
 } from "@/app/components/charts/shared";
 import { AfricaChoroplethMap } from "@/app/components/africa-choropleth-map";
 import { WorkforceContextSection } from "@/app/components/workforce-context";
+import { NigeriaEducationMap } from "@/app/components/nigeria-education-map";
 
 export function OverviewContent({ data, country }: { data: DashboardData; country: string }) {
   const [mapView, setMapView] = useState<"map" | "table">("map");
@@ -188,31 +189,20 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
 
         <div className="flex flex-col gap-4 lg:col-span-4">
           <article className="dashboard-card flex-1 p-5">
-            <h2 className="mb-4 text-sm font-semibold text-slate-900">Average Salary by Country</h2>
-            <div className="space-y-3">
-              {data.salariesByCountry.length === 0 ? (
-                <p className="text-sm text-slate-500">No salary data in current filter. Sync more jobs or broaden country filter.</p>
-              ) : (
-                data.salariesByCountry.slice(0, 6).map((item) => {
-                  const maxSalary = Math.max(...data.salariesByCountry.map((s) => s.avgSalary), 1);
-                  const width = Math.max(8, (item.avgSalary / maxSalary) * 100);
-                  return (
-                    <div key={item.country}>
-                      <div className="mb-1 flex justify-between text-xs">
-                        <span className="flex items-center gap-2 text-slate-600">
-                          <span>{item.flag}</span>
-                          {item.country}
-                        </span>
-                        <span className="font-semibold text-slate-800">{formatCurrency(item.avgSalary)}</span>
-                      </div>
-                      <div className="h-2 rounded-full bg-slate-100">
-                        <div className="h-2 rounded-full bg-gradient-to-r from-blue-400 to-blue-600" style={{ width: `${width}%` }} />
-                      </div>
-                    </div>
-                  );
-                })
-              )}
-            </div>
+            <h2 className="text-sm font-semibold text-slate-900">Workforce Readiness by State (Nigeria)</h2>
+            {data.nigeriaEducation ? (
+              <>
+                <p className="mb-3 text-xs text-slate-500">
+                  % of population 6+ with secondary or higher education · {data.nigeriaEducation.source}{" "}
+                  {data.nigeriaEducation.year}
+                </p>
+                <NigeriaEducationMap states={data.nigeriaEducation.states} />
+              </>
+            ) : (
+              <p className="mt-4 text-sm text-slate-500">
+                Live DHS Program data unavailable right now — try again shortly.
+              </p>
+            )}
           </article>
 
           <article className="dashboard-card p-5">
@@ -295,54 +285,7 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
         </article>
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-12">
-        <div className="lg:col-span-8">
-          <h2 className="mb-3 text-sm font-semibold text-slate-900">Recent Insights</h2>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {data.insights.map((insight, i) => {
-              const icons = [LineChart, BarChart3, Sparkles, DollarSign];
-              const colors = ["bg-blue-50 text-blue-600", "bg-emerald-50 text-emerald-600", "bg-violet-50 text-violet-600", "bg-amber-50 text-amber-600"];
-              const Icon = icons[i % icons.length];
-              return (
-                <article key={i} className="dashboard-card flex gap-3 p-4">
-                  <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${colors[i]}`}>
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <p className="text-sm leading-relaxed text-slate-700">{insight.text}</p>
-                    <Link href={insight.href} className="mt-2 flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-700">
-                      View insight <ChevronRight className="h-3 w-3" />
-                    </Link>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        </div>
-
-        <article className="dashboard-card p-5 lg:col-span-4">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-slate-900">Alerts</h2>
-            <Link href="/alerts" className="text-xs text-blue-600 hover:underline">View all</Link>
-          </div>
-          <div className="space-y-3">
-            {data.alerts.slice(0, 3).map((alert, i) => (
-              <Link key={i} href={alert.href} className="flex gap-3 rounded-lg border border-slate-100 bg-slate-50/80 p-3 transition hover:bg-slate-100">
-                <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-600">
-                  <MapPin className="h-3.5 w-3.5" />
-                </div>
-                <div>
-                  <p className="text-sm text-slate-700">{alert.text}</p>
-                  <p className="mt-1 text-xs text-slate-400">{alert.time}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-          <p className="mt-4 text-[11px] text-slate-400">
-            Last refreshed: {new Date(data.meta.lastUpdatedAt).toLocaleString()}
-          </p>
-        </article>
-      </section>
+      
     </>
   );
 }

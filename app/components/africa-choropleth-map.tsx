@@ -163,7 +163,7 @@ export function AfricaChoroplethMap({ countries }: { countries: CountryDatum[] }
       <div className="mt-3 flex items-center justify-between gap-4">
         <div className="flex flex-1 items-center justify-center gap-2 text-[10px] text-slate-500">
           <span>Fewer jobs</span>
-          <div className="h-2 w-28 rounded-full bg-gradient-to-r from-slate-300 via-blue-200 to-blue-600" />
+          <div className="h-2 w-28 rounded-full bg-linear-to-r from-slate-300 via-blue-200 to-blue-600" />
           <span>More jobs</span>
         </div>
       </div>
