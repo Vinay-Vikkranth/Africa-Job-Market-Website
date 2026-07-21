@@ -2,7 +2,6 @@ import { prisma } from "@/lib/prisma";
 import { COUNTRIES, COUNTRY_FLAGS } from "@/lib/constants";
 import {
   generateAlerts,
-  generateInsights,
   getDemandVsSupply,
   getSkillGaps,
   getSyllabusGap,
@@ -132,7 +131,7 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
     Math.round(olderSalaryAvg._avg.salaryMinUsd ?? 0),
   );
 
-  const [jobsByCountry, jobsByCity, salaryByCountry, topSkillsWithName, regionalJobs] =
+  const [jobsByCountry, salaryByCountry, topSkillsWithName, regionalJobs] =
     await Promise.all([
     // Always group across ALL countries (no country filter) so the map keeps
     // showing every country's counts even when the dashboard is filtered.
@@ -140,13 +139,6 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
       by: ["country"],
       _count: { country: true },
       orderBy: { _count: { country: "desc" } },
-    }),
-    prisma.job.groupBy({
-      by: ["city"],
-      where,
-      _count: { city: true },
-      orderBy: { _count: { city: "desc" } },
-      take: 10,
     }),
     prisma.job.groupBy({
       by: ["country"],
@@ -176,16 +168,7 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
 
   const avgSalaryUsd = Math.round(averageSalaryData._avg.salaryMinUsd ?? 0);
 
-  const [insights, alerts] = await Promise.all([
-    generateInsights(
-      where,
-      jobGrowth,
-      topSkillsWithName[0]?.name,
-      avgSalaryUsd,
-      salaryGrowth,
-    ),
-    generateAlerts(where, skillGap),
-  ]);
+  const alerts = await generateAlerts(where, skillGap);
 
   const demographics = getDemographicsSnapshot(country);
   const curriculumGap = getCurriculumGapSnapshot(
@@ -227,10 +210,6 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
       jobs: item._count.country,
       flag: COUNTRY_FLAGS[item.country] ?? "🌍",
     })),
-    jobsByCity: jobsByCity.map((item) => ({
-      city: item.city,
-      jobs: item._count.city,
-    })),
     regionalJobs,
     salariesByCountry: salaryByCountry.map((item) => ({
       country: item.country,
@@ -245,7 +224,6 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
     workforceContext: getWorkforceContext(country),
     curriculumGap,
     syllabusGap,
-    insights,
     alerts,
     meta: {
       country,

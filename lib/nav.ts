@@ -2,17 +2,13 @@ import {
   BarChart3,
   Bell,
   BookOpen,
-  Briefcase,
   Download,
   DollarSign,
   LayoutDashboard,
-  Target,
 } from "lucide-react";
 
 export const NAV_ITEMS = [
   { href: "/", label: "Overview", icon: LayoutDashboard },
-  { href: "/jobs", label: "Jobs Overview", icon: Briefcase },
-  { href: "/skills", label: "Skills Demand", icon: Target },
   { href: "/salary", label: "Salary Insights", icon: DollarSign },
   { href: "/gaps", label: "Skill Mix", icon: BarChart3 },
   { href: "/sources", label: "Data Sources", icon: BookOpen },
@@ -28,10 +24,6 @@ export const PAGE_META: Record<string, { title: string; subtitle: string }> = {
   "/jobs": {
     title: "Jobs Overview",
     subtitle: "Browse live job postings ingested from public job boards",
-  },
-  "/skills": {
-    title: "Skills Demand",
-    subtitle: "Skill frequency computed from job posting text",
   },
   "/salary": {
     title: "Salary Insights",

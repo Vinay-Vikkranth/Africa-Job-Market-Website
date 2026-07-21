@@ -52,8 +52,8 @@ export function YouthEmploymentSnapshotCard({
   const circumference = 2 * Math.PI * 42;
   const progress = hasNeet ? Math.max(0, Math.min(100, snapshot.neetPct!)) : 0;
   const dash = (progress / 100) * circumference;
-  const skillsHref =
-    country === "All Countries" ? "/skills" : `/skills?country=${encodeURIComponent(country)}`;
+  const skillMixHref =
+    country === "All Countries" ? "/gaps" : `/gaps?country=${encodeURIComponent(country)}`;
 
   return (
     <article className="dashboard-card flex h-full flex-col p-5">
@@ -165,10 +165,10 @@ export function YouthEmploymentSnapshotCard({
       <div className="mt-4 space-y-2 border-t border-slate-100 pt-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <Link
-            href={skillsHref}
+            href={skillMixHref}
             className="inline-flex items-center gap-1 rounded-lg border border-blue-200 px-3 py-1.5 text-xs font-medium text-blue-600 transition hover:bg-blue-50"
           >
-            View skills demand →
+            View skill mix →
           </Link>
           <DataSourceButton sourceId="job-boards" label="Skills source" />
         </div>

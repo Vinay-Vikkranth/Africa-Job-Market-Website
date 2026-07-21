@@ -115,6 +115,7 @@ export function KpiCard({
   sparkLabel,
   sparkFormat,
   invertTrend,
+  href,
 }: {
   title: string;
   value: string;
@@ -128,10 +129,15 @@ export function KpiCard({
   sparkLabel?: string;
   sparkFormat?: (value: number) => string;
   invertTrend?: boolean;
+  href?: string;
 }) {
   const isPositive = invertTrend ? trend === "down" : trend === "up";
-  return (
-    <article className="dashboard-card p-4">
+  const card = (
+    <article
+      className={`dashboard-card p-4 ${
+        href ? "transition hover:border-blue-200 hover:shadow-md" : ""
+      }`}
+    >
       <div className="flex items-start justify-between">
         <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${iconBg}`}>
           <Icon className="h-5 w-5 text-white" />
@@ -158,6 +164,14 @@ export function KpiCard({
         <Sparkline data={sparkData} color={sparkColor} label={sparkLabel} formatValue={sparkFormat} />
       </div>
     </article>
+  );
+
+  return href ? (
+    <Link href={href} aria-label={`View ${title}`}>
+      {card}
+    </Link>
+  ) : (
+    card
   );
 }
 

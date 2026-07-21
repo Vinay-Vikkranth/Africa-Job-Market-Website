@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import {
   Bar,
   BarChart,
@@ -11,15 +10,9 @@ import {
   YAxis,
 } from "recharts";
 import {
-  BarChart3,
   Briefcase,
   Building2,
-  ChevronRight,
-  DollarSign,
-  LineChart,
-  MapPin,
   Percent,
-  Sparkles,
   Target,
 } from "lucide-react";
 import type { DashboardData } from "@/lib/dashboard-data";
@@ -67,6 +60,7 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
           sparkColor="#3b82f6"
           sparkData={data.trends.jobs}
           sparkLabel="jobs posted this week"
+          href={country === "All Countries" ? "/jobs" : `/jobs?country=${encodeURIComponent(country)}`}
         />
         <KpiCard
           title="Unique Companies"
@@ -160,12 +154,7 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
         </article>
 
         <article className="dashboard-card p-5 lg:col-span-4">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-slate-900">Top In-Demand Skills</h2>
-            <Link href="/skills" className="text-xs text-blue-600 hover:underline">
-              All skills →
-            </Link>
-          </div>
+          <h2 className="mb-4 text-sm font-semibold text-slate-900">Top In-Demand Skills</h2>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
@@ -207,105 +196,10 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
         <div className="space-y-4">
           <WorkforceContextStrip context={data.workforceContext} />
           <DemographicsGapCard snapshot={data.demographics} />
-          <div className="grid gap-4 lg:grid-cols-3">
-            <div className="lg:col-span-1">
-              <CurriculumGapCard gap={data.curriculumGap} syllabusGap={data.syllabusGap} />
-            </div>
-            <article className="dashboard-card p-5 lg:col-span-2">
-              <h2 className="mb-4 text-sm font-semibold text-slate-900">Jobs by City (Top 10)</h2>
-              <div className="h-56">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
-                    data={data.jobsByCity}
-                    layout="vertical"
-                    margin={{ top: 0, right: 10, left: 0, bottom: 0 }}
-                  >
-                    <XAxis type="number" hide />
-                    <YAxis
-                      type="category"
-                      dataKey="city"
-                      width={110}
-                      tick={{ fontSize: 11, fill: "#64748b" }}
-                      axisLine={false}
-                      tickLine={false}
-                    />
-                    <Tooltip
-                      formatter={(value) => [formatInt(Number(value ?? 0)), "Jobs"]}
-                      contentStyle={{ borderRadius: 8, border: "1px solid #e2e8f0", fontSize: 12 }}
-                    />
-                    <Bar dataKey="jobs" fill="#6366f1" radius={[0, 4, 4, 0]} barSize={16} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </article>
+          <div className="max-w-xl">
+            <CurriculumGapCard gap={data.curriculumGap} syllabusGap={data.syllabusGap} />
           </div>
         </div>
-      </section>
-
-      <section className="grid gap-4 lg:grid-cols-12">
-        <div className="lg:col-span-8">
-          <h2 className="mb-3 text-sm font-semibold text-slate-900">Recent Insights</h2>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {data.insights.map((insight, i) => {
-              const icons = [LineChart, BarChart3, Sparkles, DollarSign];
-              const colors = [
-                "bg-blue-50 text-blue-600",
-                "bg-emerald-50 text-emerald-600",
-                "bg-violet-50 text-violet-600",
-                "bg-amber-50 text-amber-600",
-              ];
-              const Icon = icons[i % icons.length];
-              return (
-                <article key={i} className="dashboard-card flex gap-3 p-4">
-                  <div
-                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${colors[i]}`}
-                  >
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <p className="text-sm leading-relaxed text-slate-700">{insight.text}</p>
-                    <Link
-                      href={insight.href}
-                      className="mt-2 flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-700"
-                    >
-                      View insight <ChevronRight className="h-3 w-3" />
-                    </Link>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        </div>
-
-        <article className="dashboard-card p-5 lg:col-span-4">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-slate-900">Alerts</h2>
-            <Link href="/alerts" className="text-xs text-blue-600 hover:underline">
-              View all
-            </Link>
-          </div>
-          {data.alerts.length === 0 ? (
-            <p className="text-sm text-slate-500">No alerts for this filter yet.</p>
-          ) : (
-            <div className="space-y-3">
-              {data.alerts.slice(0, 3).map((alert, i) => (
-                <Link
-                  key={i}
-                  href={alert.href}
-                  className="flex gap-3 rounded-lg border border-slate-100 bg-slate-50/80 p-3 transition hover:bg-slate-100"
-                >
-                  <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-600">
-                    <MapPin className="h-3.5 w-3.5" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-slate-700">{alert.text}</p>
-                    <p className="mt-1 text-xs text-slate-400">{alert.time}</p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          )}
-        </article>
       </section>
     </>
   );
