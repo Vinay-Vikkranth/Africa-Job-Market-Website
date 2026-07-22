@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { COUNTRIES } from "@/lib/constants";
 import { getDashboardData } from "@/lib/dashboard-data";
 import { generatePdfReport } from "@/lib/report-pdf";
+import { captureReportImages } from "@/lib/report-screenshots";
+
+export const maxDuration = 60;
 
 export async function GET(request: NextRequest) {
   try {
@@ -10,8 +13,11 @@ export async function GET(request: NextRequest) {
       ? (countryParam as (typeof COUNTRIES)[number])
       : "All Countries";
 
-    const data = await getDashboardData(country);
-    const pdf = await generatePdfReport(data, country);
+    const [data, images] = await Promise.all([
+      getDashboardData(country),
+      captureReportImages(request.nextUrl.origin, country),
+    ]);
+    const pdf = await generatePdfReport(data, country, images);
 
     return new NextResponse(new Uint8Array(pdf), {
       headers: {

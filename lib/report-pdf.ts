@@ -1,5 +1,6 @@
 import PDFDocument from "pdfkit";
 import type { DashboardData } from "@/lib/dashboard-data";
+import type { ReportImages } from "@/lib/report-screenshots";
 
 const PAGE_MARGIN = 50;
 const INK = "#0f172a";
@@ -20,8 +21,10 @@ function ensureSpace(doc: PDFKit.PDFDocument, needed: number) {
   }
 }
 
-function sectionTitle(doc: PDFKit.PDFDocument, title: string) {
-  ensureSpace(doc, 40);
+function sectionTitle(doc: PDFKit.PDFDocument, title: string, followingSpace = 0) {
+  // Reserve room for the title plus whatever comes right after it (e.g. a
+  // chart image), so the heading doesn't get orphaned at the bottom of a page.
+  ensureSpace(doc, 40 + followingSpace);
   doc.moveDown(0.6);
   doc
     .fontSize(13)
@@ -37,6 +40,49 @@ function sectionTitle(doc: PDFKit.PDFDocument, title: string) {
     .stroke();
   doc.moveDown(0.8);
   doc.font("Helvetica");
+}
+
+// PNG IHDR chunk stores width/height as big-endian uint32s at fixed offsets —
+// reading them directly avoids depending on pdfkit's untyped openImage API.
+function pngDimensions(buffer: Buffer): { width: number; height: number } {
+  return { width: buffer.readUInt32BE(16), height: buffer.readUInt32BE(20) };
+}
+
+function addImage(
+  doc: PDFKit.PDFDocument,
+  image: Buffer | undefined,
+  options: { caption?: string; maxHeight?: number } = {},
+) {
+  if (!image) return;
+  const maxHeight = options.maxHeight ?? 230;
+  const boxWidth = contentWidth(doc);
+
+  ensureSpace(doc, maxHeight + 30);
+
+  const { width: imgWidth, height: imgHeight } = pngDimensions(image);
+  const scale = Math.min(boxWidth / imgWidth, maxHeight / imgHeight);
+  const drawWidth = imgWidth * scale;
+  const drawHeight = imgHeight * scale;
+  const x = PAGE_MARGIN + (boxWidth - drawWidth) / 2;
+  const y = doc.y;
+
+  doc
+    .roundedRect(x - 1, y - 1, drawWidth + 2, drawHeight + 2, 4)
+    .strokeColor(BORDER)
+    .lineWidth(1)
+    .stroke();
+  doc.image(image, x, y, { width: drawWidth, height: drawHeight });
+  doc.y = y + drawHeight + 6;
+
+  if (options.caption) {
+    doc
+      .fontSize(8)
+      .fillColor(FAINT)
+      .font("Helvetica-Oblique")
+      .text(options.caption, PAGE_MARGIN, doc.y, { width: boxWidth, align: "center" });
+    doc.font("Helvetica");
+  }
+  doc.moveDown(0.8);
 }
 
 function drawTable(
@@ -124,7 +170,11 @@ function kpiGrid(doc: PDFKit.PDFDocument, items: { label: string; value: string 
   doc.moveDown(0.5);
 }
 
-export async function generatePdfReport(data: DashboardData, country: string): Promise<Buffer> {
+export async function generatePdfReport(
+  data: DashboardData,
+  country: string,
+  images: ReportImages = {},
+): Promise<Buffer> {
   return new Promise((resolve, reject) => {
     const doc = new PDFDocument({ margin: PAGE_MARGIN, bufferPages: true, size: "A4" });
     const chunks: Buffer[] = [];
@@ -154,6 +204,15 @@ export async function generatePdfReport(data: DashboardData, country: string): P
 
     doc.y = 130;
 
+    // --- Dashboard snapshot ---
+    if (images.snapshot) {
+      sectionTitle(doc, "Dashboard Snapshot", 160);
+      addImage(doc, images.snapshot, {
+        caption: "Live KPI snapshot captured from the dashboard at generation time.",
+        maxHeight: 190,
+      });
+    }
+
     // --- Executive summary ---
     sectionTitle(doc, "Executive Summary");
     kpiGrid(doc, [
@@ -172,7 +231,8 @@ export async function generatePdfReport(data: DashboardData, country: string): P
     ]);
 
     // --- Top skills ---
-    sectionTitle(doc, "Top In-Demand Skills");
+    sectionTitle(doc, "Top In-Demand Skills", images["top-skills"] ? 200 : 0);
+    addImage(doc, images["top-skills"], { caption: "Share of demand by skill (last 30 days)." });
     drawTable(
       doc,
       [
@@ -186,8 +246,25 @@ export async function generatePdfReport(data: DashboardData, country: string): P
         .map((skill, i) => [String(i + 1), skill.name, `${skill.demandPct}%`, skill.mentions.toLocaleString()]),
     );
 
+    // --- Skill gap ---
+    sectionTitle(doc, "Skill Gap by Category", images["skill-gap"] ? 200 : 0);
+    addImage(doc, images["skill-gap"], { caption: "Distribution of categorized skill demand." });
+    kpiGrid(doc, [
+      { label: "Technical", value: `${data.skillGap.technical}%` },
+      { label: "Digital", value: `${data.skillGap.digital}%` },
+      { label: "Soft skills", value: `${data.skillGap.soft}%` },
+      { label: "Business", value: `${data.skillGap.business}%` },
+    ]);
+
+    // --- Demand vs supply ---
+    sectionTitle(doc, "Skills Demand vs Supply", images["demand-vs-supply"] ? 200 : 0);
+    addImage(doc, images["demand-vs-supply"], {
+      caption: "Demand = postings in the last 30 days · Supply = prior postings in the database.",
+    });
+
     // --- Jobs by country ---
-    sectionTitle(doc, "Jobs by Country");
+    sectionTitle(doc, "Jobs by Country", images["jobs-by-country"] ? 200 : 0);
+    addImage(doc, images["jobs-by-country"], { caption: "Job postings by country." });
     drawTable(
       doc,
       [

@@ -63,7 +63,7 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
         </p>
       </div>
 
-      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+      <section data-report-capture="snapshot" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <KpiCard
           title="Total Job Postings"
           value={formatInt(data.kpis.totalJobs)}
@@ -122,7 +122,7 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
       </section>
 
       <section className="grid gap-4 lg:grid-cols-12">
-        <article className="dashboard-card p-5 lg:col-span-4">
+        <article data-report-capture="jobs-by-country" className="dashboard-card p-5 lg:col-span-4">
           <div className="mb-4 flex items-center justify-between gap-2">
             <h2 className="text-sm font-semibold text-slate-900">
               {country !== "All Countries"
@@ -174,7 +174,7 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
           )}
         </article>
 
-        <article className="dashboard-card p-5 lg:col-span-4">
+        <article data-report-capture="top-skills" className="dashboard-card p-5 lg:col-span-4">
           <div className="mb-4 flex items-center justify-between gap-2">
             <h2 className="text-sm font-semibold text-slate-900">Top In-Demand Skills</h2>
             <div className="flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 p-0.5">
@@ -265,7 +265,7 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
           </div>
         </article>
 
-        <article className="dashboard-card p-5 lg:col-span-3">
+        <article data-report-capture="skill-gap" className="dashboard-card p-5 lg:col-span-3">
           <h2 className="mb-2 text-sm font-semibold text-slate-900">Skill Gap by Category</h2>
           <div className="relative h-44">
             <ResponsiveContainer width="100%" height="100%">
@@ -293,7 +293,7 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
           </div>
         </article>
 
-        <article className="dashboard-card p-5 lg:col-span-6">
+        <article data-report-capture="demand-vs-supply" className="dashboard-card p-5 lg:col-span-6">
           <h2 className="mb-4 text-sm font-semibold text-slate-900">Skills Demand vs Supply</h2>
           <p className="mb-2 text-xs text-slate-500">Demand = last 30 days · Supply = prior postings in database</p>
           <div className="h-72">
