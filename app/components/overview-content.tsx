@@ -30,7 +30,6 @@ import {
   KpiCard,
 } from "@/app/components/charts/shared";
 import { AfricaChoroplethMap } from "@/app/components/africa-choropleth-map";
-import { WorkforceContextSection } from "@/app/components/workforce-context";
 import { NigeriaEducationMap } from "@/app/components/nigeria-education-map";
 import { YouthEmploymentSnapshotCard } from "@/app/components/youth-employment-snapshot";
 import { DemographicsGapCard } from "@/app/components/demographics-gap-card";
@@ -121,8 +120,6 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
           sparkData={data.trends.gap}
         />
       </section>
-
-      {data.workforceContext && <WorkforceContextSection context={data.workforceContext} />}
 
       <section className="grid gap-4 lg:grid-cols-12">
         <article className="dashboard-card p-5 lg:col-span-4">
@@ -322,7 +319,7 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
         </div>
         <div className="space-y-4">
           <YouthEmploymentSnapshotCard snapshot={data.youthEmployment} country={country} />
-          <WorkforceContextStrip context={data.workforceIndicators} />
+          <WorkforceContextStrip context={data.workforceContext} />
           <DemographicsGapCard snapshot={data.demographics} />
         </div>
       </section>

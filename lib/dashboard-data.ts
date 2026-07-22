@@ -15,7 +15,6 @@ import {
   growthPct,
 } from "@/lib/analytics";
 import { hasSyllabus } from "@/lib/syllabus-data";
-import { getWorkforceContext } from "@/lib/world-bank";
 import { getNigeriaEducationAttainment } from "@/lib/dhs-nigeria";
 import { getRegionalJobBreakdown } from "@/lib/regional-jobs";
 import { getYouthEmploymentSnapshot } from "@/lib/youth-employment";
@@ -163,13 +162,12 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
     country === "All Countries" ? Promise.resolve(null) : getRegionalJobBreakdown(country),
   ]);
 
-  const [emergingTechnologies, skillGap, priorSkillGap, demandVsSupply, syllabusGap, workforceContext, nigeriaEducation] = await Promise.all([
+  const [emergingTechnologies, skillGap, priorSkillGap, demandVsSupply, syllabusGap, nigeriaEducation] = await Promise.all([
     getEmergingTechnologies(where),
     getSkillGaps(where, totalJobs),
     getSkillGaps(where, totalJobs, thirtyDaysAgo),
     getDemandVsSupply(where, topSkillsWithName),
     hasSyllabus(country) ? getSyllabusGap(country, where) : Promise.resolve(null),
-    getWorkforceContext(country),
     getNigeriaEducationAttainment(),
   ]);
 
@@ -242,8 +240,7 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
     topSkills: topSkillsWithName,
     skillGap,
     syllabusGap,
-    workforceContext,
-    workforceIndicators,
+    workforceContext: workforceIndicators,
     nigeriaEducation,
     emergingTechnologies,
     demandVsSupply,
