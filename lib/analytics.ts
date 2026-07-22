@@ -284,10 +284,8 @@ export async function getDemandVsSupply(
 
     results.push({
       skill: skill.name,
-      /** Mentions in job postings from the last 30 days */
-      recent: demandCount,
-      /** Mentions in older postings (not worker supply) */
-      older: supplyCount,
+      demand: demandCount,
+      supply: supplyCount,
     });
   }
 

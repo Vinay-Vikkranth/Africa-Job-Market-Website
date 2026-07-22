@@ -10,7 +10,7 @@ import {
 export const NAV_ITEMS = [
   { href: "/", label: "Overview", icon: LayoutDashboard },
   { href: "/salary", label: "Salary Insights", icon: DollarSign },
-  { href: "/gaps", label: "Skill Mix", icon: BarChart3 },
+  { href: "/gaps", label: "Skill Gap", icon: BarChart3 },
   { href: "/sources", label: "Data Sources", icon: BookOpen },
   { href: "/reports", label: "Reports", icon: Download },
   { href: "/alerts", label: "Alerts", icon: Bell },
@@ -30,8 +30,8 @@ export const PAGE_META: Record<string, { title: string; subtitle: string }> = {
     subtitle: "Compensation from postings that disclose salary (coverage varies)",
   },
   "/gaps": {
-    title: "Skill Mix",
-    subtitle: "How demand is distributed across skill categories in job ads",
+    title: "Skill Gap",
+    subtitle: "Demand vs supply analysis across skill categories",
   },
   "/sources": {
     title: "Data Sources",
