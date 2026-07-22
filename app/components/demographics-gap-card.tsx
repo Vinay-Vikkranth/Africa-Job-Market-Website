@@ -81,7 +81,7 @@ function PopulationSplit({ snapshot }: { snapshot: DemographicsSnapshot }) {
   return (
     <div className="flex flex-col items-center rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
       <p className="mb-1 self-start text-sm font-semibold text-slate-900">Population 15+</p>
-      <div className="relative h-52 w-full max-w-[220px]">
+      <div className="relative h-52 w-full max-w-55">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
