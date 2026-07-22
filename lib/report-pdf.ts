@@ -9,6 +9,11 @@ const FAINT = "#94a3b8";
 const ACCENT = "#2563eb";
 const BORDER = "#e2e8f0";
 const STRIPE = "#f8fafc";
+const IMAGE_MAX_HEIGHT = 230;
+// Space an image + its caption actually consumes, incl. addImage's own margins —
+// used both by addImage's own page-break check and by sectionTitle's lookahead,
+// so a heading and its image never land on different pages.
+const IMAGE_RESERVE = IMAGE_MAX_HEIGHT + 40;
 
 function contentWidth(doc: PDFKit.PDFDocument) {
   return doc.page.width - PAGE_MARGIN * 2;
@@ -54,10 +59,10 @@ function addImage(
   options: { caption?: string; maxHeight?: number } = {},
 ) {
   if (!image) return;
-  const maxHeight = options.maxHeight ?? 230;
+  const maxHeight = options.maxHeight ?? IMAGE_MAX_HEIGHT;
   const boxWidth = contentWidth(doc);
 
-  ensureSpace(doc, maxHeight + 30);
+  ensureSpace(doc, maxHeight + 40);
 
   const { width: imgWidth, height: imgHeight } = pngDimensions(image);
   const scale = Math.min(boxWidth / imgWidth, maxHeight / imgHeight);
@@ -206,7 +211,7 @@ export async function generatePdfReport(
 
     // --- Dashboard snapshot ---
     if (images.snapshot) {
-      sectionTitle(doc, "Dashboard Snapshot", 160);
+      sectionTitle(doc, "Dashboard Snapshot", 190 + 40);
       addImage(doc, images.snapshot, {
         caption: "Live KPI snapshot captured from the dashboard at generation time.",
         maxHeight: 190,
@@ -231,7 +236,7 @@ export async function generatePdfReport(
     ]);
 
     // --- Top skills ---
-    sectionTitle(doc, "Top In-Demand Skills", images["top-skills"] ? 200 : 0);
+    sectionTitle(doc, "Top In-Demand Skills", images["top-skills"] ? IMAGE_RESERVE : 0);
     addImage(doc, images["top-skills"], { caption: "Share of demand by skill (last 30 days)." });
     drawTable(
       doc,
@@ -247,7 +252,7 @@ export async function generatePdfReport(
     );
 
     // --- Skill gap ---
-    sectionTitle(doc, "Skill Gap by Category", images["skill-gap"] ? 200 : 0);
+    sectionTitle(doc, "Skill Gap by Category", images["skill-gap"] ? IMAGE_RESERVE : 0);
     addImage(doc, images["skill-gap"], { caption: "Distribution of categorized skill demand." });
     kpiGrid(doc, [
       { label: "Technical", value: `${data.skillGap.technical}%` },
@@ -257,13 +262,22 @@ export async function generatePdfReport(
     ]);
 
     // --- Demand vs supply ---
-    sectionTitle(doc, "Skills Demand vs Supply", images["demand-vs-supply"] ? 200 : 0);
+    sectionTitle(doc, "Skills Demand vs Supply", images["demand-vs-supply"] ? IMAGE_RESERVE : 0);
     addImage(doc, images["demand-vs-supply"], {
       caption: "Demand = postings in the last 30 days · Supply = prior postings in the database.",
     });
+    drawTable(
+      doc,
+      [
+        { label: "Skill", width: contentWidth(doc) - 150 - 150 },
+        { label: "Demand (30d)", width: 150, align: "right" },
+        { label: "Supply (prior)", width: 150, align: "right" },
+      ],
+      data.demandVsSupply.map((row) => [row.skill, row.demand.toLocaleString(), row.supply.toLocaleString()]),
+    );
 
     // --- Jobs by country ---
-    sectionTitle(doc, "Jobs by Country", images["jobs-by-country"] ? 200 : 0);
+    sectionTitle(doc, "Jobs by Country", images["jobs-by-country"] ? IMAGE_RESERVE : 0);
     addImage(doc, images["jobs-by-country"], { caption: "Job postings by country." });
     drawTable(
       doc,
