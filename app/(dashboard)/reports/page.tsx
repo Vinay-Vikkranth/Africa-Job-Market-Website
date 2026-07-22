@@ -2,6 +2,16 @@ import { COUNTRIES, getDashboardData } from "@/lib/dashboard-data";
 import { ReportsContent } from "@/app/components/reports-content";
 import { prisma } from "@/lib/prisma";
 
+type SyncRun = {
+  id: number;
+  source: string;
+  inserted: number;
+  updated: number;
+  status: string;
+  message: string | null;
+  ranAt: Date;
+};
+
 export default async function ReportsPage({
   searchParams,
 }: {
@@ -19,7 +29,7 @@ export default async function ReportsPage({
     <ReportsContent
       data={data}
       country={country}
-      syncHistory={syncHistory.map((run) => ({
+      syncHistory={syncHistory.map((run: SyncRun) => ({
         ...run,
         ranAt: run.ranAt.toISOString(),
       }))}
