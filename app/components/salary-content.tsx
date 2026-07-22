@@ -4,14 +4,21 @@ import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recha
 import type { DashboardData } from "@/lib/dashboard-data";
 import { formatCurrency, formatInt, KpiCard, Sparkline } from "@/app/components/charts/shared";
 import { DollarSign } from "lucide-react";
+import { DataSourceButton } from "@/app/components/data-source-button";
 
 export function SalaryContent({ data }: { data: DashboardData }) {
   return (
     <>
+      <div className="flex justify-end">
+        <DataSourceButton sourceId="job-boards" label="Salary data source" />
+      </div>
       <section className="grid gap-4 sm:grid-cols-3">
         <KpiCard
           title="Avg. Salary (USD)"
           value={data.kpis.avgSalaryUsd > 0 ? formatCurrency(data.kpis.avgSalaryUsd) : "N/A"}
+          change={data.kpis.salaryGrowthPct}
+          changeLabel="vs previous 30 days"
+          trend={(data.kpis.salaryGrowthPct ?? 0) >= 0 ? "up" : "down"}
           icon={DollarSign}
           iconBg="bg-amber-500"
           sparkColor="#f59e0b"

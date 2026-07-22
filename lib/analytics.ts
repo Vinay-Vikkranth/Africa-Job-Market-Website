@@ -4,15 +4,13 @@ import { COUNTRY_CURRICULA, getCurriculumCoverage } from "@/lib/syllabus-data";
 
 const MS_DAY = 24 * 60 * 60 * 1000;
 
-// Returns 0 when prior period has fewer than MIN_SAMPLE jobs (not enough history).
-// Caps at ±500 so a freshly-seeded DB never shows 4000%+ figures.
-const MIN_SAMPLE = 5;
-const MAX_GROWTH = 500;
-
-export function growthPct(recent: number, prior: number): number {
-  if (prior < MIN_SAMPLE) return 0;
-  const pct = ((recent - prior) / prior) * 100;
-  return Number(Math.max(-MAX_GROWTH, Math.min(MAX_GROWTH, pct)).toFixed(1));
+export function growthPct(recent: number, prior: number): number | null {
+  // No meaningful % when the prior window is empty — avoid fake +100% / +600% swings.
+  if (prior <= 0) return null;
+  const pct = Number((((recent - prior) / prior) * 100).toFixed(1));
+  // Tiny baselines produce absurd percentages; treat as unavailable for display.
+  if (!Number.isFinite(pct) || Math.abs(pct) > 300) return null;
+  return pct;
 }
 
 export async function getSkillMentionsInPeriod(
@@ -58,7 +56,7 @@ export async function getEmergingTechnologies(where: Record<string, unknown>) {
     .map((name) => {
       const recentCount = recent.get(name) ?? 0;
       const priorCount = prior.get(name) ?? 0;
-      const growth = growthPct(recentCount, priorCount);
+      const growth = growthPct(recentCount, priorCount) ?? 0;
       return { name, growthPct: growth, recentCount, priorCount };
     })
     .filter((item) => item.recentCount > 0 || item.priorCount > 0)
@@ -116,8 +114,7 @@ export async function getSkillGaps(
     business: Math.round((categoryDemand.business / totalDemand) * 100),
   };
 
-  // Overall index = dominant category's share of demand. High values mean
-  // demand is concentrated in one skill category (a lopsided market).
+  // Overall = share of demand in the largest category (concentration), not a labour-supply gap.
   const overall = Math.max(gaps.technical, gaps.digital, gaps.soft, gaps.business);
 
   return { ...gaps, overall, totalJobs };
@@ -287,8 +284,10 @@ export async function getDemandVsSupply(
 
     results.push({
       skill: skill.name,
-      demand: demandCount,
-      supply: supplyCount,
+      /** Mentions in job postings from the last 30 days */
+      recent: demandCount,
+      /** Mentions in older postings (not worker supply) */
+      older: supplyCount,
     });
   }
 
@@ -375,8 +374,8 @@ export async function generateAlerts(
   if (skillGaps.overall >= 50) {
     alerts.push({
       type: "warning",
-      text: `Overall skill gap index is elevated at ${skillGaps.overall}% based on category demand distribution.`,
-      time: "Just now",
+      text: `Demand is concentrated: the top skill category accounts for ${skillGaps.overall}% of categorized skill mentions.`,
+      time: "Based on current postings",
       href: "/gaps",
     });
   }
@@ -403,16 +402,16 @@ export async function generateAlerts(
     alerts.push({
       type: "trend",
       text: `Latest ingestion: "${recentJobs[0].title}" in ${recentJobs[0].country}.`,
-      time: hoursAgo < 24 ? `${hoursAgo}h ago` : `${Math.round(hoursAgo / 24)}d ago`,
+      time: hoursAgo < 1 ? "Just now" : hoursAgo < 24 ? `${hoursAgo}h ago` : `${Math.round(hoursAgo / 24)}d ago`,
       href: "/jobs",
     });
   }
 
   if (skillGaps.technical >= 40) {
     alerts.push({
-      type: "warning",
-      text: "Technical skill demand outweighs other categories — consider accelerated tech training pathways.",
-      time: "Today",
+      type: "info",
+      text: `Technical skills are ${skillGaps.technical}% of categorized demand — employers are hiring heavily for tech capabilities.`,
+      time: "Based on current postings",
       href: "/gaps",
     });
   }

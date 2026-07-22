@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import {
   Bar,
   BarChart,
@@ -15,15 +14,10 @@ import {
 } from "recharts";
 import {
   AlertTriangle,
-  BarChart3,
   Briefcase,
   Building2,
-  ChevronRight,
   Cloud,
   DollarSign,
-  LineChart,
-  MapPin,
-  Sparkles,
   Target,
   TrendingUp,
 } from "lucide-react";
@@ -38,10 +32,21 @@ import {
 import { AfricaChoroplethMap } from "@/app/components/africa-choropleth-map";
 import { WorkforceContextSection } from "@/app/components/workforce-context";
 import { NigeriaEducationMap } from "@/app/components/nigeria-education-map";
+import { YouthEmploymentSnapshotCard } from "@/app/components/youth-employment-snapshot";
+import { DemographicsGapCard } from "@/app/components/demographics-gap-card";
+import { WorkforceContextStrip } from "@/app/components/workforce-context-strip";
+
+function trendFrom(change: number | null): "up" | "down" {
+  return (change ?? 0) >= 0 ? "up" : "down";
+}
 
 export function OverviewContent({ data, country }: { data: DashboardData; country: string }) {
   const [mapView, setMapView] = useState<"map" | "table">("map");
   const [showAllSkills, setShowAllSkills] = useState(false);
+  const tableRows =
+    country === "All Countries"
+      ? data.jobsByCountry
+      : data.jobsByCountry.filter((item) => item.country === country);
 
   const gapChartData = [
     { name: "Technical", value: data.skillGap.technical },
@@ -52,24 +57,32 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
 
   return (
     <>
-      <div className="mb-2">
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
         <DataSourceBadge sources={data.meta.dataSources} />
+        <p className="text-[11px] text-slate-400">
+          Jobs last updated: {new Date(data.meta.lastUpdatedAt).toLocaleString()}
+        </p>
       </div>
 
       <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <KpiCard
           title="Total Job Postings"
           value={formatInt(data.kpis.totalJobs)}
-          caption={`${formatInt(data.kpis.jobsLast30Days)} in last 30 days`}
+          change={data.kpis.growthPct}
+          changeLabel="vs previous 30 days"
+          trend={trendFrom(data.kpis.growthPct)}
           icon={Briefcase}
           iconBg="bg-blue-500"
           sparkColor="#3b82f6"
           sparkData={data.trends.jobs}
+          href={country === "All Countries" ? "/jobs" : `/jobs?country=${encodeURIComponent(country)}`}
         />
         <KpiCard
           title="Unique Companies"
           value={formatInt(data.kpis.uniqueCompanies)}
-          caption={`${formatInt(data.kpis.companiesLast30Days)} in last 30 days`}
+          change={data.kpis.companyGrowthPct}
+          changeLabel="vs previous 30 days"
+          trend={trendFrom(data.kpis.companyGrowthPct)}
           icon={Building2}
           iconBg="bg-emerald-500"
           sparkColor="#10b981"
@@ -78,7 +91,9 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
         <KpiCard
           title="In-Demand Skills"
           value={formatInt(data.kpis.inDemandSkills)}
-          caption={`${formatInt(data.kpis.skillsLast30Days)} in last 30 days`}
+          change={data.kpis.skillsGrowthPct}
+          changeLabel="vs previous 30 days"
+          trend={trendFrom(data.kpis.skillsGrowthPct)}
           icon={Target}
           iconBg="bg-violet-500"
           sparkColor="#8b5cf6"
@@ -87,7 +102,9 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
         <KpiCard
           title="Avg. Salary (USD)"
           value={data.kpis.avgSalaryUsd > 0 ? formatCurrency(data.kpis.avgSalaryUsd) : "N/A"}
-          caption={`${data.kpis.salaryCoveragePct}% postings include salary`}
+          change={data.kpis.salaryGrowthPct}
+          changeLabel="vs previous 30 days"
+          trend={trendFrom(data.kpis.salaryGrowthPct)}
           icon={DollarSign}
           iconBg="bg-amber-500"
           sparkColor="#f59e0b"
@@ -109,8 +126,12 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
 
       <section className="grid gap-4 lg:grid-cols-12">
         <article className="dashboard-card p-5 lg:col-span-4">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-slate-900">Job Postings by Country</h2>
+          <div className="mb-4 flex items-center justify-between gap-2">
+            <h2 className="text-sm font-semibold text-slate-900">
+              {country !== "All Countries"
+                ? `Regional view: ${country}`
+                : "Job Postings by Country"}
+            </h2>
             <div className="flex rounded-lg border border-slate-200 p-0.5 text-xs">
               <button
                 type="button"
@@ -133,18 +154,25 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
             </div>
           </div>
           {mapView === "map" ? (
-            <AfricaChoroplethMap countries={data.jobsByCountry} />
+            <AfricaChoroplethMap
+              countries={data.jobsByCountry}
+              regionalJobs={data.regionalJobs}
+            />
           ) : (
-            <div className="space-y-2">
-              {data.jobsByCountry.map((item) => (
-                <div key={item.country} className="flex items-center justify-between text-sm">
-                  <span className="flex items-center gap-2 text-slate-700">
-                    <span>{item.flag}</span>
-                    {item.country}
-                  </span>
-                  <span className="font-semibold text-slate-900">{formatInt(item.jobs)}</span>
-                </div>
-              ))}
+            <div className="max-h-80 space-y-2 overflow-y-auto">
+              {tableRows.length === 0 ? (
+                <p className="text-sm text-slate-500">No job counts for this filter.</p>
+              ) : (
+                tableRows.map((item) => (
+                  <div key={item.country} className="flex items-center justify-between text-sm">
+                    <span className="flex items-center gap-2 text-slate-700">
+                      <span>{item.flag}</span>
+                      {item.country}
+                    </span>
+                    <span className="font-semibold text-slate-900">{formatInt(item.jobs)}</span>
+                  </div>
+                ))
+              )}
             </div>
           )}
         </article>
@@ -285,7 +313,19 @@ export function OverviewContent({ data, country }: { data: DashboardData; countr
         </article>
       </section>
 
-      
+      <section>
+        <div className="mb-2">
+          <h2 className="text-sm font-semibold text-slate-900">Labour-market context</h2>
+          <p className="text-xs text-slate-500">
+            Official World Bank &amp; ILOSTAT indicators — separate from job-posting demand above.
+          </p>
+        </div>
+        <div className="space-y-4">
+          <YouthEmploymentSnapshotCard snapshot={data.youthEmployment} country={country} />
+          <WorkforceContextStrip context={data.workforceIndicators} />
+          <DemographicsGapCard snapshot={data.demographics} />
+        </div>
+      </section>
     </>
   );
 }

@@ -17,6 +17,10 @@ import {
 import { hasSyllabus } from "@/lib/syllabus-data";
 import { getWorkforceContext } from "@/lib/world-bank";
 import { getNigeriaEducationAttainment } from "@/lib/dhs-nigeria";
+import { getRegionalJobBreakdown } from "@/lib/regional-jobs";
+import { getYouthEmploymentSnapshot } from "@/lib/youth-employment";
+import { getDemographicsSnapshot } from "@/lib/demographics";
+import { getWorkforceContext as getWorkforceIndicators } from "@/lib/workforce-context";
 
 export { COUNTRIES, COUNTRY_FLAGS };
 
@@ -135,7 +139,7 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
     Math.round(olderSalaryAvg._avg.salaryMinUsd ?? 0),
   );
 
-  const [jobsByCountry, jobsByCity, salaryByCountry, topSkillsWithName] = await Promise.all([
+  const [jobsByCountry, jobsByCity, salaryByCountry, topSkillsWithName, regionalJobs] = await Promise.all([
     // Always fetch ALL countries for the map — it's the navigation tool, not a filtered view
     prisma.job.groupBy({
       by: ["country"],
@@ -156,6 +160,7 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
       orderBy: { _avg: { salaryMinUsd: "desc" } },
     }),
     getTopSkills(where, totalJobs),
+    country === "All Countries" ? Promise.resolve(null) : getRegionalJobBreakdown(country),
   ]);
 
   const [emergingTechnologies, skillGap, priorSkillGap, demandVsSupply, syllabusGap, workforceContext, nigeriaEducation] = await Promise.all([
@@ -190,6 +195,9 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
     generateAlerts(where, skillGap, emergingTechnologies),
   ]);
 
+  const demographics = getDemographicsSnapshot(country);
+  const workforceIndicators = getWorkforceIndicators(country);
+
   return {
     kpis: {
       totalJobs,
@@ -203,7 +211,7 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
       companiesLast30Days: recentCompanies.length,
       skillsLast30Days: recentSkillCount,
       growthPct: jobGrowth,
-      companyGrowthPct: Number(companyGrowth.toFixed(1)),
+      companyGrowthPct: companyGrowth,
       skillsGrowthPct: skillsGrowth,
       salaryGrowthPct: salaryGrowth,
       gapChangePct: syllabusGap ? 0 : gapChange,
@@ -221,6 +229,7 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
       jobs: item._count.country,
       flag: COUNTRY_FLAGS[item.country] ?? "🌍",
     })),
+    regionalJobs,
     jobsByCity: jobsByCity.map((item) => ({
       city: item.city,
       jobs: item._count.city,
@@ -234,9 +243,12 @@ export async function getDashboardData(country: CountryFilter = "All Countries")
     skillGap,
     syllabusGap,
     workforceContext,
+    workforceIndicators,
     nigeriaEducation,
     emergingTechnologies,
     demandVsSupply,
+    youthEmployment: getYouthEmploymentSnapshot(country, topSkillsWithName),
+    demographics,
     insights,
     alerts,
     meta: {

@@ -1,50 +1,48 @@
 import {
   BarChart3,
   Bell,
-  Briefcase,
+  BookOpen,
   Download,
   DollarSign,
   LayoutDashboard,
-  Target,
 } from "lucide-react";
 
 export const NAV_ITEMS = [
   { href: "/", label: "Overview", icon: LayoutDashboard },
-  { href: "/jobs", label: "Jobs Overview", icon: Briefcase },
-  { href: "/skills", label: "Skills Demand", icon: Target },
   { href: "/salary", label: "Salary Insights", icon: DollarSign },
-  { href: "/gaps", label: "Skill Gaps", icon: BarChart3 },
+  { href: "/gaps", label: "Skill Mix", icon: BarChart3 },
+  { href: "/sources", label: "Data Sources", icon: BookOpen },
   { href: "/reports", label: "Reports", icon: Download },
   { href: "/alerts", label: "Alerts", icon: Bell },
 ] as const;
 
 export const PAGE_META: Record<string, { title: string; subtitle: string }> = {
   "/": {
-    title: "Africa's Regional Skills Observatory (Last 30 days)",
-    subtitle: "Real-time insights into Africa's job market and skills landscape",
+    title: "Overview",
+    subtitle: "Live African job-market demand, with official labour indicators as context",
   },
   "/jobs": {
     title: "Jobs Overview",
-    subtitle: "Browse live job postings ingested from external job board APIs",
-  },
-  "/skills": {
-    title: "Skills Demand",
-    subtitle: "Skill frequency and demand trends computed from job posting text",
+    subtitle: "Browse live job postings ingested from public job boards",
   },
   "/salary": {
     title: "Salary Insights",
-    subtitle: "Salary distributions derived from postings that disclose compensation",
+    subtitle: "Compensation from postings that disclose salary (coverage varies)",
   },
   "/gaps": {
-    title: "Skill Gaps",
-    subtitle: "Demand vs supply analysis across skill categories",
+    title: "Skill Mix",
+    subtitle: "How demand is distributed across skill categories in job ads",
+  },
+  "/sources": {
+    title: "Data Sources",
+    subtitle: "Verify where every indicator and job count comes from",
   },
   "/reports": {
     title: "Reports",
-    subtitle: "Export workforce analytics generated from live database queries",
+    subtitle: "Export analytics from the live job database",
   },
   "/alerts": {
     title: "Alerts",
-    subtitle: "Automated alerts triggered by shifts in demand and skill gaps",
+    subtitle: "Notices from recent ingestions and demand concentration",
   },
 };

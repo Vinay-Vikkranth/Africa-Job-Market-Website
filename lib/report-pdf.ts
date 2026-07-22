@@ -165,7 +165,10 @@ export async function generatePdfReport(data: DashboardData, country: string): P
         value: data.kpis.avgSalaryUsd > 0 ? `$${data.kpis.avgSalaryUsd.toLocaleString()}` : "N/A",
       },
       { label: "Overall skill gap index", value: `${data.kpis.overallGapPct}%` },
-      { label: "30-day job growth", value: `${data.kpis.growthPct}%` },
+      {
+        label: "30-day job growth",
+        value: data.kpis.growthPct == null ? "n/a" : `${data.kpis.growthPct}%`,
+      },
     ]);
 
     // --- Top skills ---
